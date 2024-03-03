@@ -146,11 +146,11 @@ def get_Top5_Candidate(df, column):
     #     bbox={"facecolor": "gray", "alpha": 0.5},
     # )
 
-    plotter.show()
-
     index_labels = ["Candidat " + str(n) for n in range(1, 6)]
     table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
     print(table)
+
+    plotter.show()
 
 
 def get_Worst5_Candidate(df, column):
