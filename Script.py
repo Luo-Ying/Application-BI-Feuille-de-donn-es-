@@ -1,34 +1,57 @@
 import pandas as pd
+import numpy as np
 import sys
 import os
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plotter
+import math
 
 DTYPE_DICT_LOTS = {
-    'lotId': 'Int64', 'tedCanId': 'Int64', 'correctionsNb': 'Int64', 'cancelled': 'Int64',
-    'awardDate': 'object', 'awardEstimatedPrice': 'Float64', 'awardPrice': 'Float64',
-    'cpv': 'Int64', 'numberTenders': 'Int64', 'onBehalf': 'object', 'jointProcurement': 'object',
-    'fraAgreement': 'object', 'fraEstimated': 'object', 'lotsNumber': 'object',
-    'accelerated': 'object', 'outOfDirectives': 'Int64', 'contractorSme': 'object',
-    'numberTendersSme': 'Float64', 'subContracted': 'object', 'gpa': 'object',
-    'multipleCae': 'object', 'typeOfContract': 'object', 'topType': 'object',
-    'renewal': 'object', 'contractDuration': 'Float64', 'publicityDuration': 'Float64'
+    "lotId": "Int64",
+    "tedCanId": "Int64",
+    "correctionsNb": "Int64",
+    "cancelled": "Int64",
+    "awardDate": "object",
+    "awardEstimatedPrice": "Float64",
+    "awardPrice": "Float64",
+    "cpv": "Int64",
+    "numberTenders": "Int64",
+    "onBehalf": "object",
+    "jointProcurement": "object",
+    "fraAgreement": "object",
+    "fraEstimated": "object",
+    "lotsNumber": "object",
+    "accelerated": "object",
+    "outOfDirectives": "Int64",
+    "contractorSme": "object",
+    "numberTendersSme": "Float64",
+    "subContracted": "object",
+    "gpa": "object",
+    "multipleCae": "object",
+    "typeOfContract": "object",
+    "topType": "object",
+    "renewal": "object",
+    "contractDuration": "Float64",
+    "publicityDuration": "Float64",
 }
 
 
+all_columns = []
+
 def read_csv(input_csv_path):
-    if os.path.basename(input_csv_path) == 'Lots.csv':
-        df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=',')
-        column = read_user_column(df)
-        diagram = choose_diagram()
-        draw_diagram(diagram, df, column)
-    else:
-        print("Action par défaut")
+    match os.path.basename(input_csv_path):
+        case "Lots.csv":
+            df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=",")
+            draw_Diagram(
+                df, DTYPE_DICT_LOTS
+            )
+        case _:
+            print("Action par defaut")
 
-
-def read_user_column(df):
+def read_user_column(df, dtype):
     print("Voici les colonnes disponibles : ")
     for i, col in enumerate(df.columns):
         print(f"{i + 1}. {col}")
+        all_columns.append(col)
 
     print("Veuillez sélectionner une colonne par son nom ou son ID : ")
     user_input = input()
@@ -46,42 +69,114 @@ def read_user_column(df):
     print("Entrée invalide. Veuillez choisir une colonne valide.")
     return read_user_column(df)
 
-
-def choose_diagram():
+def choose_Diagram():
     print(
-        "Les diagrammes disponibles sont : Camembert, Combo chart, Line Chart, Top 5, Boite à moustaches, Nuage de points, Tableau, Gauge, Tree map")
+        "Les diagrammes disponibles sont : Camembert , Combo chart, Line Chart, Top 5, Boite moustache, Nuage de points, Tableau, Gauge, Tree map "
+    )
     print("Veuillez choisir un type de diagramme : ")
     return input().lower()
 
 
-def draw_diagram(diagram, df, column):
-    if diagram == 'camembert':
-        draw_pie_chart(df, column)
-    elif diagram == 'tree map':
-        draw_tree_map(df, column)
-    elif diagram == 'box plot':
-        draw_box_plot(df, column)
-    elif diagram == 'tab':
-        for nameColumn in df.columns:
-            draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
-            getType(df, nameColumn)
-    else:
-        print("Le diagramme n'est pas encore disponible")
+# J'ai bougé les fonctions read_user_column(df) et choose_Diagram() ici dans la fonction draw_Diagram(df) Parce qu'on va faire plusieurs graphe dans un même programme --Yingqi
+def draw_Diagram(df, dtype):
+    next = True
+    while next:
+        column = read_user_column(df, dtype)
+        diagram = choose_Diagram()
+        match diagram:
+            case "camembert":
+                draw_Pie_Chart(df, column)
+            case "top 5":
+                get_Top5_Candidate(df, column)
+            case "worst 5":
+                get_Worst5_Candidate(df, column)
+            case 'tree map':
+                draw_tree_map(df, column)
+            case 'box plot':
+                draw_box_plot(df, column)
+            case 'tab':
+                for nameColumn in df.columns:
+                    draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
+                    getType(df, nameColumn)
+            case _:
+                print("Il faut choisir un diagramme pour déssiner.")
+        print("Continuer ? (n/y)")
+        next = True if input() == "y" else False
 
 
-def draw_pie_chart(df, column):
-    new_table_count = df[column].value_counts(dropna=False).reset_index(name='count')
-    pie_labels = new_table_count[column]
-    pie_values = new_table_count['count']
+# Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
+def draw_Pie_Chart(diagram, df, column):
+    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
 
-    fig, ax = plt.subplots()
+    figureObject, axesObject = plotter.subplots()
 
-    # Dessiner le diagramme en camembert
-    ax.pie(pie_values, labels=pie_labels, autopct='%1.2f', startangle=90)
+    # Draw the pie chart
+    axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
 
     # Aspect ratio - equal means pie is a circle
-    ax.axis('equal')
-    plt.show()
+    axesObject.axis('equal')
+    plotter.show()
+
+
+def get_Top5_Candidate(df, column):
+    table = df.nlargest(n=5, columns=[column])
+
+    x = ["Candidat " + str(n) for n in range(5, 0, -1)]
+
+    # getting values against each value of y
+    y = table[column].to_list()
+    y.reverse()
+    print(x)
+
+    plotter.xscale("log")
+    plotter.barh(x, y)
+
+    for index, value in enumerate(y):
+        plotter.text(value, index, str(value))
+
+    index_labels = ["Candidat " + str(n) for n in range(1, 6)]
+    table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
+    print(table)
+
+    plotter.show()
+
+
+def get_Worst5_Candidate(df, column):
+    table = df.nsmallest(n=5, columns=[column])
+
+    x = ["Candidat " + str(n) for n in range(5)]
+
+    # getting values against each value of y
+    y = table[column].to_list()
+    print(x)
+
+    plotter.barh(x, y)
+
+    for index, value in enumerate(y):
+        plotter.text(value, index, str(value))
+    plotter.show()
+
+
+def get_Min_Value(df, column):
+    return df[column].min()
+
+
+def get_Max_Value(df, column):
+    return df[column].max()
+
+
+def get_Mean_Value(df, column):
+    return df[column].mean()
+
+
+def get_Standard_deviation(df, column):
+    return df[column].std()
+
+
+def get_median(df, column):
+    return df[column].median()
 
 
 def draw_tree_map(df, column):
@@ -91,24 +186,20 @@ def draw_tree_map(df, column):
     tree_labels = new_table_count[column]
     tree_values = new_table_count['count']
 
-    plt.figure(figsize=(10, 8))
+    plotter.figure(figsize=(10, 8))
     squarify.plot(sizes=tree_values, label=tree_labels, alpha=0.7)
-    plt.axis('off')
-    plt.show()
+    plotter.axis('off')
+    plotter.show()
 
 
 def draw_box_plot(df, column):
-    plt.figure(figsize=(10, 8))
+    plotter.figure(figsize=(10, 8))
     df.boxplot(column=column)
-    plt.title(f'Box plot - {column}')
-    plt.show()
+    plotter.title(f'Box plot - {column}')
+    plotter.show()
 
 
 def draw_table(df, column, nom_fichier):
-    # Vérifier si la colonne spécifiée existe dans le CSV
-    # if col not in df.columns:
-    #     print(f"La colonne '{col}' n'existe pas dans le CSV.")
-    #     return
 
     # Nombre total de lignes dans la colonne spécifiée
     nombre_total_lignes = len(df[column])
@@ -171,9 +262,6 @@ def generateFile(nom_fichier, filename, content):
     print(f"Résultats enregistrés dans {nom_fichier_sortie}")
 
 
-if __name__ == '__main__':
-    input_csv_path = sys.argv[1] if len(sys.argv) > 1 else ""
-    if input_csv_path:
-        read_csv(input_csv_path)
-    else:
-        print("Veuillez fournir le chemin du fichier CSV en tant qu'argument de ligne de commande.")
+if __name__ == "__main__":
+    input_csv_path = sys.argv[1]
+    read_csv(input_csv_path)
