@@ -38,7 +38,7 @@ DTYPE_DICT_LOTS = {
 }
 
 all_columns = []
-diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot", "tab"]
+diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot", "histogram", "tab"]
 
 
 def read_csv(input_csv_path):
@@ -137,6 +137,8 @@ def draw_Diagram(df, dtype):
                 draw_box_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'violin plot':
                 draw_violin_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+            case 'histogram':
+                draw_hist(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'tab':
                 for nameColumn in df.columns:
                     draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
@@ -334,6 +336,19 @@ def draw_violin_plot(df, column, nom_fichier):
     plotter.xlabel(column)
     plotter.ylabel('Count')
     generateFileChart(nom_fichier, column, "violinPlot")
+    plotter.show()
+
+
+def draw_hist(df, column, nom_fichier):
+    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    newTableCount[column].fillna('NaN', inplace=True)
+
+    plotter.figure(figsize=(10, 8))
+    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
+    plotter.title(f'Histogramme - {column}')
+    plotter.xlabel(column)
+    plotter.ylabel('Fréquence')
+    generateFileChart(nom_fichier, column, "hist")
     plotter.show()
 
 
