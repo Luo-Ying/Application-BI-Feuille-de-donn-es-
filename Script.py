@@ -37,7 +37,7 @@ DTYPE_DICT_LOTS = {
 }
 
 all_columns = []
-diagrams = ["top 5", "worst 5", "pareto", "promethee i", "promethee ii", "electre iv", "electre is"]
+diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "tab"]
 
 
 def read_csv(input_csv_path):
