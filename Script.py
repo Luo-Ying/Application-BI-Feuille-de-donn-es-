@@ -36,8 +36,9 @@ DTYPE_DICT_LOTS = {
     "publicityDuration": "Float64",
 }
 
-
 all_columns = []
+diagrams = ["top 5", "worst 5", "pareto", "promethee i", "promethee ii", "electre iv", "electre is"]
+
 
 def read_csv(input_csv_path):
     match os.path.basename(input_csv_path):
@@ -48,6 +49,7 @@ def read_csv(input_csv_path):
             )
         case _:
             print("Action par defaut")
+
 
 def read_user_column(df, dtype):
     print("Voici les colonnes disponibles : ")
@@ -71,13 +73,30 @@ def read_user_column(df, dtype):
     print("Entrée invalide. Veuillez choisir une colonne valide.")
     return read_user_column(df)
 
+
 def choose_Diagram():
-    print ("Les diagrammes disponibles sont : Camembert , Combo chart, Line Chart, Top 5, Boite moustache, Nuage de points, Tableau, Gauge, Tree map, Radar ")
-    print("Veuillez choisir un type de diagramme : ")
-    return input().lower()
+    print(
+        "Les diagrammes disponibles sont : Camembert , Combo chart, Line Chart, Top 5, Boite moustache, Nuage de points, Tableau, Gauge, Tree map, Radar ")
+    for i, col in enumerate(diagrams):
+        print(f"{i + 1}. {col}")
+
+    print("Veuillez sélectionner un diagramme par son nom ou son ID : ")
+    user_input = input()
+
+    try:
+        # Essayer de convertir l'entrée en entier (ID)
+        column_id = int(user_input)
+        if 1 <= column_id <= len(diagrams):
+            return diagrams[column_id - 1]
+    except ValueError:
+        # Si la conversion échoue, traiter l'entrée comme le nom de la colonne
+        if user_input in diagrams:
+            return user_input.lower()
+
+    print("Veuillez choisir un diagramme valide.")
+    return choose_Diagram().lower()
 
 
-# J'ai bougé les fonctions read_user_column(df) et choose_Diagram() ici dans la fonction draw_Diagram(df) Parce qu'on va faire plusieurs graphe dans un même programme --Yingqi
 def draw_Diagram(df, dtype):
     next = True
     while next:
@@ -111,7 +130,7 @@ def draw_Diagram(df, dtype):
 
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
-def draw_Pie_Chart(diagram, df, column):
+def draw_Pie_Chart(df, column):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
     pieLabels = newTableCount[column]
     pieValues = newTableCount['count']
@@ -125,6 +144,7 @@ def draw_Pie_Chart(diagram, df, column):
     axesObject.axis('equal')
     plotter.show()
 
+
 # Graphs cpv, numberTenders,lotsNumber, numberTendersSme, contractorSme, contractDuration, publicityDuration works but takes time and is incomprehensible, must zoom to see clearly
 # Graphs with too many labels and values do not work. Maybe should group labels?
 def draw_Scatter_Chart(diagram, df, column):
@@ -134,14 +154,15 @@ def draw_Scatter_Chart(diagram, df, column):
     # Can work with mean average, variances , etc.. Not just count, should discuss with the group
     pieValues = newTableCount['count']
 
-    #Define the axes
-    plotter.scatter(pieLabels,pieValues)
+    # Define the axes
+    plotter.scatter(pieLabels, pieValues)
 
     # Draw the scatter chart
     plotter.title('Nuage de points')
     plotter.xlabel('Labels')
     plotter.ylabel('Compte')
     plotter.show()
+
 
 # Radars work with columns having few labels else it is horrible :(
 def draw_Radar_Chart(diagram, df, column):
@@ -175,16 +196,17 @@ def draw_Gauge_Chart(diagram, df, column):
 
     # Draw the gauge
     gauge = pygal.SolidGauge(
-    half_pie=True, inner_radius=0.70,
-    style=pygal.style.styles['default'](value_font_size=10))
+        half_pie=True, inner_radius=0.70,
+        style=pygal.style.styles['default'](value_font_size=10))
 
     formatter = lambda x: '{:.10g}'.format(x)
 
     # Maybe should be more interesting to do top 5 or top 10
     for i, value in enumerate(pieLabels):
-        gauge.add(value, [{'value': pieValues[i], 'max_value': maxValue}],formatter=formatter)
+        gauge.add(value, [{'value': pieValues[i], 'max_value': maxValue}], formatter=formatter)
 
     gauge.render_in_browser()
+
 
 def get_Top5_Candidate(df, column):
     table = df.nlargest(n=5, columns=[column])
@@ -266,7 +288,6 @@ def draw_box_plot(df, column):
 
 
 def draw_table(df, column, nom_fichier):
-
     # Nombre total de lignes dans la colonne spécifiée
     nombre_total_lignes = len(df[column])
 
