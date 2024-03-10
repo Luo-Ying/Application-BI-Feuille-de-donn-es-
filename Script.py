@@ -1,9 +1,9 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plotter
 import sys
 import os
-import matplotlib.pyplot as plotter
 import math
 import pygal
 import lxml
@@ -38,7 +38,7 @@ DTYPE_DICT_LOTS = {
 }
 
 all_columns = []
-diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "tab"]
+diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot", "tab"]
 
 
 def read_csv(input_csv_path):
@@ -65,14 +65,29 @@ def read_user_column(df, dtype):
         # Essayer de convertir l'entrée en entier (ID)
         column_id = int(user_input)
         if 1 <= column_id <= len(df.columns):
+            show_Column_Info(df, df.columns[column_id - 1], dtype)
             return df.columns[column_id - 1]
     except ValueError:
         # Si la conversion échoue, traiter l'entrée comme le nom de la colonne
         if user_input in df.columns:
+            show_Column_Info(df, user_input, dtype)
             return user_input
 
     print("Entrée invalide. Veuillez choisir une colonne valide.")
-    return read_user_column(df)
+    return read_user_column(df, dtype)
+
+
+def show_Column_Info(df, column, dtype):
+    print("\nDes ionformation global de la colonne >>>>>>> ")
+    print(f"Colonne choisi: {column}")
+    print(dtype[column])
+    if dtype[column] == "Int64" or dtype[column] == "Float64":
+        print(f"La valeur minimun : {get_Min_Value(df, column)}")
+        print(f"La valeur maximum : {get_Max_Value(df, column)}")
+        print(f"La valeur médianne : {get_median(df, column)}")
+        print(f"La valeur mean : {get_Mean_Value(df, column)}")
+        print(f"La valeur écart-type : {get_Standard_deviation(df, column)}")
+    print("\n")
 
 
 def choose_Diagram():
@@ -120,6 +135,8 @@ def draw_Diagram(df, dtype):
                 draw_tree_map(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'box plot':
                 draw_box_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+            case 'violin plot':
+                draw_violin_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'tab':
                 for nameColumn in df.columns:
                     draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
@@ -289,10 +306,34 @@ def draw_tree_map(df, column, nom_fichier):
 
 
 def draw_box_plot(df, column, nom_fichier):
+    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
+
+    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    df.boxplot(column=column)
+    sns.boxplot(x=pieLabels, y=pieValues, data=newTableCount)
+    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
     plotter.title(f'Box plot - {column}')
+    plotter.xlabel(column)
+    plotter.ylabel('Count')
     generateFileChart(nom_fichier, column, "boxPlot")
+    plotter.show()
+
+
+def draw_violin_plot(df, column, nom_fichier):
+    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
+
+    newTableCount[column].fillna('NaN', inplace=True)
+    plotter.figure(figsize=(10, 8))
+    sns.violinplot(x=pieLabels, y=pieValues, data=newTableCount)
+    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    plotter.title(f'Violin plot - {column}')
+    plotter.xlabel(column)
+    plotter.ylabel('Count')
+    generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
 
@@ -324,19 +365,20 @@ def draw_table(df, column, nom_fichier):
         'Nombre d\'occurrences': occurrences.values
     })
 
-    # mean_value = df[column].mean()
-    # min_value = df[column].min()
-    # max_value = df[column].max()
-    # median_value = df[column].median()
-    # std_dev = df[column].std()
-
-    # Create a DataFrame to store the statistics
-    # result_stats = pd.DataFrame({
-    #     'Statistic': ['Mean', 'Min', 'Max', 'Median', 'Standard Deviation'],
-    #     'Value': [mean_value, min_value, max_value, median_value, std_dev]
-    # })
-
-    resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
+    if DTYPE_DICT_LOTS[column] == "Int64" or DTYPE_DICT_LOTS[column] == "Float64":
+        mean_value = get_Mean_Value(df, column),
+        min_value = get_Min_Value(df, column),
+        max_value = get_Max_Value(df, column),
+        median_value = get_median(df, column),
+        std_dev = get_Standard_deviation(df, column)
+        result_stats = pd.DataFrame({
+            'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
+            'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
+        })
+        print(result_stats)
+        resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
+    else:
+        resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
 
     generateFileTab(nom_fichier, column, resultats)
 
