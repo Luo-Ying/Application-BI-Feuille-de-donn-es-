@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import sys
@@ -104,21 +105,21 @@ def draw_Diagram(df, dtype):
         diagram = choose_Diagram()
         match diagram:
             case "camembert":
-                draw_Pie_Chart(df, column)
+                draw_Pie_Chart(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case "top 5":
-                get_Top5_Candidate(df, column)
+                get_Top5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case "worst 5":
-                get_Worst5_Candidate(df, column)
+                get_Worst5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'nuage de points':
-                draw_Scatter_Chart(diagram, df, column)
+                draw_Scatter_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'gauge':
-                draw_Gauge_Chart(diagram, df, column)
+                draw_Gauge_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'radar':
-                draw_Radar_Chart(diagram, df, column)
+                draw_Radar_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'tree map':
-                draw_tree_map(df, column)
+                draw_tree_map(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'box plot':
-                draw_box_plot(df, column)
+                draw_box_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
             case 'tab':
                 for nameColumn in df.columns:
                     draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
@@ -130,7 +131,7 @@ def draw_Diagram(df, dtype):
 
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
-def draw_Pie_Chart(df, column):
+def draw_Pie_Chart(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
     pieLabels = newTableCount[column]
     pieValues = newTableCount['count']
@@ -142,12 +143,13 @@ def draw_Pie_Chart(df, column):
 
     # Aspect ratio - equal means pie is a circle
     axesObject.axis('equal')
+    generateFileChart(nom_fichier, column, "pieChart")
     plotter.show()
 
 
 # Graphs cpv, numberTenders,lotsNumber, numberTendersSme, contractorSme, contractDuration, publicityDuration works but takes time and is incomprehensible, must zoom to see clearly
 # Graphs with too many labels and values do not work. Maybe should group labels?
-def draw_Scatter_Chart(diagram, df, column):
+def draw_Scatter_Chart(diagram, df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
     pieLabels = newTableCount[column].astype(str)
 
@@ -161,11 +163,12 @@ def draw_Scatter_Chart(diagram, df, column):
     plotter.title('Nuage de points')
     plotter.xlabel('Labels')
     plotter.ylabel('Compte')
+    generateFileChart(nom_fichier, column, "nuageDePoints")
     plotter.show()
 
 
 # Radars work with columns having few labels else it is horrible :(
-def draw_Radar_Chart(diagram, df, column):
+def draw_Radar_Chart(diagram, df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
     pieLabels = newTableCount[column].astype(str)
     pieValues = newTableCount['count']
@@ -185,10 +188,11 @@ def draw_Radar_Chart(diagram, df, column):
     ax.set_yticklabels([])
     ax.set_title('Radar')
 
+    generateFileChart(nom_fichier, column, "radar")
     plotter.show()
 
 
-def draw_Gauge_Chart(diagram, df, column):
+def draw_Gauge_Chart(diagram, df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
     pieLabels = newTableCount[column].astype(str)
     pieValues = newTableCount['count']
@@ -205,10 +209,11 @@ def draw_Gauge_Chart(diagram, df, column):
     for i, value in enumerate(pieLabels):
         gauge.add(value, [{'value': pieValues[i], 'max_value': maxValue}], formatter=formatter)
 
+    generateFileChart(nom_fichier, column, "gauge")
     gauge.render_in_browser()
 
 
-def get_Top5_Candidate(df, column):
+def get_Top5_Candidate(df, column, nom_fichier):
     table = df.nlargest(n=5, columns=[column])
 
     x = ["Candidat " + str(n) for n in range(5, 0, -1)]
@@ -228,10 +233,11 @@ def get_Top5_Candidate(df, column):
     table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
     print(table)
 
+    generateFileChart(nom_fichier, column, "top")
     plotter.show()
 
 
-def get_Worst5_Candidate(df, column):
+def get_Worst5_Candidate(df, column, nom_fichier):
     table = df.nsmallest(n=5, columns=[column])
 
     x = ["Candidat " + str(n) for n in range(5)]
@@ -244,6 +250,7 @@ def get_Worst5_Candidate(df, column):
 
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
+    generateFileChart(nom_fichier, column, "worst")
     plotter.show()
 
 
@@ -267,7 +274,7 @@ def get_median(df, column):
     return df[column].median()
 
 
-def draw_tree_map(df, column):
+def draw_tree_map(df, column, nom_fichier):
     import squarify
 
     new_table_count = df[column].value_counts(dropna=False).reset_index(name='count')
@@ -277,13 +284,15 @@ def draw_tree_map(df, column):
     plotter.figure(figsize=(10, 8))
     squarify.plot(sizes=tree_values, label=tree_labels, alpha=0.7)
     plotter.axis('off')
+    generateFileChart(nom_fichier, column, "treeMap")
     plotter.show()
 
 
-def draw_box_plot(df, column):
+def draw_box_plot(df, column, nom_fichier):
     plotter.figure(figsize=(10, 8))
     df.boxplot(column=column)
     plotter.title(f'Box plot - {column}')
+    generateFileChart(nom_fichier, column, "boxPlot")
     plotter.show()
 
 
@@ -329,14 +338,27 @@ def draw_table(df, column, nom_fichier):
 
     resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
 
-    generateFile(nom_fichier, column, resultats)
+    generateFileTab(nom_fichier, column, resultats)
 
 
 def getType(df, column):
     print(f'{df[column].name} est de type {df[column].dtype}')
 
 
-def generateFile(nom_fichier, filename, content):
+def generateFileChart(nom_fichier, filename, type):
+    nom_fichier_sortie = f'fig\\{nom_fichier}\\{nom_fichier}_{filename}_{type}'
+    isExist = os.path.exists(sys.path[0] + f'\\fig')
+    if not isExist:
+        os.makedirs(sys.path[0] + f'\\fig')
+
+    isExist = os.path.exists(sys.path[0] + f'\\fig\\{nom_fichier}')
+    if not isExist:
+        os.makedirs(sys.path[0] + f'\\fig\\{nom_fichier}')
+    plotter.savefig(f'fig/{nom_fichier}/{nom_fichier}_{filename}_{type}')
+    print(f"Résultats enregistrés dans {nom_fichier_sortie}")
+
+
+def generateFileTab(nom_fichier, filename, content):
     # Enregistrer les résultats dans un fichier CSV
     extension = 'output'
     nom_fichier_sortie = f'Output\\{nom_fichier}\\{nom_fichier}_{filename}_{extension}.csv'
