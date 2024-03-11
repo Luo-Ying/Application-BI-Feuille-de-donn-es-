@@ -42,14 +42,13 @@ diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar"
 
 
 def read_csv(input_csv_path):
-    match os.path.basename(input_csv_path):
-        case "Lots.csv":
-            df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=",")
-            draw_Diagram(
-                df, DTYPE_DICT_LOTS
-            )
-        case _:
-            print("Action par defaut")
+    if os.path.basename(input_csv_path) == "Lots.csv":
+        df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=",")
+        draw_Diagram(
+            df, DTYPE_DICT_LOTS
+        )
+    else :
+        print("Action par defaut")
 
 
 def read_user_column(df, dtype):
@@ -116,33 +115,32 @@ def draw_Diagram(df, dtype):
     while next:
         column = read_user_column(df, dtype)
         diagram = choose_Diagram()
-        match diagram:
-            case "camembert":
-                draw_Pie_Chart(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case "top 5":
-                get_Top5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case "worst 5":
-                get_Worst5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'nuage de points':
-                draw_Scatter_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'gauge':
-                draw_Gauge_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'radar':
-                draw_Radar_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'tree map':
-                draw_tree_map(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'box plot':
-                draw_box_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'violin plot':
-                draw_violin_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'histogram':
-                draw_hist(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-            case 'tab':
-                for nameColumn in df.columns:
-                    draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
-                    getType(df, nameColumn)
-            case _:
-                print("Il faut choisir un diagramme pour déssiner.")
+        if diagram == "camembert":
+            draw_Pie_Chart(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == "top 5":
+            get_Top5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == "worst 5":
+            get_Worst5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'nuage de points':
+            draw_Scatter_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'gauge':
+            draw_Gauge_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'radar':
+            draw_Radar_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'tree map':
+            draw_tree_map(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'box plot':
+            draw_box_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'violin plot':
+            draw_violin_plot(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'histogram':
+            draw_hist(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
+        elif diagram == 'tab':
+            for nameColumn in df.columns:
+                draw_table(df, nameColumn, os.path.basename(input_csv_path).replace('.csv', ''))
+                getType(df, nameColumn)
+        else:
+            print("Il faut choisir un diagramme pour déssiner.")
         print("Continuer ? (n/y)")
         next = True if input() == "y" else False
 
