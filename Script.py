@@ -347,6 +347,7 @@ def draw_hist(df, column, nom_fichier):
             plotter.xlabel('Number of occurences of tedCanId with intervals 100') 
             plotter.ylabel('Frequency') 
             plotter.title('Histogram occurencies of TedCanId') 
+            generateFileChart(nom_fichier, column, "hist")
             plotter.show()
         case _: 
             newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
