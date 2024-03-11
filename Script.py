@@ -58,8 +58,7 @@ def read_user_column(df, dtype):
         print(f"{i + 1}. {col}")
         all_columns.append(col)
 
-    print("Veuillez sélectionner une colonne par son nom ou son ID : ")
-    user_input = input()
+    user_input = input("Veuillez sélectionner une colonne par son nom ou son ID : ")
 
     try:
         # Essayer de convertir l'entrée en entier (ID)
@@ -96,8 +95,7 @@ def choose_Diagram():
     for i, col in enumerate(diagrams):
         print(f"{i + 1}. {col}")
 
-    print("Veuillez sélectionner un diagramme par son nom ou son ID : ")
-    user_input = input()
+    user_input = input("Veuillez sélectionner un diagramme par son nom ou son ID : ")
 
     try:
         # Essayer de convertir l'entrée en entier (ID)
@@ -309,19 +307,32 @@ def draw_tree_map(df, column, nom_fichier):
 
 def draw_box_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
+
+    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    newTableCount.boxplot(column=column)
+    sns.boxplot(x=pieLabels, y=pieValues, data=newTableCount)
+    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
     plotter.title(f'Box plot - {column}')
-    plotter.show()
+    plotter.xlabel(column)
+    plotter.ylabel('Count')
     generateFileChart(nom_fichier, column, "boxPlot")
     plotter.show()
 
 
 def draw_violin_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
+
+    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.violinplot(data=newTableCount[column])
+    sns.violinplot(x=pieLabels, y=pieValues, data=newTableCount)
+    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
     plotter.title(f'Violin plot - {column}')
+    plotter.xlabel(column)
+    plotter.ylabel('Count')
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
@@ -377,6 +388,7 @@ def draw_table(df, column, nom_fichier):
             'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
             'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
         })
+        print(result_stats)
         resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
     else:
         resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
