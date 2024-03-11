@@ -38,7 +38,8 @@ DTYPE_DICT_LOTS = {
 }
 
 all_columns = []
-diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot", "histogram", "tab"]
+diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot",
+            "histogram", "tab"]
 
 
 def read_csv(input_csv_path):
@@ -47,7 +48,7 @@ def read_csv(input_csv_path):
         draw_Diagram(
             df, DTYPE_DICT_LOTS
         )
-    else :
+    else:
         print("Action par defaut")
 
 
@@ -147,14 +148,22 @@ def draw_Diagram(df, dtype):
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
 def draw_Pie_Chart(df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
+    # newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    # pieLabels = newTableCount[column]
+    # pieValues = newTableCount['count']
+
+    nombre_total_lignes = len(df[column])
+    nombre_lignes_vides = df[column].isna().sum()
+    nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
+
+    resultats = pd.DataFrame({
+        'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
+        index=['Nombre de lignes vides', 'Nombre de lignes non vides'])
 
     figureObject, axesObject = plotter.subplots()
 
     # Draw the pie chart
-    axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
+    axesObject.pie(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
 
     # Aspect ratio - equal means pie is a circle
     axesObject.axis('equal')
@@ -305,32 +314,20 @@ def draw_tree_map(df, column, nom_fichier):
 
 def draw_box_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.boxplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    newTableCount.boxplot(column=column)
     plotter.title(f'Box plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
+    plotter.yscale("log")
     generateFileChart(nom_fichier, column, "boxPlot")
     plotter.show()
 
 
 def draw_violin_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.violinplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    sns.violinplot(data=newTableCount[column])
     plotter.title(f'Violin plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
+    plotter.yscale("log")
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
