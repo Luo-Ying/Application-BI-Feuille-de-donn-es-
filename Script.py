@@ -340,16 +340,25 @@ def draw_violin_plot(df, column, nom_fichier):
 
 
 def draw_hist(df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    newTableCount[column].fillna('NaN', inplace=True)
+    match column: 
+        case "tedCanId":
+            newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+            plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black', log=True) 
+            plotter.xlabel('Number of occurences of tedCanId with intervals 100') 
+            plotter.ylabel('Frequency') 
+            plotter.title('Histogram occurencies of TedCanId') 
+            plotter.show()
+        case _: 
+            newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+            newTableCount[column].fillna('NaN', inplace=True)
 
-    plotter.figure(figsize=(10, 8))
-    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
-    plotter.title(f'Histogramme - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Fréquence')
-    generateFileChart(nom_fichier, column, "hist")
-    plotter.show()
+            plotter.figure(figsize=(10, 8))
+            plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
+            plotter.title(f'Histogramme - {column}')
+            plotter.xlabel(column)
+            plotter.ylabel('Fréquence')
+            generateFileChart(nom_fichier, column, "hist")
+            plotter.show()
 
 
 def draw_table(df, column, nom_fichier):
