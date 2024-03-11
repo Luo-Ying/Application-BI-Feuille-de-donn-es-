@@ -274,6 +274,11 @@ def get_Worst5_Candidate(df, column, nom_fichier):
 
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
+
+    index_labels = ["Candidat " + str(n) for n in range(1, 6)]
+    table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
+    print(table)
+
     generateFileChart(nom_fichier, column, "worst")
     plotter.show()
 
