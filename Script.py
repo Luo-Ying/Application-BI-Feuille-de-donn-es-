@@ -148,22 +148,14 @@ def draw_Diagram(df, dtype):
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
 def draw_Pie_Chart(df, column, nom_fichier):
-    # newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    # pieLabels = newTableCount[column]
-    # pieValues = newTableCount['count']
-
-    nombre_total_lignes = len(df[column])
-    nombre_lignes_vides = df[column].isna().sum()
-    nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
-
-    resultats = pd.DataFrame({
-        'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
-        index=['Nombre de lignes vides', 'Nombre de lignes non vides'])
+    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    pieLabels = newTableCount[column]
+    pieValues = newTableCount['count']
 
     figureObject, axesObject = plotter.subplots()
 
     # Draw the pie chart
-    axesObject.pie(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
+    axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
 
     # Aspect ratio - equal means pie is a circle
     axesObject.axis('equal')
