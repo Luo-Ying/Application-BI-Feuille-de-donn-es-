@@ -309,32 +309,19 @@ def draw_tree_map(df, column, nom_fichier):
 
 def draw_box_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.boxplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    newTableCount.boxplot(column=column)
     plotter.title(f'Box plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
+    plotter.show()
     generateFileChart(nom_fichier, column, "boxPlot")
     plotter.show()
 
 
 def draw_violin_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.violinplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    sns.violinplot(data=newTableCount[column])
     plotter.title(f'Violin plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
@@ -390,7 +377,6 @@ def draw_table(df, column, nom_fichier):
             'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
             'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
         })
-        print(result_stats)
         resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
     else:
         resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
