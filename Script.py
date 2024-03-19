@@ -537,18 +537,12 @@ def close_db(connexion):
 
 def get_sql_request(connexion):
     cursor = connexion.cursor()
-    query_select = "SELECT * FROM Lots LIMIT 5;"
+    # SELECT * FROM Lots LIMIT 5;
+    query_select = input("Entrer votre SQL: ")
     cursor.execute(query_select)
     rows = cursor.fetchall()
     for row in rows:
         print(row)
-
-
-def insert_data(connexion):
-    cursor = connexion.cursor()
-    query_insert = "INSERT INTO your_table_name (column1, column2) VALUES (?, ?);"
-    cursor.execute(query_insert, ('value1', 'value2'))
-    connexion.commit()
 
 
 if __name__ == "__main__":
