@@ -7,6 +7,7 @@ import os
 import math
 import pygal
 import lxml
+import sqlite3
 
 DTYPE_DICT_LOTS = {
     "lotId": "Int64",
@@ -73,8 +74,10 @@ DTYPE_DICT_NAMES = {
     "name": ""
 }
 
+N = 50
 all_columns = []
-diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot",
+diagrams = ["camembert", f"top {N}", f"worst {N}", "nuage de points", "gauge", "radar", "tree map", "box plot",
+            "violin plot",
             "histogram", "tab"]
 
 
@@ -104,6 +107,7 @@ def get_dtype(filename):
         return DTYPE_DICT_NAMES
     else:
         return
+
 
 def read_user_column(df, dtype):
     print("Voici les colonnes disponibles : ")
@@ -171,9 +175,9 @@ def draw_Diagram(df, dtype):
         diagram = choose_Diagram()
         if diagram == "camembert":
             draw_Pie_Chart(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-        elif diagram == "top 5":
+        elif diagram == f"top {N}":
             get_Top5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
-        elif diagram == "worst 5":
+        elif diagram == f"worst {N}":
             get_Worst5_Candidate(df, column, os.path.basename(input_csv_path).replace('.csv', ''))
         elif diagram == 'nuage de points':
             draw_Scatter_Chart(diagram, df, column, os.path.basename(input_csv_path).replace('.csv', ''))
@@ -304,22 +308,22 @@ def draw_Gauge_Chart(diagram, df, column, nom_fichier):
 
 def get_Top5_Candidate(df, column, nom_fichier):
     # df[column] = pd.to_numeric(df[column], errors='coerce')
-    table = df.nlargest(n=5, columns=[column])
+    table = df.nlargest(n=N, columns=[column])
 
-    x = ["Candidat " + str(n) for n in range(5, 0, -1)]
+    x = ["Candidat " + str(n) for n in range(N, 0, -1)]
 
     # getting values against each value of y
     y = table[column].to_list()
     y.reverse()
     print(x)
 
-    plotter.xscale("log")
+    # plotter.xscale("log")
     plotter.barh(x, y)
 
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
 
-    index_labels = ["Candidat " + str(n) for n in range(1, 6)]
+    index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
     table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
     print(table)
 
@@ -328,9 +332,9 @@ def get_Top5_Candidate(df, column, nom_fichier):
 
 
 def get_Worst5_Candidate(df, column, nom_fichier):
-    table = df.nsmallest(n=5, columns=[column])
+    table = df.nsmallest(n=N, columns=[column])
 
-    x = ["Candidat " + str(n) for n in range(5)]
+    x = ["Candidat " + str(n) for n in range(N)]
 
     # getting values against each value of y
     y = table[column].to_list()
@@ -341,7 +345,7 @@ def get_Worst5_Candidate(df, column, nom_fichier):
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
 
-    index_labels = ["Candidat " + str(n) for n in range(1, 6)]
+    index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
     table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
     print(table)
 
@@ -424,7 +428,7 @@ def draw_hist(df, column, nom_fichier):
 
         resultats = pd.DataFrame({
             'count': [nombre_lignes_vides, nb_integers, nb_strings],
-            'nb':['Nombre de lignes vides', 'Nombre de lignes correctes', 'Nombre d\'erreurs']})
+            'nb': ['Nombre de lignes vides', 'Nombre de lignes correctes', 'Nombre d\'erreurs']})
 
         plotter.bar(resultats['nb'].astype(str), resultats['count'], color='skyblue', edgecolor='black')
         plotter.title(f'Histogramme - {column}')
@@ -523,6 +527,35 @@ def generateFileTab(nom_fichier, filename, content):
     print(f"Résultats enregistrés dans {nom_fichier_sortie}")
 
 
+def connect_db(db_path):
+    return sqlite3.connect(db_path)
+
+
+def close_db(connexion):
+    connexion.close()
+
+
+def get_sql_request(connexion):
+    cursor = connexion.cursor()
+    query_select = "SELECT * FROM Lots LIMIT 5;"
+    cursor.execute(query_select)
+    rows = cursor.fetchall()
+    for row in rows:
+        print(row)
+
+
+def insert_data(connexion):
+    cursor = connexion.cursor()
+    query_insert = "INSERT INTO your_table_name (column1, column2) VALUES (?, ?);"
+    cursor.execute(query_insert, ('value1', 'value2'))
+    connexion.commit()
+
+
 if __name__ == "__main__":
+    db_path = 'Input\\Foppa.db'
+    connexion = connect_db(db_path)
+    get_sql_request(connexion)
+    close_db(connexion)
+
     input_csv_path = sys.argv[1]
     read_csv(input_csv_path)
