@@ -37,20 +37,73 @@ DTYPE_DICT_LOTS = {
     "publicityDuration": "Float64",
 }
 
+DTYPE_DICT_AGENTS = {
+    "agentId": "Int64",
+    "name": "object",
+    "siret": "object",
+    "address": "object",
+    "city": "object",
+    "zipcode": "object",
+    "country": "object",
+    "department": "object",
+    "longitude": "object",
+    "latitude": "object",
+}
+
+DTYPE_DICT_CRITERIA = {
+    "criterionId": "Int64",
+    "lotId": "Int64",
+    "name": "object",
+    "weight": "Float64",
+    "type": "object"
+}
+
+DTYPE_DICT_LOTBUYERS = {
+    "lotId": "Int64",
+    "agentId": "Int64"
+}
+
+DTYPE_DICT_LOTSUPPLIERS = {
+    "lotId": "Int64",
+    "agentId": "Int64"
+}
+
+DTYPE_DICT_NAMES = {
+    "agentId": "Int64",
+    "name": ""
+}
+
 all_columns = []
 diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot",
             "histogram", "tab"]
 
 
 def read_csv(input_csv_path):
-    if os.path.basename(input_csv_path) == "Lots.csv":
+    filename = os.path.basename(input_csv_path)
+    if filename in ["Lots.csv", "Agents.csv", "Criteria.csv", "LotBuyers.csv", "LotSuppliers.csv", "Names.csv"]:
         df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=",")
         draw_Diagram(
-            df, DTYPE_DICT_LOTS
+            df, get_dtype(filename)
         )
     else:
         print("Action par defaut")
 
+
+def get_dtype(filename):
+    if filename == "Lots.csv":
+        return DTYPE_DICT_LOTS
+    elif filename == "Agents.csv":
+        return DTYPE_DICT_AGENTS
+    elif filename == "Criteria.csv":
+        return DTYPE_DICT_CRITERIA
+    elif filename == "LotBuyers.csv":
+        return DTYPE_DICT_LOTBUYERS
+    elif filename == "LotSuppliers.csv":
+        return DTYPE_DICT_LOTSUPPLIERS
+    elif filename == "Names.csv":
+        return DTYPE_DICT_NAMES
+    else:
+        return
 
 def read_user_column(df, dtype):
     print("Voici les colonnes disponibles : ")
@@ -148,14 +201,32 @@ def draw_Diagram(df, dtype):
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
 def draw_Pie_Chart(df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
+    # newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    # pieLabels = newTableCount[column]
+    # pieValues = newTableCount['count']
+
+    nombre_total_lignes = len(df[column])
+    nombre_lignes_vides = df[column].isna().sum()
+    nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
+
+    resultats = pd.DataFrame({
+        'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
+        index=['Nombre de lignes vides', 'Nombre de lignes vides'])
+
+    # numeric_values = pd.to_numeric(df[column], errors='coerce')
+    # nb_integers = numeric_values[pd.notna(numeric_values)].astype(int).count()
+    #
+    # nb_strings = nombre_total_lignes - nb_integers - nombre_lignes_vides
+    #
+    # resultats = pd.DataFrame({
+    #     'count': [nombre_lignes_vides, nb_integers, nb_strings]},
+    #     index=['Nombre de lignes vides', 'Nombre de lignes correctes', 'Nombre d\'erreurs'])
 
     figureObject, axesObject = plotter.subplots()
 
     # Draw the pie chart
-    axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
+    # axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
+    axesObject.pie(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
 
     # Aspect ratio - equal means pie is a circle
     axesObject.axis('equal')
@@ -173,7 +244,9 @@ def draw_Scatter_Chart(diagram, df, column, nom_fichier):
     pieValues = newTableCount['count']
 
     # Define the axes
-    plotter.scatter(pieLabels, pieValues)
+    # plotter.scatter(pieLabels, pieValues)
+    # plotter.axvline(x=19, color='r', linewidth=1)
+    plotter.scatter(pieLabels.head(20), pieValues.head(20))
 
     # Draw the scatter chart
     plotter.title('Nuage de points')
@@ -203,7 +276,7 @@ def draw_Radar_Chart(diagram, df, column, nom_fichier):
     ax.set_xticklabels(pieLabels)
     ax.set_yticklabels([])
     ax.set_title('Radar')
-
+    # ax.set_rscale('symlog', linthresh=0.01)
     generateFileChart(nom_fichier, column, "radar")
     plotter.show()
 
@@ -230,6 +303,7 @@ def draw_Gauge_Chart(diagram, df, column, nom_fichier):
 
 
 def get_Top5_Candidate(df, column, nom_fichier):
+    # df[column] = pd.to_numeric(df[column], errors='coerce')
     table = df.nlargest(n=5, columns=[column])
 
     x = ["Candidat " + str(n) for n in range(5, 0, -1)]
@@ -324,22 +398,53 @@ def draw_violin_plot(df, column, nom_fichier):
     plotter.figure(figsize=(10, 8))
     sns.violinplot(data=newTableCount[column])
     plotter.title(f'Violin plot - {column}')
-    plotter.yscale("log")
+    # plotter.yscale("log")
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
 
 def draw_hist(df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    newTableCount[column].fillna('NaN', inplace=True)
+    if column == 'numberTendersSme':
+        newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+        # plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black')
+        plotter.hist(newTableCount['count'], bins=[0, 200, 400, 600, 800, 1000],
+                     color='skyblue', edgecolor='black', log=True)
+        plotter.xlabel(f'Number of occurences of {column} with intervals 200')
+        plotter.ylabel('Frequency')
+        plotter.title(f'Histogram occurencies of {column}')
+        generateFileChart(nom_fichier, column, "hist")
+        plotter.show()
+    elif column == 'lotsNumber':
+        nombre_total_lignes = len(df[column])
+        nombre_lignes_vides = df[column].isna().sum()
+        numeric_values = pd.to_numeric(df[column], errors='coerce')
+        nb_integers = numeric_values[pd.notna(numeric_values)].astype(int).count()
 
-    plotter.figure(figsize=(10, 8))
-    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
-    plotter.title(f'Histogramme - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Fréquence')
-    generateFileChart(nom_fichier, column, "hist")
-    plotter.show()
+        nb_strings = nombre_total_lignes - nb_integers - nombre_lignes_vides
+
+        resultats = pd.DataFrame({
+            'count': [nombre_lignes_vides, nb_integers, nb_strings],
+            'nb':['Nombre de lignes vides', 'Nombre de lignes correctes', 'Nombre d\'erreurs']})
+
+        plotter.bar(resultats['nb'].astype(str), resultats['count'], color='skyblue', edgecolor='black')
+        plotter.title(f'Histogramme - {column}')
+        plotter.xlabel(column)
+        plotter.ylabel('Fréquence')
+        # plotter.yscale("log")
+        generateFileChart(nom_fichier, column, "hist")
+        plotter.show()
+    else:
+        newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+        # newTableCount[column].fillna('NaN', inplace=True)
+
+        plotter.figure(figsize=(10, 8))
+        plotter.bar(newTableCount[column].astype(str), newTableCount['count'], color='skyblue', edgecolor='black')
+        plotter.title(f'Histogramme - {column}')
+        plotter.xlabel(column)
+        plotter.ylabel('Fréquence')
+        plotter.yscale("log")
+        generateFileChart(nom_fichier, column, "hist")
+        plotter.show()
 
 
 def draw_table(df, column, nom_fichier):
