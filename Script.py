@@ -41,7 +41,7 @@ DTYPE_DICT_LOTS = {
 DTYPE_DICT_AGENTS = {
     "agentId": "Int64",
     "name": "object",
-    "siret": "object",
+    "siret": "Int64",
     "address": "object",
     "city": "object",
     "zipcode": "object",
@@ -71,10 +71,10 @@ DTYPE_DICT_LOTSUPPLIERS = {
 
 DTYPE_DICT_NAMES = {
     "agentId": "Int64",
-    "name": ""
+    "name": "object"
 }
 
-N = 50
+N = 10
 all_columns = []
 diagrams = ["camembert", f"top {N}", f"worst {N}", "nuage de points", "gauge", "radar", "tree map", "box plot",
             "violin plot",
@@ -209,39 +209,63 @@ def draw_Pie_Chart(df, column, nom_fichier):
     # pieLabels = newTableCount[column]
     # pieValues = newTableCount['count']
 
-    nombre_total_lignes = len(df[column])
-    nombre_lignes_vides = df[column].isna().sum()
-    nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
+    # nombre_total_lignes = len(df[column])
+    # nombre_lignes_vides = df[column].isna().sum()
+    # nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
 
-    resultats = pd.DataFrame({
-        'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
-        index=['Nombre de lignes vides', 'Nombre de lignes vides'])
-
+    # resultats = pd.DataFrame({
+    #     'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
+    #     index=['Nombre de lignes vides', 'Nombre de lignes non vides'])
+    #
     # numeric_values = pd.to_numeric(df[column], errors='coerce')
     # nb_integers = numeric_values[pd.notna(numeric_values)].astype(int).count()
-    #
+    # nb_integers = numeric_values[pd.notna(numeric_values)].apply(lambda x: x if x == int(x) else None).count()
+
     # nb_strings = nombre_total_lignes - nb_integers - nombre_lignes_vides
     #
     # resultats = pd.DataFrame({
     #     'count': [nombre_lignes_vides, nb_integers, nb_strings]},
     #     index=['Nombre de lignes vides', 'Nombre de lignes correctes', 'Nombre d\'erreurs'])
 
-    figureObject, axesObject = plotter.subplots()
+    # Counting the values
+    # value_counts = df[column].value_counts()
+
+    # Printing the counts for 'N', 'Y', and checking if there are other values
+    # n_count = value_counts.get('N', 0)
+    # y_count = value_counts.get('Y', 0)
+    # other_count = 445532 - n_count - y_count
+    # nombre_lignes_vides = 935433
+    #
+    # print([n_count, y_count, other_count, nombre_lignes_vides])
+    # resultats = pd.DataFrame({
+    #     'count': [n_count, y_count, other_count, nombre_lignes_vides]},
+    #     index=['N', 'Y', 'Nombre d\'erreurs', 'Nombre de lignes vides'])
+
+    # figureObject, axesObject = plotter.subplots()
+    # wedges, _ = axesObject.pie(pieValues, autopct=None)
+    #
+    # sum = 0
+    # for i in range(0, len(pieValues)) :
+    #     sum += pieValues[i]
+    # # Draw a legend with labels being the category and the count value
+    # labels = [f'{pieLabels[i]}: {round(pieValues[i]/sum, 2)*100}%' for i in range(0, len(pieLabels))]
+    # axesObject.legend(wedges, labels, title="Categories", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
 
     # Draw the pie chart
     # axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
-    axesObject.pie(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
+    # axesObject.hist(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
+    plotter.bar(resultats.index, resultats['count'], color='skyblue', edgecolor='black')
 
     # Aspect ratio - equal means pie is a circle
-    axesObject.axis('equal')
-    generateFileChart(nom_fichier, column, "pieChart")
+    # axesObject.axis('equal')
+    generateFileChart(nom_fichier, column, "hist")
     plotter.show()
 
 
 # Graphs cpv, numberTenders,lotsNumber, numberTendersSme, contractorSme, contractDuration, publicityDuration works but takes time and is incomprehensible, must zoom to see clearly
 # Graphs with too many labels and values do not work. Maybe should group labels?
 def draw_Scatter_Chart(diagram, df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+    newTableCount = df[column].value_counts(dropna=True).reset_index(name='count')
     pieLabels = newTableCount[column].astype(str)
 
     # Can work with mean average, variances , etc.. Not just count, should discuss with the group
@@ -249,8 +273,8 @@ def draw_Scatter_Chart(diagram, df, column, nom_fichier):
 
     # Define the axes
     # plotter.scatter(pieLabels, pieValues)
-    # plotter.axvline(x=19, color='r', linewidth=1)
-    plotter.scatter(pieLabels.head(20), pieValues.head(20))
+    # plotter.axvline(x=30, color='r', linewidth=1)
+    plotter.scatter(pieLabels.head(12).apply(lambda x: x[:10]), pieValues.head(12))
 
     # Draw the scatter chart
     plotter.title('Nuage de points')
@@ -280,7 +304,7 @@ def draw_Radar_Chart(diagram, df, column, nom_fichier):
     ax.set_xticklabels(pieLabels)
     ax.set_yticklabels([])
     ax.set_title('Radar')
-    # ax.set_rscale('symlog', linthresh=0.01)
+    ax.set_rscale('symlog', linthresh=0.01)
     generateFileChart(nom_fichier, column, "radar")
     plotter.show()
 
@@ -308,12 +332,18 @@ def draw_Gauge_Chart(diagram, df, column, nom_fichier):
 
 def get_Top5_Candidate(df, column, nom_fichier):
     # df[column] = pd.to_numeric(df[column], errors='coerce')
-    table = df.nlargest(n=N, columns=[column])
 
-    x = ["Candidat " + str(n) for n in range(N, 0, -1)]
-
-    # getting values against each value of y
-    y = table[column].to_list()
+    if df[column].dtype in ['object', 'Int64']:
+        # Count occurrences of each term
+        counts = df[column].value_counts().nlargest(N)
+        x = counts.index.astype(str).tolist()  # Term names
+        y = counts.values.tolist()  # Occurrences
+    else:
+        table = df.nlargest(n=N, columns=[column])
+        x = ["Candidat " + str(n) for n in range(N, 0, -1)]
+        # getting values against each value of y
+        y = table[column].to_list()
+    x.reverse()
     y.reverse()
     print(x)
 
@@ -323,21 +353,30 @@ def get_Top5_Candidate(df, column, nom_fichier):
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
 
-    index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
-    table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
-    print(table)
+    if df[column].dtype == 'object':
+        print('')
+    else:
+        index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
+        table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
+        print(table)
 
     generateFileChart(nom_fichier, column, "top")
     plotter.show()
 
 
 def get_Worst5_Candidate(df, column, nom_fichier):
-    table = df.nsmallest(n=N, columns=[column])
 
-    x = ["Candidat " + str(n) for n in range(N)]
+    if df[column].dtype == 'object':
+        # Count occurrences of each term
+        counts = df[column].value_counts().nsmallest(N)
+        x = counts.index.astype(str).tolist()  # Term names
+        y = counts.values.tolist()  # Occurrences
+    else:
+        table = df.nsmallest(n=N, columns=[column])
+        x = ["Candidat " + str(n) for n in range(N, 0, -1)]
+        # getting values against each value of y
+        y = table[column].to_list()
 
-    # getting values against each value of y
-    y = table[column].to_list()
     print(x)
 
     plotter.barh(x, y)
@@ -345,9 +384,12 @@ def get_Worst5_Candidate(df, column, nom_fichier):
     for index, value in enumerate(y):
         plotter.text(value, index, str(value))
 
-    index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
-    table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
-    print(table)
+    if df[column].dtype == 'object':
+        print('')
+    else:
+        index_labels = ["Candidat " + str(n) for n in range(1, N + 1)]
+        table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
+        print(table)
 
     generateFileChart(nom_fichier, column, "worst")
     plotter.show()
@@ -402,21 +444,22 @@ def draw_violin_plot(df, column, nom_fichier):
     plotter.figure(figsize=(10, 8))
     sns.violinplot(data=newTableCount[column])
     plotter.title(f'Violin plot - {column}')
-    # plotter.yscale("log")
+    plotter.yscale("log")
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
 
 def draw_hist(df, column, nom_fichier):
-    if column == 'numberTendersSme':
+    if column in ['numberTendersSme', 'name', 'address', 'zipcode', 'department', 'longitude', 'latitude']:
         newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
         # plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black')
-        plotter.hist(newTableCount['count'], bins=[0, 200, 400, 600, 800, 1000],
-                     color='skyblue', edgecolor='black', log=True)
-        plotter.xlabel(f'Number of occurences of {column} with intervals 200')
+        plotter.hist(newTableCount['count'], bins=[0, 50, 100, 150, 200],
+                     color='skyblue', edgecolor='black', log=False)
+        plotter.xlabel(f'Number of occurences of {column} with intervals 50')
         plotter.ylabel('Frequency')
         plotter.title(f'Histogram occurencies of {column}')
         generateFileChart(nom_fichier, column, "hist")
+
         plotter.show()
     elif column == 'lotsNumber':
         nombre_total_lignes = len(df[column])
@@ -546,10 +589,10 @@ def get_sql_request(connexion):
 
 
 if __name__ == "__main__":
-    db_path = 'Input\\Foppa.db'
-    connexion = connect_db(db_path)
-    get_sql_request(connexion)
-    close_db(connexion)
+    # db_path = 'Input\\Foppa.db'
+    # connexion = connect_db(db_path)
+    # get_sql_request(connexion)
+    # close_db(connexion)
 
     input_csv_path = sys.argv[1]
     read_csv(input_csv_path)
