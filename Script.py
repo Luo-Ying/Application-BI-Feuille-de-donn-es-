@@ -37,6 +37,19 @@ DTYPE_DICT_LOTS = {
     "publicityDuration": "Float64",
 }
 
+DTYPE_DICT_NAMES = {
+    "agentId": "Int64",
+    "name": "object",
+}
+
+DTYPE_DICT_CRITERIA = {
+    "criterionId": "Int64",
+    "lotId": "Int64",
+    "name": "object",
+    "weight": "Float64",
+    "type": "object",
+}
+
 all_columns = []
 diagrams = ["camembert", "top 5", "worst 5", "nuage de points", "gauge", "radar", "tree map", "box plot", "violin plot", "histogram", "tab"]
 
@@ -47,6 +60,16 @@ def read_csv(input_csv_path):
             df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_LOTS, sep=",")
             draw_Diagram(
                 df, DTYPE_DICT_LOTS
+            )
+        case "Names.csv":
+            df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_NAMES, sep=",")
+            draw_Diagram(
+                df, DTYPE_DICT_NAMES
+            )
+        case "Criteria.csv":
+            df = pd.read_csv(input_csv_path, dtype=DTYPE_DICT_CRITERIA, sep=",")
+            draw_Diagram(
+                df, DTYPE_DICT_CRITERIA
             )
         case _:
             print("Action par defaut")
@@ -151,14 +174,33 @@ def draw_Diagram(df, dtype):
 
 # Les graphes qui peuvent être des camemberts sont : correctionsNb, cancelled, onBehalf, jointProcurement, fraAgreement, fraEstimated
 def draw_Pie_Chart(df, column, nom_fichier):
-    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
+    if(column == 'correctionsNb' or column == 'cancelled'):
+        pieValues = []
+        numberOfZeros = (df[column] == 0).sum()
+        pieValues.append(numberOfZeros)
+        pieValues.append((len(df[column])) - numberOfZeros)
+        pieLabels = ["0","Others"]
 
+    else:
+        newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+        pieLabels = newTableCount[column]
+        pieValues = newTableCount['count']
+    # figureObject, axesObject = plotter.subplots(figsize=(17, 17))
     figureObject, axesObject = plotter.subplots()
-
     # Draw the pie chart
-    axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
+    # axesObject.pie(pieValues, labels=pieLabels, autopct='%1.2f', startangle=90)
+
+    # Number of non-empty lines vs empty lines
+    nombre_total_lignes = len(df[column])
+    nombre_lignes_vides = df[column].isna().sum()
+    nombre_lignes_non_vides = nombre_total_lignes - nombre_lignes_vides
+
+    resultats = pd.DataFrame({
+        'count': [nombre_lignes_vides, nombre_lignes_non_vides]},
+        index=['Nombre de lignes vides', 'Nombre de lignes non vides'])
+
+    # Draw the pie chart mumber of non-empty lines vs empty lines
+    axesObject.pie(resultats['count'], labels=resultats.index, autopct='%1.2f', startangle=90)
 
     # Aspect ratio - equal means pie is a circle
     axesObject.axis('equal')
@@ -200,12 +242,16 @@ def draw_Radar_Chart(diagram, df, column, nom_fichier):
 
     # Draw the radar
     fig, ax = plotter.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
-    ax.fill(angles, pieValues, color='skyblue', alpha=0.7)
-
+    if(column == "correctionsNb"):
+        ax.fill(angles, pieValues, color='orange', alpha=0.7)
+    else:
+        ax.fill(angles, pieValues, color='skyblue', alpha=0.7)
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(pieLabels)
     ax.set_yticklabels([])
     ax.set_title('Radar')
+    #Pour afficher en log scale
+    # ax.set_rscale('symlog', linthresh = 0.01)
 
     generateFileChart(nom_fichier, column, "radar")
     plotter.show()
@@ -306,60 +352,197 @@ def draw_tree_map(df, column, nom_fichier):
     generateFileChart(nom_fichier, column, "treeMap")
     plotter.show()
 
-
 def draw_box_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.boxplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    newTableCount.boxplot(column=column)
     plotter.title(f'Box plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
+    #plotter.yscale("log")
     generateFileChart(nom_fichier, column, "boxPlot")
     plotter.show()
 
 
 def draw_violin_plot(df, column, nom_fichier):
     newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-    pieLabels = newTableCount[column]
-    pieValues = newTableCount['count']
-
-    newTableCount[column].fillna('NaN', inplace=True)
     plotter.figure(figsize=(10, 8))
-    sns.violinplot(x=pieLabels, y=pieValues, data=newTableCount)
-    plotter.ylim(0, max(newTableCount['count']) + (max(newTableCount['count']) * 0.1))  # Adjust the upper limit
+    sns.violinplot(data=newTableCount[column])
     plotter.title(f'Violin plot - {column}')
-    plotter.xlabel(column)
-    plotter.ylabel('Count')
+    plotter.yscale("log")
     generateFileChart(nom_fichier, column, "violinPlot")
     plotter.show()
 
-
 def draw_hist(df, column, nom_fichier):
-    match column: 
-        case "tedCanId":
-            newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-            plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black', log=True) 
-            plotter.xlabel('Number of occurences of tedCanId with intervals 100') 
-            plotter.ylabel('Frequency') 
-            plotter.title('Histogram occurencies of TedCanId') 
-            generateFileChart(nom_fichier, column, "hist")
-            plotter.show()
-        case _: 
-            newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
-            newTableCount[column].fillna('NaN', inplace=True)
+    match os.path.basename(input_csv_path):
+        case "Lots.csv":
+            match column: 
+                case "tedCanId":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    #plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000] , color='skyblue', edgecolor='black', log=True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case "awardDate":
+                    newDateColumn = pd.to_datetime(df[column])
+                    grouping = newDateColumn.groupby([newDateColumn.dt.year.rename('Year'), newDateColumn.dt.month.rename('Month')]).agg({'count'}).reset_index()
+                    groupingYear = newDateColumn.groupby([newDateColumn.dt.year.rename('Year')]).agg({'count'}).reset_index()
+                    #Generate graphs for each month of each year
+                    for i in range(grouping['Year'].astype(int).min(), grouping['Year'].astype(int).max(), 1):
+                        year = (grouping.loc[grouping['Year'] == i])
+                        if(year['Month'].sum() > 0 ):
+                            plotter.bar(year['Month'],year['count'], color='skyblue', edgecolor='black') 
+                            plotter.xlabel(f'Months for year {i}') 
+                            plotter.ylabel('Count') 
+                            plotter.title(f'Histogram occurencies of {column} for year {i}') 
+                            name = column+ "_" + str(i)
+                            generateFileChart(nom_fichier, name, "hist")
+                            plotter.close()
+                    # Generate grap for each year
+                    plotter.bar(groupingYear['Year'],groupingYear['count'], color='skyblue', edgecolor='black') 
+                    plotter.xlabel(f'{column} years') 
+                    plotter.ylabel('Count') 
+                    plotter.title(f'Histogram occurencies of {column}')
+                    #Generate with log
+                    # plotter.yscale("log")
+                    # name = column+ "_with_log"
+                    # generateFileChart(nom_fichier, name, "hist")
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.close()
+                case "awardEstimatedPrice":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    #plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500] , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=[0,100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500] , color='skyblue', edgecolor='black', log = True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case "awardPrice":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    #plotter.hist(newTableCount['count'], bins=100 , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=100 , color='skyblue', edgecolor='black', log = True) 
+                    plotter.xlabel(f'Number of occurences of {column} with 100 bins') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case "cpv":
+                    print("Veuillez choisir les n premières valeurs de cpv entre 2,3 et 4 : ")
+                    cpv_number_digits = input()
+                    match cpv_number_digits:
+                        case "2":
+                            test = df[column].astype(str).str[:2].reset_index()
+                            grouping = test.groupby("cpv").size().reset_index(name='count')
+                            grouping_sorted = grouping.sort_values(by='count', ascending=False)
+                            plotter.figure(figsize=(15, 15))
+                            plotter.bar(grouping_sorted['cpv'],grouping_sorted['count'], color='skyblue', edgecolor='black') 
+                            # plotter.bar(grouping_sorted['cpv'],grouping_sorted['count'], color='skyblue', edgecolor='black', log = True) 
+                            plotter.xlabel(f'CPV starting with same 2 values') 
+                            plotter.ylabel('Count') 
+                            plotter.title(f'Histogram occurencies of same first 2 numbers CPV') 
+                            generateFileChart(nom_fichier, column, "hist")
+                            plotter.show()
+                            plotter.close()
+                        case "3":
+                            test = df[column].astype(str).str[:3].reset_index()
+                            grouping = test.groupby("cpv").size().reset_index(name='count')
+                            grouping_sorted = grouping.sort_values(by='count', ascending=False).head(45)
+                            plotter.figure(figsize=(17, 17))
+                            # plotter.bar(grouping_sorted['cpv'],grouping_sorted['count'], color='skyblue', edgecolor='black') 
+                            plotter.bar(grouping_sorted['cpv'],grouping_sorted['count'], color='skyblue', edgecolor='black', log = True) 
+                            plotter.xlabel(f'CPV of top 45 starting with same 3 values') 
+                            plotter.ylabel('Count') 
+                            plotter.title(f'Histogram occurencies of same first 3 numbers CPV') 
+                            generateFileChart(nom_fichier, column, "hist")
+                            plotter.show()
+                            plotter.close()
+                        case "4":
+                            test = df[column].astype(str).str[:4].reset_index()
+                            grouping = test.groupby("cpv").size().reset_index(name='count')
+                            grouping_sorted = grouping.sort_values(by='count', ascending=False).head(35)
+                            plotter.figure(figsize=(17, 17))
+                            plotter.bar(grouping_sorted['cpv'],grouping_sorted['count'], color='skyblue', edgecolor='black')
+                            plotter.xlabel(f'CPV of top 35 starting with same 4 values') 
+                            plotter.ylabel('Count') 
+                            plotter.title(f'Histogram occurencies of same first 4 numbers CPV') 
+                            generateFileChart(nom_fichier, column, "hist")
+                            plotter.show()
+                            plotter.close()
+                case _: 
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    newTableCount[column].fillna('NaN', inplace=True)
 
-            plotter.figure(figsize=(10, 8))
-            plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
-            plotter.title(f'Histogramme - {column}')
-            plotter.xlabel(column)
-            plotter.ylabel('Fréquence')
-            generateFileChart(nom_fichier, column, "hist")
-            plotter.show()
+                    plotter.figure(figsize=(10, 8))
+                    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
+                    plotter.title(f'Histogramme - {column}')
+                    plotter.xlabel(column)
+                    plotter.ylabel('Fréquence')
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+        case "Names.csv":
+            match column:
+                case "name":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    # plotter.hist(newTableCount['count'], bins=[0,25,50,75,100,125,150,175,200,225,250] , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=[0,25,50,75,100,125,150,175,200,225,250] , color='skyblue', edgecolor='black', log=True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case _: 
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    newTableCount[column].fillna('NaN', inplace=True)
+
+                    plotter.figure(figsize=(10, 8))
+                    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
+                    plotter.title(f'Histogramme - {column}')
+                    plotter.xlabel(column)
+                    plotter.ylabel('Fréquence')
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+        case "Criteria.csv":
+            match column:
+                case "lotId":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    # plotter.hist(newTableCount['count'], bins=[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100] , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100] , color='skyblue', edgecolor='black', log=True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case "name":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    # plotter.hist(newTableCount['count'], bins=[0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,425000,450000,475000,500000,525000,550000] , color='skyblue', edgecolor='black') 
+                    plotter.hist(newTableCount['count'], bins=[0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,425000,450000,475000,500000,525000,550000] , color='skyblue', edgecolor='black', log=True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case "weight":
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    plotter.hist(newTableCount['count'], bins=[0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,425000,450000,475000,500000] , color='skyblue', edgecolor='black') 
+                    # plotter.hist(newTableCount['count'], bins=[0,25000,50000,75000,100000,125000,150000,175000,200000,225000,250000,275000,300000,325000,350000,375000,400000,425000,450000,475000,500000] , color='skyblue', edgecolor='black', log=True) 
+                    plotter.xlabel(f'Number of occurences of {column} with intervals 100') 
+                    plotter.ylabel('Frequency') 
+                    plotter.title(f'Histogram occurencies of {column}') 
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
+                case _: 
+                    newTableCount = df[column].value_counts(dropna=False).reset_index(name='count')
+                    newTableCount[column].fillna('NaN', inplace=True)
+
+                    plotter.figure(figsize=(10, 8))
+                    plotter.bar(newTableCount[column], newTableCount['count'], color='skyblue', edgecolor='black')
+                    plotter.title(f'Histogramme - {column}')
+                    plotter.xlabel(column)
+                    plotter.ylabel('Fréquence')
+                    generateFileChart(nom_fichier, column, "hist")
+                    plotter.show()
 
 
 def draw_table(df, column, nom_fichier):
@@ -389,21 +572,55 @@ def draw_table(df, column, nom_fichier):
         'Occurrences': occurrences.index,
         'Nombre d\'occurrences': occurrences.values
     })
-
-    if DTYPE_DICT_LOTS[column] == "Int64" or DTYPE_DICT_LOTS[column] == "Float64":
-        mean_value = get_Mean_Value(df, column),
-        min_value = get_Min_Value(df, column),
-        max_value = get_Max_Value(df, column),
-        median_value = get_median(df, column),
-        std_dev = get_Standard_deviation(df, column)
-        result_stats = pd.DataFrame({
-            'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
-            'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
-        })
-        print(result_stats)
-        resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
-    else:
-        resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
+    match os.path.basename(input_csv_path):
+        case "Lots.csv":
+            if DTYPE_DICT_LOTS[column] == "Int64" or DTYPE_DICT_LOTS[column] == "Float64":
+                mean_value = get_Mean_Value(df, column),
+                min_value = get_Min_Value(df, column),
+                max_value = get_Max_Value(df, column),
+                median_value = get_median(df, column),
+                std_dev = get_Standard_deviation(df, column)
+                result_stats = pd.DataFrame({
+                    'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
+                    'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
+                })
+                print(result_stats)
+                resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
+            else:
+                resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
+        case "Names.csv":
+            if DTYPE_DICT_NAMES[column] == "Int64" or DTYPE_DICT_NAMES[column] == "Float64":
+                mean_value = get_Mean_Value(df, column),
+                min_value = get_Min_Value(df, column),
+                max_value = get_Max_Value(df, column),
+                median_value = get_median(df, column),
+                std_dev = get_Standard_deviation(df, column)
+                result_stats = pd.DataFrame({
+                    'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
+                    'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
+                })
+                print(result_stats)
+                resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
+            else:
+                resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
+        case "Criteria.csv":
+            if DTYPE_DICT_CRITERIA[column] == "Int64" or DTYPE_DICT_CRITERIA[column] == "Float64":
+                mean_value = get_Mean_Value(df, column),
+                min_value = get_Min_Value(df, column),
+                max_value = get_Max_Value(df, column),
+                median_value = get_median(df, column),
+                std_dev = get_Standard_deviation(df, column)
+                result_stats = pd.DataFrame({
+                    'Statistiques': ['Moyenne', 'Valeur Minimale', 'Valeur Maximale', 'Médiane', 'Écart type'],
+                    'Valeurs': [mean_value, min_value, max_value, median_value, std_dev]
+                })
+                print(result_stats)
+                resultats = pd.concat([resultats, resultats_occurrences, result_stats], ignore_index=True)
+            else:
+                resultats = pd.concat([resultats, resultats_occurrences], ignore_index=True)
+        case _:
+            print("Action par defaut")
+    
 
     generateFileTab(nom_fichier, column, resultats)
 
