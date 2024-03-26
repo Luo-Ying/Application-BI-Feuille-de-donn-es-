@@ -1,3 +1,5 @@
+# Chemin du sqlite => D:\Program Files\sqlite-tools-win-x64-3450100\sqlite3.exe
+
 import sqlite3
 from sqlite3 import Error
 
@@ -50,3 +52,28 @@ def select_column_from_table(conn, tableName, lstColumnName):
 
     for row in rows:
         print(row)
+
+
+def count_null_and_notNull_values_in_column(conn, tableName, columnName):
+    cur = conn.cursor()
+    cur.execute(
+        f"SELECT count({columnName}) as {columnName}_notNull, SUM(CASE WHEN {columnName} IS NULL then 1 else 0 end) as {columnName}_NullCount FROM {tableName}"
+    )
+
+    rows = cur.fetchall()
+
+    # print(rows)
+
+    for row in rows:
+        print(row)
+
+
+def count_and_groupBY_2_columns(conn, tableName, columns):
+    cur = conn.cursor()
+    cur.execute(
+        f"SELECT {columns[0]}, {columns[1]}, COUNT(*) as count From {tableName} GROUP BY {columns[0]}, {columns[1]} ORDER BY {columns[0]} ASC, {columns[1]} ASC;"
+    )
+
+    rows = cur.fetchall()
+
+    return rows
