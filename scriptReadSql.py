@@ -1,4 +1,4 @@
-# Chemin du sqlite => D:\Program Files\sqlite-tools-win-x64-3450100\sqlite3.exe
+# Chemin du sqlite => "D:\Program Files\sqlite-tools-win-x64-3450100\sqlite3.exe"
 
 import sqlite3
 from sqlite3 import Error

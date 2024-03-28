@@ -138,7 +138,7 @@ def main():
         # print("2. Query columns from table")
         # select_column_from_table(conn, "Lots", ["contractorSme", "numberTendersSme"])
 
-        # draw_outOfDirectives_publicityDuration(conn)
+        draw_outOfDirectives_publicityDuration(conn)
         draw_numberTenders_numberTenderSme(conn)
 
 
