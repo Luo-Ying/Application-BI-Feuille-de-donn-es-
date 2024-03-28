@@ -73,26 +73,3 @@ def draw_hist_with_log(
         )
 
     plt.show()
-
-
-def get_Top_Candidate(data, column, nbHead):
-    table = df.nlargest(n=nbHead, columns=[column])
-
-    x = ["Candidat " + str(n) for n in range(nbHead, 0, -1)]
-
-    # getting values against each value of y
-    y = table[column].to_list()
-    y.reverse()
-    print(x)
-
-    plt.xscale("log")
-    plt.barh(x, y)
-
-    for index, value in enumerate(y):
-        plt.text(value, index, str(value))
-
-    index_labels = ["Candidat " + str(n) for n in range(1, 6)]
-    table = pd.DataFrame(data=table.values, index=index_labels, columns=all_columns)
-    print(table)
-
-    plt.show()
