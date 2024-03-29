@@ -1,6 +1,7 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
+from scriptIndividual import *
 
 
 def draw_outOfDirectives_publicityDuration(conn):
@@ -57,8 +58,8 @@ def draw_outOfDirectives_publicityDuration(conn):
     #     "outOfDirectives is 1 with log",
     # )
 
-    draw_box_plot_without_log(lstdata_outOfDirectives_0, "0", "outOfDirectives est à 0")
-    draw_box_plot_without_log(lstdata_outOfDirectives_1, "1", "outOfDirectives est à 1")
+    draw_box_plot(lstdata_outOfDirectives_0, "0", "", "outOfDirectives est à 0")
+    draw_box_plot(lstdata_outOfDirectives_1, "1", "", "outOfDirectives est à 1")
 
 
 def draw_numberTenders_numberTenderSme(conn):
@@ -101,10 +102,10 @@ def draw_numberTenders_numberTenderSme(conn):
         "",
         "nombre d'appaîtion",
         "numberTenders et numberTendedrSme",
-        None,
-        # None,
-        annotation_text,
         False,
+        None,
+        None,
+        annotation_text,
     )
 
     rows_groupBy = count_and_groupBY_2_columns_whitch_notNull(conn, "Lots", rows)
@@ -128,18 +129,15 @@ def draw_numberTenders_numberTenderSme(conn):
 def main():
     database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
 
-    # create a database connection
     conn = create_connection(database)
     with conn:
 
-        # print("1. Query all Agents Names")
-        # select_all_from_table(conn, "Names")
-
-        # print("2. Query columns from table")
-        # select_column_from_table(conn, "Lots", ["contractorSme", "numberTendersSme"])
-
-        draw_outOfDirectives_publicityDuration(conn)
-        draw_numberTenders_numberTenderSme(conn)
+        # draw_outOfDirectives_publicityDuration(conn)
+        # draw_numberTenders_numberTenderSme(conn)
+        """correctionsNb"""
+        # draw_correctionsNb(conn)
+        """cancelled"""
+        # draw_cancelled(conn)
 
 
 if __name__ == "__main__":

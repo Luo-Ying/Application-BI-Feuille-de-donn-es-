@@ -50,8 +50,22 @@ def select_column_from_table(conn, tableName, lstColumnName):
 
     rows = cur.fetchall()
 
-    for row in rows:
-        print(row)
+    return rows
+
+
+"""
+les requêtes pour 'cancelled'
+"""
+
+
+def select_cancelled_count_diff_elements(conn):
+
+    cur = conn.cursor()
+    cur.execute("SELECT cancelled, COUNT(*) AS count FROM Lots GROUP BY cancelled")
+
+    rows = cur.fetchall()
+
+    return rows
 
 
 def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):

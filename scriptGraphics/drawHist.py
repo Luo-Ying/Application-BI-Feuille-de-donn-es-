@@ -7,10 +7,10 @@ def draw_hist(
     xlabel,
     ylabel,
     title,
-    xtick_fontsize=10,
-    # rotation=30,
-    annotation_text=None,
     log=False,
+    xtick_fontsize=10,
+    labelRotation=0,
+    annotation_text=None,
 ):
     keys = list(data.keys())
     values = list(data.values())
@@ -25,7 +25,7 @@ def draw_hist(
     plt.title(title)
 
     plt.xticks(fontsize=xtick_fontsize)
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=labelRotation)
 
     for bar in bars:
         yval = bar.get_height()
