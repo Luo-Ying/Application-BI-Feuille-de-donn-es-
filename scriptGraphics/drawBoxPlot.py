@@ -13,6 +13,7 @@ def draw_box_plot(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     fig, ax = plt.subplots(figsize=(20, 10))
 
     # Creating plot
+    # warning : awardEstimatedPrice
     boxplot_elements = plt.boxplot(data[ylabel], patch_artist=True)
 
     plt.xticks([1], [xlabel])
@@ -29,6 +30,7 @@ def draw_box_plot(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     # Place les annotations des statistiques clés
     plt.text(1.1, stats['25%'], f"Q1: {stats['25%']:.2f}", va='center', ha='left', backgroundcolor='w')
     plt.text(1.1, stats['50%'], f"Médiane: {stats['50%']:.2f}", va='center', ha='left', backgroundcolor='w')
+    plt.text(1.3, stats['50%'], f"Moyenne: {stats['mean']:.2f}", va='center', ha='left', backgroundcolor='w')
     plt.text(1.1, stats['75%'], f"Q3: {stats['75%']:.2f}", va='center', ha='left', backgroundcolor='w')
     plt.text(1.1, y_min, f"Min: {y_min:.2f}", va='center', ha='left', backgroundcolor='w', color='blue')
     plt.text(1.1, y_max, f"Max: {y_max:.2f}", va='center', ha='left', backgroundcolor='w', color='red')
