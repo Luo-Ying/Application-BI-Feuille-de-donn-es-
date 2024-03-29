@@ -22,7 +22,7 @@ def draw_cancelled(conn):
     for row in rows:
         data_count_elements[str(row[0])] = row[1]
 
-    draw_hist(
+    draw_bar(
         data_count_elements, "Les éléments", "nombre d'appaîtion", "cancelled", True
     )
 
@@ -62,10 +62,30 @@ def draw_awardDate(conn):
             year_end = 0
 
     print(data_date_appearances_by_each_decade)
-    draw_hist(
+    draw_bar(
         data_date_appearances_by_each_decade,
         "Chaque 20 ans",
         "Nombre d'appaîtion",
         "awardDate",
         False,
     )
+
+
+def draw_awardEstimatedPrice(conn):
+    rows = get_all_data_not_null_of_columns(conn, "Lots", ["awardEstimatedPrice"])
+
+    data_for_boxplot = []
+    for row in rows:
+        data_for_boxplot.append(row[0])
+
+    draw_box_plot(data_for_boxplot, "", "valeurs", "awardEstimatedPrice", True)
+
+
+def draw_awardEstimatedPrice(conn):
+    rows = get_all_data_not_null_of_columns(conn, "Lots", ["awardPrice"])
+
+    data_for_boxplot = []
+    for row in rows:
+        data_for_boxplot.append(row[0])
+
+    draw_box_plot(data_for_boxplot, "", "valeurs", "awardPrice", True)

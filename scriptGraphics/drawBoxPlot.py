@@ -23,39 +23,57 @@ def draw_box_plot(data, xlabel, ylabel, title, log=None):
         # Minimum value
         plt.text(
             i + 1,
-            np.min(data[i]),
-            f"{np.min(data[i]):.2f}",
+            np.min(data),
+            f"{np.min(data):.2f}",
+            verticalalignment="top",
+            horizontalalignment="left",
+            fontsize=10,
+        )
+        # First quartile (25th percentile)
+        plt.text(
+            i + 1,
+            np.percentile(data, 25),
+            f"{np.percentile(data, 25):.2f}",
             verticalalignment="bottom",
-            horizontalalignment="center",
+            horizontalalignment="left",
             fontsize=10,
         )
         # Median value
         plt.text(
             i + 1,
-            np.median(data[i]),
-            f"{np.median(data[i]):.2f}",
+            np.median(data),
+            f"{np.median(data):.2f}",
             verticalalignment="bottom",
-            horizontalalignment="center",
+            horizontalalignment="left",
             fontsize=10,
         )
         # Mean value
         plt.text(
             i + 1,
-            np.mean(data[i]),
-            f"{np.mean(data[i]):.2f}",
+            np.percentile(data[i], 50),
+            f"{np.percentile(data[i], 50):.2f}",
             verticalalignment="bottom",
-            horizontalalignment="center",
+            horizontalalignment="right",
             fontsize=10,
         )
-        # Maximum value
+        # Third quartile (75th percentile)
         plt.text(
             i + 1,
-            np.max(data[i]),
-            f"{np.max(data[i]):.2f}",
+            np.percentile(data, 75),
+            f"{np.percentile(data, 75):.2f}",
             verticalalignment="top",
             horizontalalignment="center",
             fontsize=10,
         )
+        # # Maximum value
+        # plt.text(
+        #     i + 1,
+        #     np.percentile(data, 100),
+        #     f"{np.max(data):.2f}",
+        #     verticalalignment="top",
+        #     horizontalalignment="left",
+        #     fontsize=10,
+        # )
 
     for i, flier in enumerate(bp["fliers"]):
         for value in flier.get_ydata():

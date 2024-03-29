@@ -134,12 +134,18 @@ def main():
 
         # draw_outOfDirectives_publicityDuration(conn)
         # draw_numberTenders_numberTenderSme(conn)
+
+        ##################################################
+        # AttributIndividuel
+        ##################################################
         """correctionsNb"""
         # draw_correctionsNb(conn)
         """cancelled"""
         # draw_cancelled(conn)
         """awardDate"""
         draw_awardDate(conn)
+        """awardEstimatedPrice"""
+        # draw_awardEstimatedPrice(conn)
 
 
 if __name__ == "__main__":

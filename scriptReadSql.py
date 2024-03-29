@@ -53,6 +53,26 @@ def select_column_from_table(conn, tableName, lstColumnName):
     return rows
 
 
+def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):
+
+    cur = conn.cursor()
+    columns = ""
+    for i in range(len(lstColumnName)):
+        columns += f"{lstColumnName[i]}"
+        if i < len(lstColumnName) - 1:
+            columns += ","
+    context_conditions = ""
+    for i in range(len(lstColumnName)):
+        context_conditions += f"{lstColumnName[i]} IS NOT null"
+        if i < len(lstColumnName) - 1:
+            context_conditions += " AND "
+    cur.execute(f"SELECT {columns} FROM {tableName} WHERE {context_conditions}")
+
+    rows = cur.fetchall()
+
+    return rows
+
+
 """
 les requêtes pour 'cancelled'
 """
@@ -78,28 +98,6 @@ def select_awardDate_get_date_appearances(conn):
     cur = conn.cursor()
     cur.execute(
         "SELECT strftime('%Y', awardDate) AS date, awardDate, COUNT(*) AS count FROM Lots WHERE awardDate IS NOT null GROUP BY date, awardDate ORDER BY date, awardDate;"
-    )
-
-    rows = cur.fetchall()
-
-    return rows
-
-
-def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):
-
-    cur = conn.cursor()
-    columns = ""
-    for i in range(len(lstColumnName)):
-        columns += f"{lstColumnName[i]}"
-        if i < len(lstColumnName) - 1:
-            columns += ","
-    context_conditions = ""
-    for i in range(len(lstColumnName)):
-        context_conditions += f"{lstColumnName[i]} IS NOT null"
-        if i < len(lstColumnName) - 1:
-            context_conditions += " AND "
-    cur.execute(
-        f"SELECT {columns} FROM {tableName} WHERE {context_conditions} limit 100"
     )
 
     rows = cur.fetchall()
