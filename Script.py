@@ -158,16 +158,28 @@ if __name__ == "__main__":
 
 
     # awardEstimatedPrice (Lots)
-    # df = create_df_from_query(connexion, "SELECT awardEstimatedPrice, COUNT(awardEstimatedPrice) AS 'NbAwardEstimatedPrice' FROM Lots GROUP BY awardEstimatedPrice UNION ALL SELECT 'NaN' AS awardEstimatedPrice, COUNT(*) AS 'NbAwardEstimatedPrice' FROM Lots WHERE awardEstimatedPrice IS NULL ORDER BY NbAwardEstimatedPrice DESC")
+    # colonne_1 = "awardEstimatedPrice"
+    # df = create_df_from_query(connexion, f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC")
     # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot(df, 'awardEstimatedPrice', 'NbAwardEstimatedPrice', "Boxplot des awardPrice avec échelle logarithmique", "Lots")
-    # draw_custom_hist(df, 'awardEstimatedPrice', 'NbAwardEstimatedPrice', "Occurences des awardEstimatedPrice par tranche de 100", "Lots", 0, 2500, 100)
+    # draw_box_plot(df, f'{colonne_1}', f'Nb{colonne_1}', f"Boxplot des {colonne_1} avec échelle logarithmique", "Lots")
+    # draw_custom_hist(df, f'{colonne_1}', f'Nb{colonne_1}', f"Occurences des {colonne_1} par tranche de 100", "Lots", 0, 2500, 100)
 
     # cancelled - awardEstimatedPrice
     # df = create_df_from_query(connexion, "SELECT cancelled, awardEstimatedPrice FROM Lots")
     # draw_box_plot_multiple(df, 'cancelled', 'awardEstimatedPrice', "Boxplot des cancelled en fonction des awardEstimatedPrice avec échelle logarithmique", "Lots", True)
 
-    df = create_df_from_query(connexion, "SELECT cancelled, awardPrice FROM Lots")
-    draw_box_plot_multiple(df, 'cancelled', 'awardPrice', "Boxplot des cancelled en fonction des awardPrice avec échelle logarithmique", "Lots", True)
+    # cancelled - awardPrice
+    # df = create_df_from_query(connexion, "SELECT cancelled, awardPrice FROM Lots")
+    # draw_box_plot_multiple(df, 'cancelled', 'awardPrice', "Boxplot des cancelled en fonction des awardPrice avec échelle logarithmique", "Lots", True)
+
+    # cancelled - numberTenders
+    # df = create_df_from_query(connexion, "SELECT cancelled, numberTenders FROM Lots")
+    # draw_box_plot_multiple(df, 'cancelled', 'numberTenders', "Boxplot des cancelled en fonction des numberTenders avec échelle logarithmique", "Lots", True)
+
+    # cancelled - numberTenders
+    # colonne_1 = "cancelled"
+    # colonne_2 = "numberTendersSme"
+    # df = create_df_from_query(connexion, f"SELECT {colonne_1}, numberTendersSme FROM Lots")
+    # draw_box_plot_multiple(df, f'{colonne_1}', f'{colonne_2}', f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique", "Lots", True)
 
     close_db(connexion)

@@ -43,10 +43,10 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
 
 
 def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
-    data['Group'] = data.apply(group_values, xlabel=xlabel, axis=1)
-    grouped_data = data.groupby('Group')[ylabel].sum().reset_index()
+    data[f'Group_{xlabel}'] = data.apply(group_values, xlabel=xlabel, axis=1)
+    grouped_data = data.groupby(f'Group_{xlabel}')[ylabel].sum().reset_index()
     print(tabulate(grouped_data, headers='keys', tablefmt='psql'))
-    draw_hist(grouped_data, 'Group', ylabel, title, file, log=log, dropNaN=dropNaN)
+    draw_hist(grouped_data, f'Group_{xlabel}', ylabel, title, file, log=log, dropNaN=dropNaN)
 
 
 def group_values(row, xlabel):
