@@ -50,14 +50,16 @@ def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=
 
 
 def group_values(row, xlabel):
-    if pd.isnull(row[xlabel]) or row[xlabel] in ['NaN', 'None']:
+    if pd.isnull(row[xlabel]) or row[xlabel] in ['NaN', 'None', ' ']:
         return 'Valeurs vides'
-    # elif (isinstance(row[xlabel], int) or isinstance(row[xlabel], float)) and row[xlabel] > 0: # Si lettre ['0', '1']
-    #     return 'Valeurs correctes'
+    # elif row[xlabel] in ['S', 'U', 'W']:  # Si lettre ['0', '1']
+    #     return row[xlabel]
+    elif (isinstance(row[xlabel], int) or isinstance(row[xlabel], float)) and row[xlabel] > 0: # Si lettre ['0', '1']
+        return 'Valeurs correctes'
     # elif row[xlabel] in ['K', 'A', 'C', 'KA', 'AC', 'KC', 'KAC']: # Si lettre ['0', '1']
     #     return row[xlabel]
-    elif row[xlabel] in ['0', '1']:  # Si lettre ['0', '1']
-        return row[xlabel]
+    # elif row[xlabel] in ['0', '1']:  # Si lettre ['0', '1']
+    #     return row[xlabel]
     else:
         return 'Valeurs erronées'
 

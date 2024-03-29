@@ -13,7 +13,7 @@ def draw_box_plot(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     fig, ax = plt.subplots(figsize=(20, 10))
 
     # Creating plot
-    # warning : awardEstimatedPrice
+    # warning : awardEstimatedPrice, awardPrice
     boxplot_elements = plt.boxplot(data[ylabel], patch_artist=True)
 
     plt.xticks([1], [xlabel])

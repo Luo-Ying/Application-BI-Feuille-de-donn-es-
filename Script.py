@@ -57,5 +57,5 @@ if __name__ == "__main__":
     db_path = 'Input\\Foppa.db'
     connexion = connect_db(db_path)
     scripts_individuel(connexion)
-    scripts_paires(connexion)
+    # scripts_paires(connexion)
     close_db(connexion)
