@@ -103,7 +103,7 @@ def draw_numberTenders_numberTenderSme(conn):
         "nombre d'appaîtion",
         "numberTenders et numberTendedrSme",
         False,
-        None,
+        45,
         None,
         annotation_text,
     )
@@ -138,6 +138,8 @@ def main():
         # draw_correctionsNb(conn)
         """cancelled"""
         # draw_cancelled(conn)
+        """awardDate"""
+        draw_awardDate(conn)
 
 
 if __name__ == "__main__":

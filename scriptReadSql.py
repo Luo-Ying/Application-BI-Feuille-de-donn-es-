@@ -68,6 +68,23 @@ def select_cancelled_count_diff_elements(conn):
     return rows
 
 
+"""
+les requêtes pour 'awardDate'
+"""
+
+
+def select_awardDate_get_date_appearances(conn):
+
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT strftime('%Y', awardDate) AS date, awardDate, COUNT(*) AS count FROM Lots WHERE awardDate IS NOT null GROUP BY date, awardDate ORDER BY date, awardDate;"
+    )
+
+    rows = cur.fetchall()
+
+    return rows
+
+
 def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):
 
     cur = conn.cursor()

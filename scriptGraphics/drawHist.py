@@ -8,8 +8,8 @@ def draw_hist(
     ylabel,
     title,
     log=False,
-    xtick_fontsize=10,
     labelRotation=0,
+    xtick_fontsize=10,
     annotation_text=None,
 ):
     keys = list(data.keys())
