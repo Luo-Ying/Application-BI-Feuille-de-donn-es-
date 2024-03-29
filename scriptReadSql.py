@@ -2,6 +2,7 @@
 
 import sqlite3
 from sqlite3 import Error
+import pandas as pd
 
 
 def create_connection(db_file):
@@ -54,7 +55,6 @@ def select_column_from_table(conn, tableName, lstColumnName):
 
 
 def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):
-
     cur = conn.cursor()
     columns = ""
     for i in range(len(lstColumnName)):
@@ -79,7 +79,6 @@ les requêtes pour 'cancelled'
 
 
 def select_cancelled_count_diff_elements(conn):
-
     cur = conn.cursor()
     cur.execute("SELECT cancelled, COUNT(*) AS count FROM Lots GROUP BY cancelled")
 
@@ -94,7 +93,6 @@ les requêtes pour 'awardDate'
 
 
 def select_awardDate_get_date_appearances(conn):
-
     cur = conn.cursor()
     cur.execute(
         "SELECT strftime('%Y', awardDate) AS date, awardDate, COUNT(*) AS count FROM Lots WHERE awardDate IS NOT null GROUP BY date, awardDate ORDER BY date, awardDate;"
@@ -213,3 +211,11 @@ def count_and_groupBY_2_columns_whitch_notNull(conn, tableName, columns):
     rows = cur.fetchall()
 
     return rows
+
+
+def close_db(connexion):
+    connexion.close()
+
+
+def create_df_from_query(connexion, query):
+    return pd.read_sql_query(query, connexion)

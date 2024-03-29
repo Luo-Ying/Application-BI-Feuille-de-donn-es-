@@ -82,3 +82,13 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         generateFileChart(file, xlabel + '_' + ylabel, "boxplot")
     # show plot
     plt.show()
+
+
+def draw_multiple_box_plot(data, title, xlabel=None, ylabel=None):
+    plt.boxplot(data.values(), labels=data.keys())
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.xticks(rotation=45)
+    plt.ylabel(ylabel)
+    plt.yscale("log")
+    plt.show()

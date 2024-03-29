@@ -2,6 +2,8 @@ from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
 from scriptIndividual import *
+from scripts_individuel import scripts_individuel
+from scripts_paires import scripts_paires
 
 
 def draw_outOfDirectives_publicityDuration(conn):
@@ -63,7 +65,6 @@ def draw_outOfDirectives_publicityDuration(conn):
 
 
 def draw_numberTenders_numberTenderSme(conn):
-
     data_for_hist = {}
 
     rows = ["numberTenders", "numberTendersSme"]
@@ -131,7 +132,6 @@ def main():
 
     conn = create_connection(database)
     with conn:
-
         # draw_outOfDirectives_publicityDuration(conn)
         # draw_numberTenders_numberTenderSme(conn)
 
@@ -146,6 +146,9 @@ def main():
         draw_awardDate(conn)
         """awardEstimatedPrice"""
         # draw_awardEstimatedPrice(conn)
+        scripts_individuel(conn)
+        scripts_paires(conn)
+        close_db(conn)
 
 
 if __name__ == "__main__":

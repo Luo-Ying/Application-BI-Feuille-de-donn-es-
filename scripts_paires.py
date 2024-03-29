@@ -1,4 +1,4 @@
-from scriptGraphics.db import create_df_from_query
+from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import draw_box_plot, draw_box_plot_multiple
 from scriptGraphics.drawHist import draw_hist, draw_custom_hist, draw_hist_with_errors
 from tabulate import tabulate
