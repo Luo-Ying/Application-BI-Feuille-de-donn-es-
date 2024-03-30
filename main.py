@@ -6,6 +6,7 @@ from scripts_individuel import scripts_individuel
 from scripts_paires import scripts_paires
 from script_single import script_single
 
+
 def draw_outOfDirectives_publicityDuration(conn):
     rows = count_and_groupBY_2_columns(
         conn, "Lots", ["outOfDirectives", "publicityDuration"]
@@ -128,7 +129,9 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    database = r"C:\Users\devef\Documents\Application BI\FOPPA\Foppa1.1.2_db\Foppa1.1.2.db"
+    database = (
+        r"C:\Users\devef\Documents\Application BI\FOPPA\Foppa1.1.2_db\Foppa1.1.2.db"
+    )
 
     conn = create_connection(database)
     with conn:
@@ -166,11 +169,11 @@ def main():
         """Jérome"""
         # scripts_individuel(conn)
         # scripts_paires(conn)
-    close_db(conn)
         scripts_individuel(conn)
         # script_single(conn)
         # scripts_paires(conn)
         close_db(conn)
+    close_db(conn)
 
 
 if __name__ == "__main__":
