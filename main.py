@@ -143,12 +143,29 @@ def main():
         """cancelled"""
         # draw_cancelled(conn)
         """awardDate"""
-        draw_awardDate(conn)
+        # draw_awardDate(conn, 5)
+        # draw_awardDate(conn, 10)
+        # draw_awardDate(conn, 15)
+        # draw_awardDate(conn, 20)
+        """publicityDuration"""
+        # draw_publicityDuration(conn)
         """awardEstimatedPrice"""
         # draw_awardEstimatedPrice(conn)
-        scripts_individuel(conn)
-        scripts_paires(conn)
-        close_db(conn)
+        """awardPrice"""
+        # draw_awardPrice(conn)
+        """numberTenders"""
+        # draw_numberTenders(conn)
+        """fraEstimated"""
+        # draw_fraEstimated(conn)
+        """lotsNumber"""
+        # draw_lotsNumber(conn)
+        """topType"""
+        # draw_topType(conn)
+
+        """Jérome"""
+        # scripts_individuel(conn)
+        # scripts_paires(conn)
+    close_db(conn)
 
 
 if __name__ == "__main__":

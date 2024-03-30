@@ -6,6 +6,54 @@ from tabulate import tabulate
 from scriptGraphics.generateFileChart import generateFileChart
 
 
+def draw_bar(
+    data,
+    xlabel,
+    ylabel,
+    title,
+    file,
+    log=False,
+    labelRotation=0,
+    xtick_fontsize=10,
+    annotation_text=None,
+):
+    keys = list(data.keys())
+    values = list(data.values())
+
+    fig = plt.figure(figsize=(10, 5))
+
+    # creating the bar plot
+    bars = plt.bar(keys, values, color="maroon", width=0.4, log=log)
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+
+    plt.xticks(fontsize=xtick_fontsize)
+    plt.xticks(rotation=labelRotation)
+
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(bar.get_x(), yval + 5, yval)
+
+    if annotation_text:
+        plt.text(
+            0.95,
+            0.95,
+            annotation_text,
+            ha="right",
+            va="top",
+            transform=plt.gca().transAxes,
+        )
+
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, xlabel, "hist_with_log")
+    else:
+        generateFileChart(file, xlabel, "hist")
+    plt.show()
+
+
 def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
@@ -28,11 +76,14 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     # Ajout du nombre au-dessus des barres
     for bar in bars:
         height = bar.get_height()
-        ax.annotate('{}'.format(height),
-                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points de décalage vertical
-                    textcoords="offset points",
-                    ha='center', va='bottom')
+        ax.annotate(
+            "{}".format(height),
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 3),  # 3 points de décalage vertical
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+        )
 
     if log:
         plt.yscale("log")
@@ -43,25 +94,29 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
 
 
 def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
-    data[f'Group_{xlabel}'] = data.apply(group_values, xlabel=xlabel, axis=1)
-    grouped_data = data.groupby(f'Group_{xlabel}')[ylabel].sum().reset_index()
-    print(tabulate(grouped_data, headers='keys', tablefmt='psql'))
-    draw_hist(grouped_data, f'Group_{xlabel}', ylabel, title, file, log=log, dropNaN=dropNaN)
+    data[f"Group_{xlabel}"] = data.apply(group_values, xlabel=xlabel, axis=1)
+    grouped_data = data.groupby(f"Group_{xlabel}")[ylabel].sum().reset_index()
+    print(tabulate(grouped_data, headers="keys", tablefmt="psql"))
+    draw_hist(
+        grouped_data, f"Group_{xlabel}", ylabel, title, file, log=log, dropNaN=dropNaN
+    )
 
 
 def group_values(row, xlabel):
-    if pd.isnull(row[xlabel]) or row[xlabel] in ['NaN', 'None', ' ']:
-        return 'Valeurs vides'
+    if pd.isnull(row[xlabel]) or row[xlabel] in ["NaN", "None", " "]:
+        return "Valeurs vides"
     # elif row[xlabel] in ['S', 'U', 'W']:  # Si lettre ['0', '1']
     #     return row[xlabel]
-    elif (isinstance(row[xlabel], int) or isinstance(row[xlabel], float)) and row[xlabel] > 0: # Si lettre ['0', '1']
-        return 'Valeurs correctes'
+    elif (isinstance(row[xlabel], int) or isinstance(row[xlabel], float)) and row[
+        xlabel
+    ] > 0:  # Si lettre ['0', '1']
+        return "Valeurs correctes"
     # elif row[xlabel] in ['K', 'A', 'C', 'KA', 'AC', 'KC', 'KAC']: # Si lettre ['0', '1']
     #     return row[xlabel]
     # elif row[xlabel] in ['0', '1']:  # Si lettre ['0', '1']
     #     return row[xlabel]
     else:
-        return 'Valeurs erronées'
+        return "Valeurs erronées"
 
 
 def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bin_size):
@@ -70,24 +125,33 @@ def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bi
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
-    counts, _, bars = ax.hist(data[ylabel], bins=bins, color="maroon", edgecolor='black')
+    counts, _, bars = ax.hist(
+        data[ylabel], bins=bins, color="maroon", edgecolor="black"
+    )
 
     ax.set_xlabel(xlabel)
-    ax.set_ylabel('Nombre d’occurrences')
+    ax.set_ylabel("Nombre d’occurrences")
     ax.set_title(title)
 
     # Définir les étiquettes de l'axe des x pour qu'elles correspondent au milieu de chaque tranche
     tick_labels = [f"{int(bins[i])}-{int(bins[i + 1])}" for i in range(len(bins) - 1)]
-    plt.xticks(ticks=np.arange(value_min + bin_size / 2, value_max, bin_size), labels=tick_labels, rotation=45)
+    plt.xticks(
+        ticks=np.arange(value_min + bin_size / 2, value_max, bin_size),
+        labels=tick_labels,
+        rotation=45,
+    )
 
     # Ajout du nombre au-dessus des barres
     for count, bar in zip(counts, bars):
         height = bar.get_height()
-        ax.annotate('{}'.format(int(count)),
-                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points de décalage vertical
-                    textcoords="offset points",
-                    ha='center', va='bottom')
+        ax.annotate(
+            "{}".format(int(count)),
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 3),  # 3 points de décalage vertical
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+        )
 
     plt.yscale("log")
     generateFileChart(file, xlabel, "hist")
