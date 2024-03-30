@@ -5,6 +5,7 @@ from scriptIndividual import *
 from scripts_individuel import scripts_individuel
 from scripts_paires import scripts_paires
 from script_single import script_single
+from script_pair import script_pair
 
 
 def draw_outOfDirectives_publicityDuration(conn):
@@ -129,7 +130,8 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    # database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
     with conn:
@@ -162,7 +164,7 @@ def main():
         """lotsNumber"""
         # draw_lotsNumber(conn)
         """topType"""
-        draw_topType(conn)
+        # draw_topType(conn)
 
         """Jérome"""
         # scripts_individuel(conn)
@@ -170,6 +172,7 @@ def main():
         # scripts_individuel(conn)
         # script_single(conn)
         # scripts_paires(conn)
+        script_pair(conn)
     close_db(conn)
 
 
