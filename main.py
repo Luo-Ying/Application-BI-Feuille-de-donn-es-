@@ -40,7 +40,7 @@ def draw_numberTenders_numberTenderSme(conn):
         f"v1: {rows[0]}\n v2: {rows[1]}\n Ø: NULL\n +: Positive (supérieur à 0)"
     )
 
-    print(data_for_hist)
+    # print(data_for_hist)
     draw_hist(
         data_for_hist,
         "",
@@ -71,19 +71,23 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    # database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
-    database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
+    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
     with conn:
         # draw_numberTenders_numberTenderSme(conn)
 
         ##################################################
-        # AttributIndividuel
+        # Attribut Individuel
         ##################################################
-        script_single(conn)
-        # draw_awardDate(conn)
+        # script_single(conn)
+
+        ##################################################
+        # Attribut En Paire
+        ##################################################
         script_pair(conn)
+
     close_db(conn)
 
 

@@ -19,49 +19,68 @@ def script_single(connexion):
     ##################### Lots ######################
     #################################################
     """correctionsNb"""
-    # draw_correctionsNb(connexion)
+    draw_correctionsNb(connexion)
     """cancelled"""
-    # draw_cancelled(connexion)
+    draw_cancelled(connexion)
     """awardDate"""
-    # draw_awardDate(connexion, 5)
-    # draw_awardDate(connexion, 10)
-    # draw_awardDate(connexion, 15)
-    # draw_awardDate(connexion, 20)
+    draw_awardDate(connexion, 5)
+    draw_awardDate(connexion, 10)
+    draw_awardDate(connexion, 15)
+    draw_awardDate(connexion, 20)
     """awardEstimatedPrice"""
-    # draw_award_estimated_price(connexion, "awardEstimatedPrice")
+    draw_award_estimated_price(connexion, "awardEstimatedPrice")
     """awardPrice"""
-    # draw_award_price(connexion, "awardPrice")
+    draw_award_price(connexion, "awardPrice")
     """cpv"""
-    # draw_cpv_lots(connexion)
+    draw_cpv_lots(connexion)
     """numberTenders"""
-    # draw_numberTenders(connexion)
+    draw_numberTenders(connexion)
     """fraEstimated"""
-    # draw_fraEstimated(connexion)
+    draw_fraEstimated(connexion)
     """lotsNumber"""
-    # draw_lotsNumber(connexion)
+    draw_lotsNumber(connexion)
     """numberTendersSme"""
-    # draw_numberTendersSme(connexion)
+    draw_numberTendersSme(connexion)
     """typeOfContract"""
-    # draw_typeOfContract(connexion)
+    draw_typeOfContract(connexion)
     """topType"""
-    # draw_topType(connexion)
+    draw_topType(connexion)
     """contractDuration"""
-    # draw_contract_duration(connexion, "contractDuration")
+    draw_contract_duration(connexion, "contractDuration")
     """publicityDuration"""
-    # draw_publicityDuration(connexion)
+    draw_publicityDuration(connexion)
     #################################################
     #################### Agents #####################
     #################################################
     """siret"""
     draw_siret(connexion)
     """department"""
+    draw_departement(connexion)
     #################################################
     ################### Criteria ####################
     #################################################
     """weight"""
-    # draw_weight(connexion)
+    draw_weight(connexion)
     """type"""
-    # draw_type(connexion)
+    draw_type(connexion)
+
+
+def draw_departement(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT distinct department, count(department) as 'Nombre Agents' FROM Agents WHERE department IS NOT null GROUP BY department;",
+    )
+    draw_hist(
+        df, "department", "Nombre Agents", "Nombre Agents par département", "Agents"
+    )
+    df.drop(columns=["department"], inplace=True)
+    draw_box_plot_special(
+        df,
+        "Nombre Agents",
+        "Nombre Agents",
+        "Nombre d'Agents par département",
+        "Agents",
+    )
 
 
 def draw_siret(conn):
@@ -82,11 +101,11 @@ def draw_siret(conn):
     for name, size in group_sizes.items():
         data_group[name] = size
 
-    print(df)
+    # print(df)
     new_df = pd.DataFrame(
         {"siret_prefix": group_sizes.index, "count": group_sizes.values}
     )
-    print(new_df["count"])
+    # print(new_df["count"])
     # print(data_group)
     draw_box_plot_special(
         new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
@@ -270,7 +289,7 @@ def draw_awardDate(conn, range):
             else data_date_appearances_by_each_year[row[0]] + row[2]
         )
 
-    print(data_date_appearances_by_each_year)
+    # print(data_date_appearances_by_each_year)
 
     year_start = 0
     year_end = 0
@@ -291,7 +310,7 @@ def draw_awardDate(conn, range):
             year_start = year_end
             year_end = 0
 
-    print(data_date_appearances_by_each_decade)
+    # print(data_date_appearances_by_each_decade)
     draw_bar(
         data_date_appearances_by_each_decade,
         f"Chaque {rangeStr} ans",
@@ -463,7 +482,7 @@ def draw_contract_duration(connexion, colonne_1):
         True,
         True,
     )
-    print(df)
+    # print(df)
     draw_hist_with_errors(
         df,
         "contractDuration",
