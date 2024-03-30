@@ -1,6 +1,7 @@
 from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
 from scriptGraphics.drawHist import *
+from scriptReadSql import *
 from tabulate import tabulate
 
 
@@ -32,6 +33,26 @@ def script_pair(connexion):
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     """awardEstimatedPrice & awardPrice"""
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    """numberTenders & numberTendersSme"""
+    draw_numberTenders_numberTendersSme(connexion)
+
+
+def draw_numberTenders_numberTendersSme(conn):
+
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTenders, numberTendersSme From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
+    )
+
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        "numberTenders",
+        "numberTendersSme",
+        "Boxplot des numberTenders en fonction des numberTendersSme ",
+        "Lots",
+        False,
+    )
 
 
 def draw_cancelled_awardPrice(conn):
@@ -70,6 +91,7 @@ def draw_cancelled_awardPrice(conn):
 
 def draw_cancelled_awardEstimatedPrice(conn):
     df = create_df_from_query(conn, "SELECT cancelled, awardEstimatedPrice FROM Lots")
+    print(df)
     draw_box_plot_multiple(
         df,
         "cancelled",
