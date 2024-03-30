@@ -1,68 +1,9 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
-from scriptIndividual import *
-from scripts_individuel import scripts_individuel
+from script_single import *
 from scripts_paires import scripts_paires
 from script_single import script_single
-
-
-def draw_outOfDirectives_publicityDuration(conn):
-    rows = count_and_groupBY_2_columns(
-        conn, "Lots", ["outOfDirectives", "publicityDuration"]
-    )
-    data_outOfDirectives_0 = {}
-    lstdata_outOfDirectives_0 = []
-    data_outOfDirectives_1 = {}
-    lstdata_outOfDirectives_1 = []
-    for row in rows:
-        # print(row[0])
-        if row[0] == 0:
-            # print(row[0])
-            data_outOfDirectives_0[str(row[1])] = row[2]
-            if row[1] != None:
-                lstdata_outOfDirectives_0.append(row[1])
-            # lstdata_outOfDirectives_0.append(row[1])
-        elif row[0] == 1:
-            data_outOfDirectives_1[str(row[1])] = row[2]
-            if row[1] != None:
-                lstdata_outOfDirectives_1.append(row[1])
-            # lstdata_outOfDirectives_1.append(row[1])
-
-    print("Les résultat pour quand outOfDirectives est à 0 : ")
-    print(data_outOfDirectives_0)
-
-    print("\nLes résultat pour quand outOfDirectives est à 1 : ")
-    print(data_outOfDirectives_1)
-
-    # draw_hist_without_log(
-    #     data_outOfDirectives_0,
-    #     "publicityDuration",
-    #     "nombre d'appaîtion",
-    #     "outOfDirectives is 0 without log",
-    # )
-    # draw_hist_without_log(
-    #     data_outOfDirectives_1,
-    #     "publicityDuration",
-    #     "nombre d'appaîtion",
-    #     "outOfDirectives is 1 without log",
-    # )
-
-    # draw_hist_with_log(
-    #     data_outOfDirectives_0,
-    #     "publicityDuration",
-    #     "nombre d'appaîtion",
-    #     "outOfDirectives is 0 with log",
-    # )
-    # draw_hist_with_log(
-    #     data_outOfDirectives_1,
-    #     "publicityDuration",
-    #     "nombre d'appaîtion",
-    #     "outOfDirectives is 1 with log",
-    # )
-
-    draw_box_plot(lstdata_outOfDirectives_0, "0", "", "outOfDirectives est à 0")
-    draw_box_plot(lstdata_outOfDirectives_1, "1", "", "outOfDirectives est à 1")
 
 
 def draw_numberTenders_numberTenderSme(conn):
@@ -133,43 +74,14 @@ def main():
 
     conn = create_connection(database)
     with conn:
-        # draw_outOfDirectives_publicityDuration(conn)
         # draw_numberTenders_numberTenderSme(conn)
 
         ##################################################
         # AttributIndividuel
         ##################################################
-        """correctionsNb"""
-        # draw_correctionsNb(conn)
-        """cancelled"""
-        # draw_cancelled(conn)
-        """awardDate"""
-        # draw_awardDate(conn, 5)
-        # draw_awardDate(conn, 10)
-        # draw_awardDate(conn, 15)
-        # draw_awardDate(conn, 20)
-        """publicityDuration"""
-        # draw_publicityDuration(conn)
+        script_single(conn)
         # draw_awardDate(conn)
-        """awardEstimatedPrice"""
-        # draw_awardEstimatedPrice(conn)
-        """awardPrice"""
-        # draw_awardPrice(conn)
-        """numberTenders"""
-        # draw_numberTenders(conn)
-        """fraEstimated"""
-        # draw_fraEstimated(conn)
-        """lotsNumber"""
-        # draw_lotsNumber(conn)
-        """topType"""
-        draw_topType(conn)
 
-        """Jérome"""
-        # scripts_individuel(conn)
-        # scripts_paires(conn)
-        # scripts_individuel(conn)
-        # script_single(conn)
-        # scripts_paires(conn)
     close_db(conn)
 
 

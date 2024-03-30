@@ -71,10 +71,14 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     ax.set_ylabel(ylabel)
     # ax.set_title(title)
 
-    plt.text(0.5, 1.08, title,
-         horizontalalignment='center',
-         fontsize=20,
-         transform = ax.transAxes)
+    plt.text(
+        0.5,
+        1.08,
+        title,
+        horizontalalignment="center",
+        fontsize=20,
+        transform=ax.transAxes,
+    )
 
     # Rotation des étiquettes de l'axe des x pour une meilleure lisibilité
     plt.xticks(rotation=45)
@@ -82,11 +86,15 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     # Ajout du nombre au-dessus des barres
     for bar in bars:
         height = bar.get_height()
-        ax.annotate('{}'.format(height),
-                    xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points de décalage vertical
-                    textcoords="offset points",
-                    ha='center', va='bottom', rotation=45)
+        ax.annotate(
+            "{}".format(height),
+            xy=(bar.get_x() + bar.get_width() / 2, height),
+            xytext=(0, 3),  # 3 points de décalage vertical
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            rotation=0,
+        )
 
     if log:
         plt.yscale("log")
