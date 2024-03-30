@@ -19,47 +19,78 @@ def script_single(connexion):
     ##################### Lots ######################
     #################################################
     """correctionsNb"""
-    draw_correctionsNb(connexion)
+    # draw_correctionsNb(connexion)
     """cancelled"""
-    draw_cancelled(connexion)
+    # draw_cancelled(connexion)
     """awardDate"""
-    draw_awardDate(connexion, 5)
-    draw_awardDate(connexion, 10)
-    draw_awardDate(connexion, 15)
-    draw_awardDate(connexion, 20)
+    # draw_awardDate(connexion, 5)
+    # draw_awardDate(connexion, 10)
+    # draw_awardDate(connexion, 15)
+    # draw_awardDate(connexion, 20)
     """awardEstimatedPrice"""
-    draw_award_estimated_price(connexion, "awardEstimatedPrice")
+    # draw_award_estimated_price(connexion, "awardEstimatedPrice")
     """awardPrice"""
-    draw_award_price(connexion, "awardPrice")
+    # draw_award_price(connexion, "awardPrice")
     """cpv"""
-    draw_cpv_lots(connexion)
+    # draw_cpv_lots(connexion)
     """numberTenders"""
-    draw_numberTenders(connexion)
+    # draw_numberTenders(connexion)
     """fraEstimated"""
-    draw_fraEstimated(connexion)
+    # draw_fraEstimated(connexion)
     """lotsNumber"""
-    draw_lotsNumber(connexion)
+    # draw_lotsNumber(connexion)
     """numberTendersSme"""
-    draw_numberTendersSme(connexion)
+    # draw_numberTendersSme(connexion)
     """typeOfContract"""
-    draw_typeOfContract(connexion)
+    # draw_typeOfContract(connexion)
     """topType"""
-    draw_topType(connexion)
+    # draw_topType(connexion)
     """contractDuration"""
-    draw_contract_duration(connexion, "contractDuration")
+    # draw_contract_duration(connexion, "contractDuration")
     """publicityDuration"""
-    draw_publicityDuration(connexion)
+    # draw_publicityDuration(connexion)
     #################################################
     #################### Agents #####################
     #################################################
     """siret"""
+    draw_siret(connexion)
+    """department"""
     #################################################
     ################### Criteria ####################
     #################################################
     """weight"""
-    draw_weight(connexion)
+    # draw_weight(connexion)
     """type"""
-    draw_type(connexion)
+    # draw_type(connexion)
+
+
+def draw_siret(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT siret FROM Agents WHERE siret is not null",
+    )
+
+    data_group = {}
+
+    df["siret_prefix"] = df["siret"].str[:9]
+
+    groups = df.groupby(
+        "siret_prefix"
+    )  # 9 premières chiffre => le siren de l'entreprise
+    group_sizes = groups.size()
+
+    for name, size in group_sizes.items():
+        data_group[name] = size
+
+    print(df)
+    new_df = pd.DataFrame(
+        {"siret_prefix": group_sizes.index, "count": group_sizes.values}
+    )
+    print(new_df["count"])
+    # print(data_group)
+    draw_box_plot_special(
+        new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
+    )
 
 
 def draw_type(conn):

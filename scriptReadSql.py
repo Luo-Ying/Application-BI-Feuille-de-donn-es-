@@ -20,40 +20,6 @@ def create_connection(db_file):
     return conn
 
 
-def select_all_from_table(conn, tableName):
-    """
-    Query all rows in the tableName table
-    :param conn: the Connection object
-    :return:
-    """
-    cur = conn.cursor()
-    cur.execute(f"SELECT * FROM {tableName}")
-
-    rows = cur.fetchall()
-
-    for row in rows:
-        print(row)
-
-
-def select_column_from_table(conn, tableName, lstColumnName):
-    """
-    Query all rows in the tableName table
-    :param conn: the Connection object
-    :return:
-    """
-    cur = conn.cursor()
-    columns = ""
-    for i in range(len(lstColumnName)):
-        columns += f"{lstColumnName[i]}"
-        if i < len(lstColumnName) - 1:
-            columns += ","
-    cur.execute(f"SELECT {columns} FROM {tableName}")
-
-    rows = cur.fetchall()
-
-    return rows
-
-
 """
 les requêtes pour 'cancelled'
 """
@@ -170,6 +136,17 @@ def count_compare_two_columns_not_null(conn, tableName, columns):
     result[f"v2 sup. v1"] = cur.fetchall()[0][0]
 
     return result
+
+
+def count_and_groupBY_2_columns_whitch_notNull(conn, tableName, columns):
+    cur = conn.cursor()
+    cur.execute(
+        f"SELECT {columns[0]}, {columns[1]} From {tableName} WHERE {columns[0]} IS NOT null and {columns[1]} IS NOT null ORDER BY {columns[0]} ASC;"
+    )
+
+    rows = cur.fetchall()
+
+    return rows
 
 
 def close_db(connexion):
