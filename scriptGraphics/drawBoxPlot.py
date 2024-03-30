@@ -242,6 +242,13 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
     plt.text(1.2, whisker_low, f"Whisker bas: {whisker_low:.2f}", va='center', ha='left', backgroundcolor='w')
     plt.text(1.2, whisker_high, f"Whisker haut: {whisker_high:.2f}", va='center', ha='left', backgroundcolor='w')
 
+    # awardPrice vs awardEstimatedPrice faut mettre 
+    # plt.text(1.1, y_max/2, f"Moyenne: {stats['mean']:.2f}", va='center', ha='left', backgroundcolor='w') 
+    # plt.text(1.2, y_max/4, f"Whisker bas: {whisker_low:.2f}", va='center', ha='left', backgroundcolor='w')
+    # plt.text(1.2, y_max/3, f"Whisker haut: {whisker_high:.2f}", va='center', ha='left', backgroundcolor='w')
+
+
+
     if log:
         plt.yscale("log")
         generateFileChart(file, xlabel, "boxplot_with_log")
