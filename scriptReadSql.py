@@ -54,25 +54,6 @@ def select_column_from_table(conn, tableName, lstColumnName):
     return rows
 
 
-def get_all_data_not_null_of_columns(conn, tableName, lstColumnName):
-    cur = conn.cursor()
-    columns = ""
-    for i in range(len(lstColumnName)):
-        columns += f"{lstColumnName[i]}"
-        if i < len(lstColumnName) - 1:
-            columns += ","
-    context_conditions = ""
-    for i in range(len(lstColumnName)):
-        context_conditions += f"{lstColumnName[i]} IS NOT null"
-        if i < len(lstColumnName) - 1:
-            context_conditions += " AND "
-    cur.execute(f"SELECT {columns} FROM {tableName} WHERE {context_conditions}")
-
-    rows = cur.fetchall()
-
-    return rows
-
-
 """
 les requêtes pour 'cancelled'
 """
@@ -189,28 +170,6 @@ def count_compare_two_columns_not_null(conn, tableName, columns):
     result[f"v2 sup. v1"] = cur.fetchall()[0][0]
 
     return result
-
-
-def count_and_groupBY_2_columns(conn, tableName, columns):
-    cur = conn.cursor()
-    cur.execute(
-        f"SELECT {columns[0]}, {columns[1]}, COUNT(*) as count From {tableName} GROUP BY {columns[0]}, {columns[1]} ORDER BY {columns[0]} ASC, {columns[1]} ASC;"
-    )
-
-    rows = cur.fetchall()
-
-    return rows
-
-
-def count_and_groupBY_2_columns_whitch_notNull(conn, tableName, columns):
-    cur = conn.cursor()
-    cur.execute(
-        f"SELECT {columns[0]}, {columns[1]} From {tableName} WHERE {columns[0]} IS NOT null and {columns[1]} IS NOT null ORDER BY {columns[0]} ASC;"
-    )
-
-    rows = cur.fetchall()
-
-    return rows
 
 
 def close_db(connexion):
