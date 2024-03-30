@@ -8,7 +8,8 @@ from scriptGraphics.generateFileChart import generateFileChart
 
 def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     if dropNaN:
-        data = data.dropna(subset=[xlabel, ylabel])
+        data[ylabel] = data[ylabel].astype(float)
+        data = data.dropna(subset=[ylabel])
 
     keys = list(data[xlabel].astype(str))
     values = list(data[ylabel].astype(int))
@@ -20,7 +21,12 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(title)
+    # ax.set_title(title)
+
+    plt.text(0.5, 1.08, title,
+         horizontalalignment='center',
+         fontsize=20,
+         transform = ax.transAxes)
 
     # Rotation des étiquettes de l'axe des x pour une meilleure lisibilité
     plt.xticks(rotation=45)
@@ -32,7 +38,7 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
                     xy=(bar.get_x() + bar.get_width() / 2, height),
                     xytext=(0, 3),  # 3 points de décalage vertical
                     textcoords="offset points",
-                    ha='center', va='bottom')
+                    ha='center', va='bottom', rotation=45)
 
     if log:
         plt.yscale("log")

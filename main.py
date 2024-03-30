@@ -4,7 +4,7 @@ from scriptGraphics.drawBoxPlot import *
 from scriptIndividual import *
 from scripts_individuel import scripts_individuel
 from scripts_paires import scripts_paires
-
+from script_single import script_single
 
 def draw_outOfDirectives_publicityDuration(conn):
     rows = count_and_groupBY_2_columns(
@@ -128,7 +128,7 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    database = r"C:\Users\devef\Documents\Application BI\FOPPA\Foppa1.1.2_db\Foppa1.1.2.db"
 
     conn = create_connection(database)
     with conn:
@@ -143,11 +143,12 @@ def main():
         """cancelled"""
         # draw_cancelled(conn)
         """awardDate"""
-        draw_awardDate(conn)
+        # draw_awardDate(conn)
         """awardEstimatedPrice"""
         # draw_awardEstimatedPrice(conn)
         scripts_individuel(conn)
-        scripts_paires(conn)
+        # script_single(conn)
+        # scripts_paires(conn)
         close_db(conn)
 
 
