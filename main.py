@@ -4,6 +4,7 @@ from scriptGraphics.drawBoxPlot import *
 from script_single import *
 from scripts_paires import scripts_paires
 from script_single import script_single
+from script_pair import script_pair
 
 
 def draw_numberTenders_numberTenderSme(conn):
@@ -70,7 +71,8 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    # database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
+    database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
     with conn:
@@ -81,7 +83,7 @@ def main():
         ##################################################
         script_single(conn)
         # draw_awardDate(conn)
-
+        script_pair(conn)
     close_db(conn)
 
 
