@@ -1,5 +1,9 @@
 from scriptReadSql import create_df_from_query
-from scriptGraphics.drawBoxPlot import draw_box_plot, draw_box_plot_multiple, draw_box_plot_special
+from scriptGraphics.drawBoxPlot import (
+    draw_box_plot,
+    draw_box_plot_multiple,
+    draw_box_plot_special,
+)
 from scriptGraphics.drawHist import draw_hist, draw_custom_hist, draw_hist_with_errors
 from tabulate import tabulate
 
@@ -61,10 +65,10 @@ def scripts_individuel(connexion):
     # draw_hist_with_errors(df, 'fraEstimated', 'NbFraEstimated', "Distribution des fraEstimated", "Lots")
     #
     # # contractDuration (Lots)
-    df = create_df_from_query(connexion, "SELECT contractDuration, count(contractDuration) AS 'NbContractDuration' FROM Lots GROUP BY contractDuration UNION ALL SELECT 'NaN' AS contractDuration, COUNT(*) AS 'NbContractDuration' FROM Lots WHERE contractDuration IS NULL ORDER BY NbContractDuration DESC")
+    # df = create_df_from_query(connexion, "SELECT contractDuration, count(contractDuration) AS 'NbContractDuration' FROM Lots GROUP BY contractDuration UNION ALL SELECT 'NaN' AS contractDuration, COUNT(*) AS 'NbContractDuration' FROM Lots WHERE contractDuration IS NULL ORDER BY NbContractDuration DESC")
     # # print(tabulate(df, headers='keys', tablefmt='psql'))
     # draw_hist_with_errors(df, 'contractDuration', 'NbContractDuration', "Distribution des contractDuration", "Lots")
-    draw_box_plot_special(df, 'contractDuration', 'contractDuration', "Boxplot des contractDuration avec échelle logarithmique", "Lots", True)
+    # draw_box_plot_special(df, 'contractDuration', 'contractDuration', "Boxplot des contractDuration avec échelle logarithmique", "Lots", True)
     #
     # # publicityDuration (Lots)
     # df = create_df_from_query(connexion, "SELECT publicityDuration, count(publicityDuration) AS 'NbPublicityDuration' FROM Lots GROUP BY publicityDuration UNION ALL SELECT 'NaN' AS publicityDuration, COUNT(*) AS 'NbPublicityDuration' FROM Lots WHERE publicityDuration IS NULL ORDER BY NbPublicityDuration DESC")
@@ -95,7 +99,7 @@ def scripts_individuel(connexion):
     # print(tabulate(df, headers='keys', tablefmt='psql'))
 
     # # typeOfContract (Lots)
-    # colonne_1 = "typeOfContract"
+    colonne_1 = "typeOfContract"
     # df = create_df_from_query(connexion, f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC")
     # df2 = create_df_from_query(connexion, f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} ORDER BY Nb{colonne_1} DESC")
     # print(tabulate(df, headers='keys', tablefmt='psql'))

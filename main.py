@@ -129,9 +129,7 @@ def draw_numberTenders_numberTenderSme(conn):
 
 
 def main():
-    database = (
-        r"C:\Users\devef\Documents\Application BI\FOPPA\Foppa1.1.2_db\Foppa1.1.2.db"
-    )
+    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
 
     conn = create_connection(database)
     with conn:
@@ -164,15 +162,14 @@ def main():
         """lotsNumber"""
         # draw_lotsNumber(conn)
         """topType"""
-        # draw_topType(conn)
+        draw_topType(conn)
 
         """Jérome"""
         # scripts_individuel(conn)
         # scripts_paires(conn)
-        scripts_individuel(conn)
+        # scripts_individuel(conn)
         # script_single(conn)
         # scripts_paires(conn)
-        close_db(conn)
     close_db(conn)
 
 
