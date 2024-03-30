@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from tabulate import tabulate
+import seaborn as sns
 
 from scriptGraphics.generateFileChart import generateFileChart
 
@@ -167,4 +168,47 @@ def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bi
     plt.yscale("log")
     generateFileChart(file, xlabel, "hist")
 
+    plt.show()
+
+
+def draw_multiple_hist(
+    data,
+    xlabel,
+    ylabel,
+    title,
+    file,
+    log=False,
+    dropNaN=True,
+    rotation_annotation=None,
+    rotation_xlabel=None,
+):
+    if dropNaN:
+        data = data.dropna(subset=[xlabel, ylabel])
+
+    sns_plot = sns.catplot(
+        x=xlabel, y="count", hue=ylabel, data=data, kind="bar", height=6, aspect=2
+    )
+
+    for p in sns_plot.ax.patches:
+        sns_plot.ax.annotate(
+            format(p.get_height(), ".2f"),
+            (p.get_x() + p.get_width() / 2.0, p.get_height()),
+            ha="center",
+            va="center",
+            xytext=(0, 9),
+            textcoords="offset points",
+            rotation=rotation_annotation,
+        )
+
+    plt.xticks(rotation=rotation_xlabel)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.subplots_adjust(top=0.9)
+    text = xlabel + "_" + ylabel
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, text, "hist_with_log")
+    else:
+        generateFileChart(file, text, "hist")
     plt.show()

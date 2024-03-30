@@ -120,6 +120,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         data_to_plot, patch_artist=True, labels=[str(val) for val in unique_values]
     )
 
+    plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
 
@@ -144,6 +145,14 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
             i + 0.1,
             stats["50%"],
             f"Médiane: {stats['50%']:.2f}",
+            va="center",
+            ha="left",
+            backgroundcolor="w",
+        )
+        plt.text(
+            i + 0.4,
+            stats["50%"],
+            f"Moyenne: {stats['mean']:.2f}",
             va="center",
             ha="left",
             backgroundcolor="w",
@@ -325,12 +334,10 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
     #     backgroundcolor="w",
     # )
 
-    # awardPrice vs awardEstimatedPrice faut mettre 
-    # plt.text(1.1, y_max/2, f"Moyenne: {stats['mean']:.2f}", va='center', ha='left', backgroundcolor='w') 
+    # awardPrice vs awardEstimatedPrice faut mettre
+    # plt.text(1.1, y_max/2, f"Moyenne: {stats['mean']:.2f}", va='center', ha='left', backgroundcolor='w')
     # plt.text(1.2, y_max/4, f"Whisker bas: {whisker_low:.2f}", va='center', ha='left', backgroundcolor='w')
     # plt.text(1.2, y_max/3, f"Whisker haut: {whisker_high:.2f}", va='center', ha='left', backgroundcolor='w')
-
-
 
     if log:
         plt.yscale("log")
