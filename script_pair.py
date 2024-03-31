@@ -35,25 +35,25 @@ def script_pair(connexion):
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
-    """numberTenders & numberTendersSme"""
+    """numberTenders & typeOfContract"""
     draw_numberTenders_typeOfContract(connexion)
 
 
 def draw_numberTenders_typeOfContract(conn):
 
-    # df = create_df_from_query(
-    #     conn,
-    #     "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
-    # )
-    # print(df)
-    # draw_box_plot_multiple(
-    #     df,
-    #     "typeOfContract",
-    #     "numberTenders",
-    #     "Boxplot des typeOfContract en fonction des numberTenders",
-    #     "Lots",
-    #     False,
-    # )
+    df = create_df_from_query(
+        conn,
+        "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
+    )
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        "typeOfContract",
+        "numberTenders",
+        "Boxplot des typeOfContract en fonction des numberTenders",
+        "Lots",
+        False,
+    )
     df2 = create_df_from_query(
         conn,
         """SELECT typeOfContract as typeOfContract, 'occurence' as numberTenders, count(numberTenders) as count
