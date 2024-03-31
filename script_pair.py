@@ -38,12 +38,12 @@ def script_pair(connexion):
     """numberTenders & contractorSme (à voir)"""
     # draw_numberTenders_contractorSme(connexion)
     """numberTenders & topType"""
-    draw_numberTendedrs_topType(connexion)
+    # draw_numberTendedrs_topType(connexion)
 
 
 def draw_numberTendedrs_topType(conn):
     df = create_df_from_query(conn, "SELECT topType, numberTenders FROM Lots")
-    draw_box_plot_multiple_numberTenders_topType(
+    draw_box_plot_multiple_dense(
         df,
         "topType",
         "numberTenders",

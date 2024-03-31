@@ -209,77 +209,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
     plt.show()
 
 
-def draw_box_plot_multiple_numberTenders_NumberTendersSme(
-    data, xlabel, ylabel, title, file, log=False, dropNaN=True
-):
-    if dropNaN:
-        data = data.dropna(subset=[xlabel, ylabel])
-
-    unique_values = data[xlabel].unique()
-    data_to_plot = [data[data[xlabel] == val][ylabel] for val in unique_values]
-
-    fig, ax = plt.subplots(figsize=(20, 10))
-
-    # Creating plot
-    boxplot_elements = ax.boxplot(
-        data_to_plot, patch_artist=True, labels=[str(val) for val in unique_values]
-    )
-
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.title(title)
-
-    for i, val in enumerate(unique_values, start=1):
-        stats = data[data[xlabel] == val][ylabel].describe()
-        y_min, y_max = stats["min"], stats["max"]
-        whiskers = [
-            item.get_ydata()
-            for item in boxplot_elements["whiskers"][2 * (i - 1) : 2 * i]
-        ]
-        # Moyenne
-        # if y_max - y_min > 20:
-        plt.text(
-            i + 0.4,
-            stats["50%"],
-            f"{stats['mean']:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="black",
-        )
-        # Min
-        plt.text(
-            i + 0.1,
-            y_min / 1.2,
-            f"{y_min:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="blue",
-            rotation=45,
-        )
-        # Max
-        plt.text(
-            i + 0.1,
-            y_max * 1.1,
-            f"{y_max:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="red",
-            rotation=45,
-        )
-
-    if log:
-        plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
-    else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
-    # show plot
-    plt.show()
-
-
-def draw_box_plot_multiple_numberTenders_topType(
+def draw_box_plot_multiple_dense(
     data, xlabel, ylabel, title, file, log=False, dropNaN=True
 ):
     if dropNaN:
@@ -482,5 +412,150 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
         generateFileChart(file, xlabel, "boxplot_with_log")
     else:
         generateFileChart(file, xlabel, "boxplot")
+    # show plot
+    plt.show()
+
+
+def draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    data, xlabel, ylabel, title, file, log=False, dropNaN=True
+):
+    if dropNaN:
+        data = data.dropna(subset=[xlabel, ylabel])
+
+    unique_values = data[xlabel].unique()
+    data_to_plot = [data[data[xlabel] == val][ylabel] for val in unique_values]
+
+    fig, ax = plt.subplots(figsize=(20, 10))
+
+    # Creating plot
+    boxplot_elements = ax.boxplot(
+        data_to_plot, patch_artist=True, labels=[str(val) for val in unique_values]
+    )
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+
+    for i, val in enumerate(unique_values, start=1):
+        stats = data[data[xlabel] == val][ylabel].describe()
+        y_min, y_max = stats["min"], stats["max"]
+        whiskers = [
+            item.get_ydata()
+            for item in boxplot_elements["whiskers"][2 * (i - 1) : 2 * i]
+        ]
+        # Moyenne
+        # if y_max - y_min > 20:
+        plt.text(
+            i + 0.4,
+            stats["50%"],
+            f"{stats['mean']:.2f}",
+            va="center",
+            ha="left",
+            # backgroundcolor="w",
+            color="black",
+        )
+        # Min
+        plt.text(
+            i + 0.1,
+            y_min / 1.2,
+            f"{y_min:.2f}",
+            va="center",
+            ha="left",
+            # backgroundcolor="w",
+            color="blue",
+            rotation=45,
+        )
+        # Max
+        plt.text(
+            i + 0.1,
+            y_max * 1.1,
+            f"{y_max:.2f}",
+            va="center",
+            ha="left",
+            # backgroundcolor="w",
+            color="red",
+            rotation=45,
+        )
+
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+    else:
+        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+    # show plot
+    plt.show()
+
+
+def draw_box_plot_multiple_numberTenders_typeOfContract(
+    data, xlabel, ylabel, title, file, log=False, dropNaN=True
+):
+    if dropNaN:
+        data = data.dropna(subset=[xlabel, ylabel])
+
+    unique_values = data[xlabel].unique()
+    data_to_plot = [data[data[xlabel] == val][ylabel] for val in unique_values]
+
+    fig, ax = plt.subplots(figsize=(20, 10))
+
+    # Creating plot
+    boxplot_elements = ax.boxplot(
+        data_to_plot, patch_artist=True, labels=[str(val) for val in unique_values]
+    )
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+
+    for i, val in enumerate(unique_values, start=1):
+        stats = data[data[xlabel] == val][ylabel].describe()
+        y_min, y_max = stats["min"], stats["max"]
+        whiskers = [
+            item.get_ydata()
+            for item in boxplot_elements["whiskers"][2 * (i - 1) : 2 * i]
+        ]
+        # Médiane
+        plt.text(
+            i + 0.1,
+            20,
+            f"Médiane: {stats['50%']:.2f}",
+            va="center",
+            ha="left",
+            backgroundcolor="w",
+        )
+        # Moyenne
+        plt.text(
+            i + 0.4,
+            20,
+            f"Moyenne: {stats['mean']:.2f}",
+            va="center",
+            ha="left",
+            backgroundcolor="w",
+        )
+        # Min
+        plt.text(
+            i + 0.1,
+            y_min / 1.2,
+            f"{y_min:.2f}",
+            va="center",
+            ha="left",
+            # backgroundcolor="w",
+            color="blue",
+        )
+        # Max
+        plt.text(
+            i + 0.1,
+            y_max * 1.1,
+            f"{y_max:.2f}",
+            va="center",
+            ha="left",
+            # backgroundcolor="w",
+            color="red",
+        )
+
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+    else:
+        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
     # show plot
     plt.show()
