@@ -34,7 +34,80 @@ def script_pair(connexion):
     """awardEstimatedPrice & awardPrice"""
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    draw_numberTenders_numberTendersSme(connexion)
+    # draw_numberTenders_numberTendersSme(connexion)
+    """numberTenders & contractorSme (à voir)"""
+    # draw_numberTenders_contractorSme(connexion)
+    """numberTenders & topType"""
+    draw_numberTendedrs_topType(connexion)
+
+
+def draw_numberTendedrs_topType(conn):
+    df = create_df_from_query(conn, "SELECT topType, numberTenders FROM Lots")
+    draw_box_plot_multiple_numberTenders_topType(
+        df,
+        "topType",
+        "numberTenders",
+        "Boxplot des topType en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT topType as topType, 'occurence' as numberTenders, count(numberTenders) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+
+            UNION
+
+            SELECT topType as topType, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+        """,
+    )
+    draw_multiple_hist(
+        df2,
+        "topType",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de topType",
+        "Lots",
+        True,
+    )
+
+
+def draw_numberTenders_contractorSme(conn):
+    df = create_df_from_query(conn, "SELECT contractorSme, numberTenders FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "contractorSme",
+        "numberTenders",
+        "Boxplot des contractorSme en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT contractorSme as contractorSme, 'occurence' as numberTenders, count(numberTenders) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme
+
+        UNION
+
+        SELECT contractorSme as contractorSme, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "contractorSme",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de contractorSme",
+        "Lots",
+        True,
+    )
 
 
 def draw_numberTenders_numberTendersSme(conn):
