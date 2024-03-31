@@ -34,8 +34,49 @@ def script_pair(connexion):
     """awardEstimatedPrice & awardPrice"""
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    draw_numberTenders_numberTendersSme(connexion)
+    # draw_numberTenders_numberTendersSme(connexion)
+    """numberTenders & numberTendersSme"""
+    draw_numberTenders_typeOfContract(connexion)
 
+
+def draw_numberTenders_typeOfContract(conn):
+
+    # df = create_df_from_query(
+    #     conn,
+    #     "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
+    # )
+    # print(df)
+    # draw_box_plot_multiple(
+    #     df,
+    #     "typeOfContract",
+    #     "numberTenders",
+    #     "Boxplot des typeOfContract en fonction des numberTenders",
+    #     "Lots",
+    #     False,
+    # )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT typeOfContract as typeOfContract, 'occurence' as numberTenders, count(numberTenders) as count
+            FROM Lots
+            WHERE typeOfContract IS NOT NULL
+            GROUP BY typeOfContract
+
+            UNION
+
+            SELECT typeOfContract as typeOfContract, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+            FROM Lots
+            WHERE typeOfContract IS NOT NULL
+            GROUP BY typeOfContract
+        """,
+    )
+    draw_multiple_hist(
+        df2,
+        "typeOfContract",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de typeOfContract",
+        "Lots",
+        True,
+    )
 
 def draw_numberTenders_numberTendersSme(conn):
 
@@ -49,9 +90,9 @@ def draw_numberTenders_numberTendersSme(conn):
         df,
         "numberTenders",
         "numberTendersSme",
-        "Boxplot des numberTenders en fonction des numberTendersSme ",
+        "Boxplot des numberTenders en fonction des numberTendersSme avec échelle logarithmique",
         "Lots",
-        False,
+        True,
     )
 
 
