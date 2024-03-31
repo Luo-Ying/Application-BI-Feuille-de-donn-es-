@@ -43,7 +43,45 @@ def script_pair(connexion):
     """numberTenders & typeOfContract"""
     # draw_numberTenders_typeOfContract(connexion)
     """numberTenders & awardEstimatedPrice"""
-    draw_numberTenders_awardEstimatedPrice(connexion)
+    # draw_numberTenders_awardEstimatedPrice(connexion)
+    """numberTendersSme & awardEstimatedPrice"""
+    # draw_numberTendersSme_awardEstimatedPrice(connexion)
+    """numberTenders & awardPrice"""
+    draw_numberTenders_awardPrice(connexion)
+
+
+def draw_numberTenders_awardPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme, awardPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTendersSme"],
+        df["awardPrice"],
+        "numberTendersSme",
+        "awardPrice",
+        "Scatter Plot of numberTendersSme vs awardPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTendersSme_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme, awardEstimatedPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTendersSme"],
+        df["awardEstimatedPrice"],
+        "numberTendersSme",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTendersSme vs awardEstimatedPrice",
+        False,
+        True,
+    )
 
 
 def draw_numberTenders_awardEstimatedPrice(conn):

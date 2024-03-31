@@ -1,5 +1,6 @@
 import pandas as pd
 from scriptReadSql import *
+import csv
 
 
 def calcule_correlation(data):
@@ -7,10 +8,13 @@ def calcule_correlation(data):
     print("Data Frame")
     print(df)
     print()
+    df.to_csv("DataFrame.csv", index=False)
 
     print("Correlation Matrix")
-    print(df.corr())
+    data_correlation = df.corr()
+    print(data_correlation)
     print()
+    data_correlation.to_csv("DataCorrelation.csv", index=False)
 
     def get_redundant_pairs(df):
         """Get diagonal and lower triangular pairs of correlation matrix"""
@@ -27,8 +31,10 @@ def calcule_correlation(data):
         au_corr = au_corr.drop(labels=labels_to_drop).sort_values(ascending=False)
         return au_corr[0:n]
 
-    print("Top Absolute Correlations")
-    print(get_top_abs_correlations(df, 3))
+    # print("Top Absolute Correlations")
+    # topAbsCorrelation = get_top_abs_correlations(df, 3)
+    # print(topAbsCorrelation)
+    # writ_in_csv(topAbsCorrelation, "topAbsCorrelation.csv")
 
 
 def calcule_correlation_Lots(conn):
@@ -44,3 +50,17 @@ def calcule_correlation_Lots(conn):
     df = pd.get_dummies(df, columns=["typeOfContract"], drop_first=True)
     df = pd.get_dummies(df, columns=["topType"], drop_first=True)
     calcule_correlation(df)
+
+
+def writ_in_csv(data, csv_file_path):
+    with open(csv_file_path, "w", newline="") as csvfile:
+        csv_writer = csv.writer(csvfile)
+
+    for row in data:
+        csv_writer.writerow(row)
+
+
+def write_in_file(data, file_path):
+    with open(file_path, "w") as file:
+        for line in data:
+            file.write(line + "\n")
