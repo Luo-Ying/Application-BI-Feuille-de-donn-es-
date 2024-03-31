@@ -45,7 +45,7 @@ def draw_numberTenders_numberTendersSme(conn):
     )
 
     print(df)
-    draw_box_plot_multiple(
+    draw_box_plot_multiple_numberTenders_NumberTendersSme(
         df,
         "numberTenders",
         "numberTendersSme",
