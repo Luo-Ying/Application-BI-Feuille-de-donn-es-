@@ -2,6 +2,7 @@ from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
 from script_single import *
+from script_calcule_correlation_paires import *
 from script_single import script_single
 from script_pair import script_pair
 
@@ -23,6 +24,7 @@ def main():
         ##################################################
         # ############ Attribut En Paire #################
         ##################################################
+        # calcule_correlation_Lots(conn)
         script_pair(conn)
 
     close_db(conn)

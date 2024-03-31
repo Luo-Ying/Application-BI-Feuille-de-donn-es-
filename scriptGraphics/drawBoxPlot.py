@@ -244,7 +244,6 @@ def draw_box_plot_multiple_dense(
             f"Médiane: {stats['50%']:.2f}",
             va="center",
             ha="left",
-            backgroundcolor="w",
         )
         plt.text(
             i + 0.4,

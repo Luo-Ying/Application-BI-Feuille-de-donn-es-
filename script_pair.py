@@ -1,6 +1,7 @@
 from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
 from scriptGraphics.drawHist import *
+from scriptGraphics.drawScatterPlots import *
 from scriptReadSql import *
 from tabulate import tabulate
 
@@ -40,7 +41,26 @@ def script_pair(connexion):
     """numberTenders & topType"""
     # draw_numberTendedrs_topType(connexion)
     """numberTenders & typeOfContract"""
-    draw_numberTenders_typeOfContract(connexion)
+    # draw_numberTenders_typeOfContract(connexion)
+    """numberTenders & awardEstimatedPrice"""
+    draw_numberTenders_awardEstimatedPrice(connexion)
+
+
+def draw_numberTenders_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTenders, awardEstimatedPrice FROM Lots WHERE numberTenders IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTenders"],
+        df["awardEstimatedPrice"],
+        "numberTenders",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTenders vs awardEstimatedPrice",
+        False,
+        True,
+    )
 
 
 def draw_numberTendedrs_topType(conn):
@@ -75,6 +95,8 @@ def draw_numberTendedrs_topType(conn):
         "Nombre d'occurence de numberTenders pour chaque element de topType",
         "Lots",
         True,
+        True,
+        30,
     )
 
 
