@@ -5,10 +5,10 @@ import csv
 
 def calcule_correlation(data):
     df = pd.DataFrame(data=data)
-    print("Data Frame")
-    print(df)
-    print()
-    df.to_csv("DataFrame.csv", index=False)
+    # print("Data Frame")
+    # print(df)
+    # print()
+    # df.to_csv("DataFrame.csv", index=False)
 
     print("Correlation Matrix")
     data_correlation = df.corr()
@@ -42,11 +42,11 @@ def calcule_correlation_Lots(conn):
         conn,
         "SELECT * FROM Lots",
     )
+    df = df.drop(columns=["contractorSme"])
     df["awardDate"] = pd.to_datetime(df["awardDate"])
     df["awardDate"] = pd.to_numeric(df["awardDate"])
     df = pd.get_dummies(df, columns=["fraEstimated"], drop_first=True)
     df["lotsNumber"] = pd.to_numeric(df["lotsNumber"], errors="coerce")
-    df = pd.get_dummies(df, columns=["contractorSme"], drop_first=True)
     df = pd.get_dummies(df, columns=["typeOfContract"], drop_first=True)
     df = pd.get_dummies(df, columns=["topType"], drop_first=True)
     calcule_correlation(df)

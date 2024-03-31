@@ -24,8 +24,8 @@ def main():
         ##################################################
         # ############ Attribut En Paire #################
         ##################################################
-        # calcule_correlation_Lots(conn)
-        script_pair(conn)
+        calcule_correlation_Lots(conn)
+        # script_pair(conn)
 
     close_db(conn)
 
