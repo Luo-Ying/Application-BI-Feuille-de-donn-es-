@@ -21,11 +21,11 @@ def script_pair(connexion):
     ##############################################
     ################# weight a####################
     ##############################################
-    """cancelleed & numberTenders"""
+    """cancelled & numberTenders"""
     # draw_cancelled_numberTenders(connexion)
-    """cancelleed & numberTendersSme"""
+    """cancelled & numberTendersSme"""
     # draw_canccelled_numberTendersSme(connexion)
-    """cancelled & fraEstimateed"""
+    """cancelled & fraEstimated"""
     # draw_cancelled_fraEstimated(connexion, "cancelled", "fraEstimated")
     """cancelled & typeOfContract"""
     # draw_cancelled_typeOfContract(connexion, "cancelled", "typeOfContract")
@@ -125,7 +125,7 @@ def draw_awardPrice_lotsNumber(conn):
         "awardPrice",
         "lotsNumber",
         "Nombre d'occurence de lotsNumber pour chaque element de awardPrice",
-        False,
+        True,
         True,
     )
 
@@ -808,7 +808,10 @@ def draw_canccelled_numberTendersSme(conn):
 
 
 def draw_cancelled_numberTenders(conn):
-    df = create_df_from_query(conn, "SELECT cancelled, numberTenders FROM Lots")
+    df = create_df_from_query(
+        conn,
+        "SELECT cancelled, numberTenders FROM Lots WHERE cancelled IS NOT null AND numberTenders IS NOT null",
+    )
     draw_box_plot_multiple(
         df,
         "cancelled",
@@ -844,14 +847,14 @@ def draw_cancelled_numberTenders(conn):
 def draw_cancelled_fraEstimated(connexion, colonne_1, colonne_2):
     df = create_df_from_query(
         connexion,
-        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS count FROM Lots GROUP BY {colonne_1}, {colonne_2}",
+        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS count FROM Lots WHERE {colonne_1} = 1 GROUP BY {colonne_1}, {colonne_2}",
     )
-    print(df)
+    # print(df)
     draw_multiple_hist(
         df,
         f"{colonne_1}",
         f"{colonne_2}",
-        f"Histogramme des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        f"Histogramme des {colonne_1} en fonction des {colonne_2} when cancelled is True",
         "Lots",
         True,
         True,
@@ -863,7 +866,7 @@ def draw_cancelled_fraEstimated(connexion, colonne_1, colonne_2):
 def draw_cancelled_typeOfContract(connexion, colonne_1, colonne_2):
     df = create_df_from_query(
         connexion,
-        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS count FROM Lots GROUP BY {colonne_1}, {colonne_2}",
+        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS count FROM Lots WHERE {colonne_1} = 1 GROUP BY {colonne_1}, {colonne_2}",
     )
     draw_multiple_hist(
         df,
@@ -909,6 +912,15 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         "Lots",
         False,
         False,
+    )
+    draw_scatter_plots(
+        df[colonne_1],
+        df[colonne_2],
+        "awardPrice",
+        "awardEstimatedPrice",
+        "Nombre d'occurence de awardEstimatedPrice pour chaque element de awardPrice",
+        True,
+        True,
     )
 
 

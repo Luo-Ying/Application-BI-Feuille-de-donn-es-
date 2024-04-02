@@ -144,7 +144,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.1,
-            stats['50%'],
+            stats["50%"],
             f"Médiane: {stats['50%']:.2f}",
             va="center",
             ha="left",
@@ -152,7 +152,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.4,
-            stats['50%'],
+            stats["50%"],
             f"Moyenne: {stats['mean']:.2f}",
             va="center",
             ha="left",
