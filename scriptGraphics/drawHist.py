@@ -243,7 +243,6 @@ def hist_pivot(
         data = data.dropna(subset=[xlabel, ylabel])
 
     df_pivot = data.pivot(index=xlabel, columns=ylabel, values=f'Nb{ylabel}').fillna(0)
-    df_percent = df_pivot.div(df_pivot.sum(axis=1), axis=0) * 100
 
     ax = df_pivot.plot(kind='bar', stacked=True, figsize=(20, 10))
 
