@@ -22,77 +22,79 @@ def script_pair(connexion):
     ################# weight a####################
     ##############################################
     """cancelleed & numberTenders"""
-    draw_cancelled_numberTenders(connexion)
+    # draw_cancelled_numberTenders(connexion)
     """cancelleed & numberTendersSme"""
-    draw_canccelled_numberTendersSme(connexion)
+    # draw_canccelled_numberTendersSme(connexion)
     """cancelled & fraEstimateed"""
-    draw_cancelled_fraEstimated(connexion, "cancelled", "fraEstimated")
+    # draw_cancelled_fraEstimated(connexion, "cancelled", "fraEstimated")
     """cancelled & typeOfContract"""
-    draw_cancelled_typeOfContract(connexion, "cancelled", "typeOfContract")
+    # draw_cancelled_typeOfContract(connexion, "cancelled", "typeOfContract")
     """cancelled & awardEstimatedPrice"""
-    draw_cancelled_awardEstimatedPrice(connexion)
+    # draw_cancelled_awardEstimatedPrice(connexion)
     """cancelled & awardPrice"""
-    draw_cancelled_awardPrice(connexion)
+    # draw_cancelled_awardPrice(connexion)
     """cancelled & topType"""
-    draw_cancelled_topType(connexion, "cancelled", "topType")
+    # draw_cancelled_topType(connexion, "cancelled", "topType")
     """awardEstimatedPrice & awardPrice"""
-    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    draw_numberTenders_numberTendersSme(connexion)
+    # draw_numberTenders_numberTendersSme(connexion)
     """numberTenders & contractorSme (à voir)"""
-    draw_numberTenders_contractorSme(connexion)
+    # draw_numberTenders_contractorSme(connexion)
     """numberTenders & topType"""
-    draw_numberTendedrs_topType(connexion)
+    # draw_numberTendedrs_topType(connexion)
     """numberTenders & typeOfContract"""
-    draw_numberTenders_typeOfContract(connexion)
+    # draw_numberTenders_typeOfContract(connexion)
     """numberTenders & awardEstimatedPrice"""
-    draw_numberTenders_awardEstimatedPrice(connexion)
+    # draw_numberTenders_awardEstimatedPrice(connexion)
     """numberTendersSme & awardEstimatedPrice"""
-    draw_numberTendersSme_awardEstimatedPrice(connexion)
+    # draw_numberTendersSme_awardEstimatedPrice(connexion)
     """numberTenders & awardPrice"""
-    draw_numberTenders_awardPrice(connexion)
+    # draw_numberTenders_awardPrice(connexion)
     """numberTendersSme & typeOfContract"""
-    draw_numberTendersSme_typeOfContract(connexion, "numberTendersSme", "typeOfContract")
+    # draw_numberTendersSme_typeOfContract(
+    #     connexion, "numberTendersSme", "typeOfContract"
+    # )
     """awardPrice & cpv"""
-    draw_awardPrice_cpv(connexion, "awardPrice", "cpv")
+    # draw_awardPrice_cpv(connexion, "awardPrice", "cpv")
     """awardPrice & fraAgreement"""
-    draw_awardPrice_fraAgreement(connexion, "awardPrice", "fraAgreement")
+    # draw_awardPrice_fraAgreement(connexion, "awardPrice", "fraAgreement")
     """accelerated & awardEstimatedPrice"""
-    draw_accelerated_awardEstimatedPrice(connexion)
+    # draw_accelerated_awardEstimatedPrice(connexion)
     """accelerated & typeOfContract"""
-    draw_accelerated_typeOfContract(connexion)
+    # draw_accelerated_typeOfContract(connexion)
     """accelerated & topType"""
-    draw_accelerated_topType(connexion)
+    # draw_accelerated_topType(connexion)
     """accelerateed & publicityDuration"""
-    draw_accelerated_publicityDuration(connexion)
+    # draw_accelerated_publicityDuration(connexion)
     """awardPrice & publicityDuration"""
-    draw_awardPrice_publicityDuration(connexion)
+    # draw_awardPrice_publicityDuration(connexion)
     """awardPrice & contractDuration"""
-    draw_awardPrice_contractDuration(connexion)
+    # draw_awardPrice_contractDuration(connexion)
     """awardPrice & topType"""
-    draw_awardPrice_topType(connexion)
+    # draw_awardPrice_topType(connexion)
     """awardPrice & multipleCae"""
-    draw_awardPrice_multipleCae(connexion)
+    # draw_awardPrice_multipleCae(connexion)
     """awardPrice & accelerated"""
-    draw_awardPrice_accelerated(connexion)
+    # draw_awardPrice_accelerated(connexion)
     """awardPrice & outOfDirectives"""
-    draw_awardPrice_outOfDirectives(connexion)
+    # draw_awardPrice_outOfDirectives(connexion)
     """awardPrice & onBehalf"""
-    draw_awardPrice_onBehalf(connexion)
+    # draw_awardPrice_onBehalf(connexion)
     """numberTenders & typeOfContract"""
-    draw_numberTenders_typeOfContract(connexion)
+    # draw_numberTenders_typeOfContract(connexion)
     """awardEstimatedPrice & lotsNumber"""
-    draw_awardEstimatedPrice_lotsNumber(connexion)
+    # draw_awardEstimatedPrice_lotsNumber(connexion)
     """onBehalf & typeOfContract"""
-    draw_onBehalf_typeOfContract(connexion)
+    # draw_onBehalf_typeOfContract(connexion)
     """awardPrice & typeOfContracted"""
-    draw_awardPrice_subContracted(connexion)
+    # draw_awardPrice_subContracted(connexion)
     """awardPrice & numberTendersSme"""
-    draw_awardPrice_numberTendersSme(connexion)
+    # draw_awardPrice_numberTendersSme(connexion)
     """awardPrice & lotsNumber"""
-    draw_awardPrice_lotsNumber(connexion)
+    # draw_awardPrice_lotsNumber(connexion)
     """awardPrice & jointProcurement"""
-    draw_awardPrice_jointProcurement(connexion)
+    # draw_awardPrice_jointProcurement(connexion)
 
 
 def draw_awardPrice_jointProcurement(conn):
@@ -117,14 +119,14 @@ def draw_awardPrice_lotsNumber(conn):
         "SELECT awardPrice, lotsNumber From Lots WHERE awardPrice IS NOT null AND LotsNumber IS NOT null AND lotsNumber NOT GLOB '*[a-zA-Z]*' AND lotsNumber NOT LIKE '%-%' AND lotsNumber NOT LIKE '%*%' AND lotsNumber NOT LIKE '%;%' ORDER BY lotsNumber ASC",
     )
     print(df)
-    df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
+    df["lotsNumber"] = pd.to_numeric(df["lotsNumber"], errors="coerce")
     draw_scatter_plots2(
         df,
         "awardPrice",
         "lotsNumber",
         "Nombre d'occurence de lotsNumber pour chaque element de awardPrice",
         False,
-        True
+        True,
     )
 
 
@@ -185,11 +187,11 @@ def draw_onBehalf_typeOfContract(conn):
     print(df)
     hist_pivot(
         df,
-       "typeOfContract",
-       "onBehalf",
-       "Histogramme cumulé des onBehalf en fonction des typeOfContract",
-       "Lots",
-       False,
+        "typeOfContract",
+        "onBehalf",
+        "Histogramme cumulé des onBehalf en fonction des typeOfContract",
+        "Lots",
+        False,
     )
 
 
@@ -199,15 +201,16 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         "SELECT awardEstimatedPrice, lotsNumber From Lots WHERE awardEstimatedPrice IS NOT null AND LotsNumber IS NOT null AND lotsNumber NOT GLOB '*[a-zA-Z]*' AND lotsNumber NOT LIKE '%-%' AND lotsNumber NOT LIKE '%*%' AND lotsNumber NOT LIKE '%;%' ORDER BY lotsNumber ASC",
     )
     print(df)
-    df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
+    df["lotsNumber"] = pd.to_numeric(df["lotsNumber"], errors="coerce")
     draw_scatter_plots2(
         df,
         "awardEstimatedPrice",
         "lotsNumber",
         "Nombre d'occurence de lotsNumber pour chaque element de awardEstimatedPrice",
         False,
-        True
+        True,
     )
+
 
 def draw_awardPrice_onBehalf(conn):
     df = create_df_from_query(conn, "SELECT onBehalf, awardPrice FROM Lots")
