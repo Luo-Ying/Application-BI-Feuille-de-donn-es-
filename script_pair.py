@@ -38,13 +38,11 @@ def script_pair(connexion):
     """awardEstimatedPrice & awardPrice"""
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    # draw_numberTenders_numberTendersSme(connexion)
+    draw_numberTenders_numberTendersSme(connexion)
     """numberTenders & contractorSme (à voir)"""
     # draw_numberTenders_contractorSme(connexion)
     """numberTenders & topType"""
     # draw_numberTendedrs_topType(connexion)
-    """numberTenders & typeOfContract"""
-    # draw_numberTenders_typeOfContract(connexion)
     """numberTenders & awardEstimatedPrice"""
     # draw_numberTenders_awardEstimatedPrice(connexion)
     """numberTendersSme & awardEstimatedPrice"""
@@ -87,7 +85,9 @@ def script_pair(connexion):
     # draw_awardEstimatedPrice_lotsNumber(connexion)
     """onBehalf & typeOfContract"""
     # draw_onBehalf_typeOfContract(connexion)
-    """awardPrice & typeOfContracted"""
+    """awardPrice & typeOfContract"""
+    # draw_awardPrice_typeOfContract(connexion)
+    """awardPrice & subContracted"""
     # draw_awardPrice_subContracted(connexion)
     """awardPrice & numberTendersSme"""
     # draw_awardPrice_numberTendersSme(connexion)
@@ -124,7 +124,7 @@ def draw_awardPrice_lotsNumber(conn):
         df,
         "awardPrice",
         "lotsNumber",
-        "Nombre d'occurence de lotsNumber pour chaque element de awardPrice",
+        "Scatterplot de lotsNumber pour chaque element de awardPrice",
         True,
         True,
     )
@@ -206,8 +206,8 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         df,
         "awardEstimatedPrice",
         "lotsNumber",
-        "Nombre d'occurence de lotsNumber pour chaque element de awardEstimatedPrice",
-        False,
+        "Scatterplot de lotsNumber pour chaque element de awardEstimatedPrice",
+        True,
         True,
     )
 
@@ -648,7 +648,7 @@ def draw_numberTenders_typeOfContract(conn):
 
     df = create_df_from_query(
         conn,
-        "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
+        "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and typeOfContract IS NOT null ORDER BY numberTenders ASC",
     )
     print(df)
     draw_box_plot_multiple(
@@ -657,7 +657,7 @@ def draw_numberTenders_typeOfContract(conn):
         "numberTenders",
         "Boxplot des typeOfContract en fonction des numberTenders",
         "Lots",
-        False,
+        True,
     )
     df2 = create_df_from_query(
         conn,
@@ -976,48 +976,6 @@ def draw_awardPrice_fraAgreement(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
-        "Lots",
-        True,
-    )
-
-
-def draw_numberTendersSme_typeOfContract(connexion, colonne_1, colonne_2):
-    df = create_df_from_query(
-        connexion,
-        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
-    )
-    draw_box_plot_multiple(
-        df,
-        f"{colonne_2}",
-        f"{colonne_1}",
-        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
-        "Lots",
-        True,
-    )
-
-
-def draw_awardPrice_cpv(connexion, colonne_1, colonne_2):
-    df = create_df_from_query(
-        connexion,
-        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 2)  AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
-    )
-    draw_box_plot_multiple_simple_stats(
-        df,
-        f"{colonne_2}",
-        f"{colonne_1}",
-        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
-        "Lots",
-        True,
-    )
-    df2 = create_df_from_query(
-        connexion,
-        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL AND SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) IN ( SELECT {colonne_2} FROM (SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, COUNT(*) FROM Lots WHERE {colonne_1} IS NOT NULL GROUP BY SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) ORDER BY COUNT(*) DESC LIMIT 45));",
-    )
-    draw_box_plot_multiple_simple_stats(
-        df2,
-        f"{colonne_2}",
-        f"{colonne_1}",
-        f"Boxplot des {colonne_1} en fonction des top 45 occurences de {colonne_2} avec échelle logarithmique",
         "Lots",
         True,
     )
