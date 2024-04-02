@@ -1,10 +1,10 @@
 import re
 
-from scriptGraphics.drawScatterPlots import draw_scatter_plots2
-from scriptGraphics.drawTop import get_top_multiple, get_top
 from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
 from scriptGraphics.drawHist import *
+from scriptGraphics.drawScatterPlots import *
+from scriptGraphics.drawLineChart import *
 from scriptReadSql import *
 from tabulate import tabulate
 
@@ -39,6 +39,46 @@ def script_pair(connexion):
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
+    """numberTenders & contractorSme (à voir)"""
+    # draw_numberTenders_contractorSme(connexion)
+    """numberTenders & topType"""
+    # draw_numberTendedrs_topType(connexion)
+    """numberTenders & typeOfContract"""
+    # draw_numberTenders_typeOfContract(connexion)
+    """numberTenders & awardEstimatedPrice"""
+    # draw_numberTenders_awardEstimatedPrice(connexion)
+    """numberTendersSme & awardEstimatedPrice"""
+    # draw_numberTendersSme_awardEstimatedPrice(connexion)
+    """numberTenders & awardPrice"""
+    # draw_numberTenders_awardPrice(connexion)
+    """numberTendersSme & typeOfContract"""
+    # draw_numberTendersSme_typeOfContract(connexion, "numberTendersSme", "typeOfContract")
+    """awardPrice & cpv"""
+    # draw_awardPrice_cpv(connexion, "awardPrice", "cpv")
+    """awardPrice & fraAgreement"""
+    # draw_awardPrice_fraAgreement(connexion, "awardPrice", "fraAgreement")
+    """accelerated & awardEstimatedPrice"""
+    # draw_accelerated_awardEstimatedPrice(connexion)
+    """accelerated & typeOfContract"""
+    # draw_accelerated_typeOfContract(connexion)
+    """accelerated & topType"""
+    # draw_accelerated_topType(connexion)
+    """accelerateed & publicityDuration"""
+    # draw_accelerated_publicityDuration(connexion)
+    """awardPrice & publicityDuration"""
+    # draw_awardPrice_publicityDuration(connexion)
+    """awardPrice & contractDuration"""
+    # draw_awardPrice_contractDuration(connexion)
+    """awardPrice & topType"""
+    # draw_awardPrice_topType(connexion)
+    """awardPrice & multipleCae"""
+    # draw_awardPrice_multipleCae(connexion)
+    """awardPrice & accelerated"""
+    # draw_awardPrice_accelerated(connexion)
+    """awardPrice & outOfDirectives"""
+    # draw_awardPrice_outOfDirectives(connexion)
+    """awardPrice & onBehalf"""
+    draw_awardPrice_onBehalf(connexion)
     """numberTenders & typeOfContract"""
     # draw_numberTenders_typeOfContract(connexion)
     """awardEstimatedPrice & lotsNumber"""
@@ -169,8 +209,440 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         True
     )
 
+def draw_awardPrice_onBehalf(conn):
+    df = create_df_from_query(conn, "SELECT onBehalf, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "onBehalf",
+        "awardPrice",
+        "Boxplot des onBehalf en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT onBehalf as onBehalf, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE onBehalf IS NOT NULL
+        GROUP BY onBehalf
+
+        UNION
+
+        SELECT onBehalf as onBehalf, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE onBehalf IS NOT NULL
+        GROUP BY onBehalf;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "onBehalf",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de onBehalf",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_outOfDirectives(conn):
+    df = create_df_from_query(conn, "SELECT outOfDirectives, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "outOfDirectives",
+        "awardPrice",
+        "Boxplot des outOfDirectives en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT outOfDirectives as outOfDirectives, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE outOfDirectives IS NOT NULL
+        GROUP BY outOfDirectives
+
+        UNION
+
+        SELECT outOfDirectives as outOfDirectives, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE outOfDirectives IS NOT NULL
+        GROUP BY outOfDirectives;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "outOfDirectives",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de outOfDirectives",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_accelerated(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "awardPrice",
+        "Boxplot des accelerated en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_multipleCae(conn):
+    df = create_df_from_query(conn, "SELECT multipleCae, awardPrice FROM Lots")
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        "multipleCae",
+        "awardPrice",
+        "Boxplot des multipleCae en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_topType(conn):
+    df = create_df_from_query(conn, "SELECT topType, awardPrice FROM Lots")
+    print(df)
+    draw_box_plot_multiple_dense_show_moy_med_up_and_down(
+        df,
+        "topType",
+        "awardPrice",
+        "Boxplot des topType en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_contractDuration(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT contractDuration, awardPrice FROM Lots WHERE contractDuration IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["contractDuration"],
+        df["awardPrice"],
+        "contractDuration",
+        "awardPrice",
+        "Scatter Plot of contractDuration vs awardPrice",
+        False,
+        True,
+    )
+
+
+def draw_awardPrice_publicityDuration(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT publicityDuration, awardPrice FROM Lots WHERE publicityDuration IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["publicityDuration"],
+        df["awardPrice"],
+        "publicityDuration",
+        "awardPrice",
+        "Scatter Plot of publicityDuration vs awardPrice",
+        False,
+        True,
+    )
+
+
+def draw_accelerated_publicityDuration(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, publicityDuration FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "publicityDuration",
+        "Boxplot des accelerated en fonction des publicityDuration avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as publicityDuration, count(publicityDuration) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as publicityDuration, SUM(CASE WHEN publicityDuration IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "publicityDuration",
+        "Nombre d'occurence de publicityDuration pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_accelerated_topType(conn):
+    df = create_df_from_query(
+        conn,
+        f"SELECT topType, accelerated, COUNT(*) AS count FROM Lots GROUP BY topType, accelerated",
+    )
+    draw_multiple_hist(
+        df,
+        "topType",
+        "accelerated",
+        "Histogramme des accelerated en fonction des topType avec échelle logarithmique",
+        "Lots",
+        True,
+        True,
+        None,
+        90,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as topType, count(topType) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as topType, SUM(CASE WHEN topType IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "topType",
+        "Nombre d'occurence de topType pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_accelerated_typeOfContract(conn):
+    df = create_df_from_query(
+        conn,
+        f"SELECT typeOfContract, accelerated, COUNT(*) AS count FROM Lots GROUP BY typeOfContract, accelerated",
+    )
+    draw_multiple_hist(
+        df,
+        "typeOfContract",
+        "accelerated",
+        "Histogramme des accelerated en fonction des typeOfContract avec échelle logarithmique",
+        "Lots",
+        True,
+        True,
+        None,
+        90,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as typeOfContract, count(typeOfContract) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as typeOfContract, SUM(CASE WHEN typeOfContract IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "typeOfContract",
+        "Nombre d'occurence de typeOfContract pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_accelerated_awardEstimatedPrice(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, awardEstimatedPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Boxplot des accelerated en fonction des awardEstimatedPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as awardEstimatedPrice, count(awardEstimatedPrice) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as awardEstimatedPrice, SUM(CASE WHEN awardEstimatedPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Nombre d'occurence de awardEstimatedPrice pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_numberTenders_awardPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTenders, awardPrice FROM Lots WHERE numberTenders IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTenders"],
+        df["awardPrice"],
+        "numberTenders",
+        "awardPrice",
+        "Scatter Plot of numberTenders vs awardPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTendersSme_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme, awardEstimatedPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTendersSme"],
+        df["awardEstimatedPrice"],
+        "numberTendersSme",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTendersSme vs awardEstimatedPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTenders_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTenders, awardEstimatedPrice FROM Lots WHERE numberTenders IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTenders"],
+        df["awardEstimatedPrice"],
+        "numberTenders",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTenders vs awardEstimatedPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTendedrs_topType(conn):
+    df = create_df_from_query(conn, "SELECT topType, numberTenders FROM Lots")
+    draw_box_plot_multiple_dense(
+        df,
+        "topType",
+        "numberTenders",
+        "Boxplot des topType en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT topType as topType, 'occurence' as numberTenders, count(numberTenders) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+
+            UNION
+
+            SELECT topType as topType, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+        """,
+    )
+    draw_multiple_hist(
+        df2,
+        "topType",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de topType",
+        "Lots",
+        True,
+        True,
+        30,
+    )
+
+
+def draw_numberTenders_contractorSme(conn):
+    df = create_df_from_query(conn, "SELECT contractorSme, numberTenders FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "contractorSme",
+        "numberTenders",
+        "Boxplot des contractorSme en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT contractorSme as contractorSme, 'occurence' as numberTenders, count(numberTenders) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme
+
+        UNION
+
+        SELECT contractorSme as contractorSme, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "contractorSme",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de contractorSme",
+        "Lots",
+        True,
+    )
+
 
 def draw_numberTenders_typeOfContract(conn):
+
     df = create_df_from_query(
         conn,
         "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
@@ -210,6 +682,7 @@ def draw_numberTenders_typeOfContract(conn):
 
 
 def draw_numberTenders_numberTendersSme(conn):
+
     df = create_df_from_query(
         conn,
         "SELECT numberTenders, numberTendersSme From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
@@ -433,4 +906,118 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         "Lots",
         False,
         False,
+    )
+
+
+def draw_numberTendersSme_typeOfContract(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_cpv(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 2)  AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL AND SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) IN ( SELECT {colonne_2} FROM (SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, COUNT(*) FROM Lots WHERE {colonne_1} IS NOT NULL GROUP BY SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) ORDER BY COUNT(*) DESC LIMIT 45));",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df2,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des top 45 occurences de {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_fraAgreement(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_numberTendersSme_typeOfContract(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_cpv(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 2)  AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL AND SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) IN ( SELECT {colonne_2} FROM (SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, COUNT(*) FROM Lots WHERE {colonne_1} IS NOT NULL GROUP BY SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) ORDER BY COUNT(*) DESC LIMIT 45));",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df2,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des top 45 occurences de {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_fraAgreement(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
     )
