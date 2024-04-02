@@ -44,7 +44,97 @@ def script_pair(connexion):
     """awardEstimatedPrice & lotsNumber"""
     # draw_awardEstimatedPrice_lotsNumber(connexion)
     """onBehalf & typeOfContract"""
-    draw_onBehalf_typeOfContract(connexion)
+    # draw_onBehalf_typeOfContract(connexion)
+    """awardPrice & typeOfContracted"""
+    # draw_awardPrice_subContracted(connexion)
+    """awardPrice & numberTendersSme"""
+    # draw_awardPrice_numberTendersSme(connexion)
+    """awardPrice & lotsNumber"""
+    draw_awardPrice_lotsNumber(connexion)
+    """awardPrice & jointProcurement"""
+    # draw_awardPrice_jointProcurement(connexion)
+
+
+def draw_awardPrice_jointProcurement(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT awardPrice, jointProcurement From Lots WHERE awardPrice IS NOT null and jointProcurement IS NOT null ORDER BY awardPrice ASC",
+    )
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        f"jointProcurement",
+        f"awardPrice",
+        f"Boxplot des awardPrice en fonction des jointProcurement avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_lotsNumber(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT awardPrice, lotsNumber From Lots WHERE awardPrice IS NOT null AND LotsNumber IS NOT null AND lotsNumber NOT GLOB '*[a-zA-Z]*' AND lotsNumber NOT LIKE '%-%' AND lotsNumber NOT LIKE '%*%' AND lotsNumber NOT LIKE '%;%' ORDER BY lotsNumber ASC",
+    )
+    print(df)
+    df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
+    draw_scatter_plots(
+        df,
+        "awardPrice",
+        "lotsNumber",
+        "Nombre d'occurence de lotsNumber pour chaque element de awardPrice",
+        False,
+        True
+    )
+
+
+def draw_awardPrice_numberTendersSme(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT awardPrice, numberTendersSme From Lots WHERE awardPrice IS NOT null and numberTendersSme IS NOT null ORDER BY awardPrice ASC",
+    )
+
+    print(df)
+    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+        df,
+        "numberTendersSme",
+        "awardPrice",
+        "Boxplot des awardPrice en fonction des numberTendersSme avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_subContracted(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT awardPrice, subContracted From Lots WHERE awardPrice IS NOT null and subContracted IS NOT null ORDER BY awardPrice ASC",
+    )
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        f"subContracted",
+        f"awardPrice",
+        f"Boxplot des awardPrice en fonction des subContracted avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_typeOfContract(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT awardPrice, typeOfContract From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardPrice ASC",
+    )
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        f"typeOfContract",
+        f"awardPrice",
+        f"Boxplot des awardPrice en fonction des typeOfContract avec échelle logarithmique",
+        "Lots",
+        True,
+    )
 
 
 def draw_onBehalf_typeOfContract(conn):
@@ -53,12 +143,13 @@ def draw_onBehalf_typeOfContract(conn):
         "SELECT onBehalf, typeOfContract, count(onBehalf) AS 'NbonBehalf' FROM Lots GROUP BY onBehalf, typeOfContract",
     )
     print(df)
-    hist_pivot(df,
-        "typeOfContract",
-        "onBehalf",
-        "Boxplot des onBehalf en fonction des typeOfContract",
-        "Lots",
-        False,
+    hist_pivot(
+        df,
+       "typeOfContract",
+       "onBehalf",
+       "Histogramme cumulé des onBehalf en fonction des typeOfContract",
+       "Lots",
+       False,
     )
 
 
@@ -69,29 +160,6 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
     )
     print(df)
     df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
-    draw_box_plot_multiple(
-        df,
-        "awardEstimatedPrice",
-        "lotsNumber",
-        "Boxplot des awardEstimatedPrice en fonction des lotsNumber",
-        "Lots",
-        False,
-    )
-    df2 = create_df_from_query(
-        conn,
-        """SELECT awardEstimatedPrice as awardEstimatedPrice, 'occurence' as lotsNumber, count(lotsNumber) as count
-            FROM Lots
-            WHERE awardEstimatedPrice IS NOT NULL
-            GROUP BY awardEstimatedPrice
-
-            UNION
-
-            SELECT awardEstimatedPrice as awardEstimatedPrice, 'nullCount' as lotsNumber, SUM(CASE WHEN lotsNumber IS NULL THEN 1 ELSE 0 END) as count
-            FROM Lots
-            WHERE awardEstimatedPrice IS NOT NULL
-            GROUP BY awardEstimatedPrice
-        """,
-    )
     draw_scatter_plots(
         df,
         "awardEstimatedPrice",

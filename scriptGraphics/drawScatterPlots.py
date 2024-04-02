@@ -40,7 +40,8 @@ def draw_scatter_plots(df, xlabel, ylabel, title, xlog=None, ylog=None):
         plt.text(x[idx], y[idx], f"({x[idx]}, {y[idx]})", fontsize=9, ha="left")
 
     plt.text(
-        mean_x, mean_y, f"Mean\n({mean_x:.2f}, {mean_y:.2f})", fontsize=9, ha="left"
+        mean_x,
+        mean_y, f"Mean\n({mean_x:.2f}, {mean_y:.2f})", fontsize=9, ha="left"
     )
     plt.text(
         median_x,

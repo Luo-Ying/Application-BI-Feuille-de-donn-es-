@@ -143,7 +143,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.1,
-            20,
+            stats['50%'],
             f"Médiane: {stats['50%']:.2f}",
             va="center",
             ha="left",
@@ -151,7 +151,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.4,
-            20,
+            stats['50%'],
             f"Moyenne: {stats['mean']:.2f}",
             va="center",
             ha="left",
@@ -185,7 +185,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.2,
-            whisker_low - 2,
+            whisker_low,
             f"Whisker bas: {whisker_low:.2f}",
             va="center",
             ha="left",
@@ -193,7 +193,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.2,
-            whisker_high + 2,
+            whisker_high,
             f"Whisker haut: {whisker_high:.2f}",
             va="center",
             ha="left",
@@ -462,7 +462,7 @@ def draw_box_plot_multiple_numberTenders_NumberTendersSme(
         # Min
         plt.text(
             i + 0.1,
-            y_min / 1.2,
+            y_min / 3,
             f"{y_min:.2f}",
             va="center",
             ha="left",
@@ -473,7 +473,7 @@ def draw_box_plot_multiple_numberTenders_NumberTendersSme(
         # Max
         plt.text(
             i + 0.1,
-            y_max * 1.1,
+            y_max * 2,
             f"{y_max:.2f}",
             va="center",
             ha="left",
