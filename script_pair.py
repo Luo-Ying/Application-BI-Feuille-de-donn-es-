@@ -60,7 +60,22 @@ def script_pair(connexion):
     """awardPrice & publicityDuration"""
     # draw_awardPrice_publicityDuration(connexion)
     """awardPrice & contractDuration"""
-    draw_awardPrice_contractDuration(connexion)
+    # draw_awardPrice_contractDuration(connexion)
+    """awardPrice & topType"""
+    draw_awardPrice_topType(connexion)
+
+
+def draw_awardPrice_topType(conn):
+    df = create_df_from_query(conn, "SELECT topType, awardPrice FROM Lots")
+    print(df)
+    draw_box_plot_multiple_dense_show_moy_med_up_and_down(
+        df,
+        "topType",
+        "awardPrice",
+        "Boxplot des topType en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
 
 
 def draw_awardPrice_contractDuration(conn):
