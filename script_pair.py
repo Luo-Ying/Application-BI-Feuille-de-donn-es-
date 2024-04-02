@@ -49,6 +49,12 @@ def script_pair(connexion):
     # draw_numberTendersSme_awardEstimatedPrice(connexion)
     """numberTenders & awardPrice"""
     # draw_numberTenders_awardPrice(connexion)
+    """numberTendersSme & typeOfContract"""
+    # draw_numberTendersSme_typeOfContract(connexion, "numberTendersSme", "typeOfContract")
+    """awardPrice & cpv"""
+    # draw_awardPrice_cpv(connexion, "awardPrice", "cpv")
+    """awardPrice & fraAgreement"""
+    # draw_awardPrice_fraAgreement(connexion, "awardPrice", "fraAgreement")
     """accelerated & awardEstimatedPrice"""
     # draw_accelerated_awardEstimatedPrice(connexion)
     """accelerated & typeOfContract"""
@@ -386,15 +392,15 @@ def draw_accelerated_awardEstimatedPrice(conn):
 def draw_numberTenders_awardPrice(conn):
     df = create_df_from_query(
         conn,
-        "SELECT numberTendersSme, awardPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardPrice IS NOT null",
+        "SELECT numberTenders, awardPrice FROM Lots WHERE numberTenders IS NOT null AND awardPrice IS NOT null",
     )
     print(df)
     draw_scatter_plots(
-        df["numberTendersSme"],
+        df["numberTenders"],
         df["awardPrice"],
-        "numberTendersSme",
+        "numberTenders",
         "awardPrice",
-        "Scatter Plot of numberTendersSme vs awardPrice",
+        "Scatter Plot of numberTenders vs awardPrice",
         False,
         True,
     )
@@ -770,4 +776,61 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         "Lots",
         False,
         False,
+    )
+
+
+def draw_numberTendersSme_typeOfContract(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_cpv(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 2)  AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        connexion,
+        f"SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL AND SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) IN ( SELECT {colonne_2} FROM (SELECT SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) AS {colonne_2}, COUNT(*) FROM Lots WHERE {colonne_1} IS NOT NULL GROUP BY SUBSTR(CAST({colonne_2} AS TEXT), 1, 3) ORDER BY COUNT(*) DESC LIMIT 45));",
+    )
+    draw_box_plot_multiple_simple_stats(
+        df2,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des top 45 occurences de {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_fraAgreement(connexion, colonne_1, colonne_2):
+    df = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} from Lots WHERE {colonne_1} IS NOT NULL",
+    )
+    draw_box_plot_multiple(
+        df,
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Boxplot des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+        "Lots",
+        True,
     )
