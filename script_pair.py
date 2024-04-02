@@ -58,7 +58,26 @@ def script_pair(connexion):
     """accelerateed & publicityDuration"""
     # draw_accelerated_publicityDuration(connexion)
     """awardPrice & publicityDuration"""
-    draw_awardPrice_publicityDuration(connexion)
+    # draw_awardPrice_publicityDuration(connexion)
+    """awardPrice & contractDuration"""
+    draw_awardPrice_contractDuration(connexion)
+
+
+def draw_awardPrice_contractDuration(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT contractDuration, awardPrice FROM Lots WHERE contractDuration IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["contractDuration"],
+        df["awardPrice"],
+        "contractDuration",
+        "awardPrice",
+        "Scatter Plot of contractDuration vs awardPrice",
+        False,
+        True,
+    )
 
 
 def draw_awardPrice_publicityDuration(conn):
