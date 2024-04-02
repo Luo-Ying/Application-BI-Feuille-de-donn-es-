@@ -24,7 +24,8 @@ def main():
         ##################################################
         # ############ Attribut En Paire #################
         ##################################################
-        calcule_correlation_Lots(conn)
+        create_csv_from_database()
+        # calcule_correlation_Lots(conn)
         # script_pair(conn)
 
     close_db(conn)
