@@ -47,7 +47,43 @@ def script_pair(connexion):
     """numberTendersSme & awardEstimatedPrice"""
     # draw_numberTendersSme_awardEstimatedPrice(connexion)
     """numberTenders & awardPrice"""
-    draw_numberTenders_awardPrice(connexion)
+    # draw_numberTenders_awardPrice(connexion)
+    """accelerated & awardEstimatedPrice"""
+    draw_accelerated_awardEstimatedPrice(connexion)
+
+
+def draw_accelerated_awardEstimatedPrice(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, awardEstimatedPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Boxplot des accelerated en fonction des awardEstimatedPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as awardEstimatedPrice, count(awardEstimatedPrice) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as awardEstimatedPrice, SUM(CASE WHEN awardEstimatedPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Nombre d'occurence de awardEstimatedPrice pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
 
 
 def draw_numberTenders_awardPrice(conn):
