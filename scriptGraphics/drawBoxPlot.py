@@ -143,15 +143,15 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.1,
-            20,
+            300000000,
             f"Médiane: {stats['50%']:.2f}",
             va="center",
             ha="left",
             backgroundcolor="w",
         )
         plt.text(
-            i + 0.4,
-            20,
+            i + 0.1,
+            100000000,
             f"Moyenne: {stats['mean']:.2f}",
             va="center",
             ha="left",
@@ -193,7 +193,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
         )
         plt.text(
             i + 0.2,
-            whisker_high + 2,
+            whisker_high + 1000000,
             f"Whisker haut: {whisker_high:.2f}",
             va="center",
             ha="left",

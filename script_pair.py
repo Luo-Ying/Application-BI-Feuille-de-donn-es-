@@ -66,7 +66,79 @@ def script_pair(connexion):
     """awardPrice & multipleCae"""
     # draw_awardPrice_multipleCae(connexion)
     """awardPrice & accelerated"""
-    draw_awardPrice_accelerated(connexion)
+    # draw_awardPrice_accelerated(connexion)
+    """awardPrice & outOfDirectives"""
+    # draw_awardPrice_outOfDirectives(connexion)
+    """awardPrice & onBehalf"""
+    draw_awardPrice_onBehalf(connexion)
+
+
+def draw_awardPrice_onBehalf(conn):
+    df = create_df_from_query(conn, "SELECT onBehalf, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "onBehalf",
+        "awardPrice",
+        "Boxplot des onBehalf en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT onBehalf as onBehalf, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE onBehalf IS NOT NULL
+        GROUP BY onBehalf
+
+        UNION
+
+        SELECT onBehalf as onBehalf, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE onBehalf IS NOT NULL
+        GROUP BY onBehalf;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "onBehalf",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de onBehalf",
+        "Lots",
+        True,
+    )
+
+
+def draw_awardPrice_outOfDirectives(conn):
+    df = create_df_from_query(conn, "SELECT outOfDirectives, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "outOfDirectives",
+        "awardPrice",
+        "Boxplot des outOfDirectives en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT outOfDirectives as outOfDirectives, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE outOfDirectives IS NOT NULL
+        GROUP BY outOfDirectives
+
+        UNION
+
+        SELECT outOfDirectives as outOfDirectives, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE outOfDirectives IS NOT NULL
+        GROUP BY outOfDirectives;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "outOfDirectives",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de outOfDirectives",
+        "Lots",
+        True,
+    )
 
 
 def draw_awardPrice_accelerated(conn):
