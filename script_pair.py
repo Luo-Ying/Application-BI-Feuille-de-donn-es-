@@ -49,7 +49,49 @@ def script_pair(connexion):
     """numberTenders & awardPrice"""
     # draw_numberTenders_awardPrice(connexion)
     """accelerated & awardEstimatedPrice"""
-    draw_accelerated_awardEstimatedPrice(connexion)
+    # draw_accelerated_awardEstimatedPrice(connexion)
+    """accelerated & typeOfContract"""
+    draw_accelerated_typeOfContract(connexion)
+
+
+def draw_accelerated_typeOfContract(conn):
+    df = create_df_from_query(
+        conn,
+        f"SELECT typeOfContract, accelerated, COUNT(*) AS count FROM Lots GROUP BY typeOfContract, accelerated",
+    )
+    draw_multiple_hist(
+        df,
+        "typeOfContract",
+        "accelerated",
+        "Histogramme des accelerated en fonction des typeOfContract avec échelle logarithmique",
+        "Lots",
+        True,
+        True,
+        None,
+        90,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as typeOfContract, count(typeOfContract) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as typeOfContract, SUM(CASE WHEN typeOfContract IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "typeOfContract",
+        "Nombre d'occurence de typeOfContract pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
 
 
 def draw_accelerated_awardEstimatedPrice(conn):
