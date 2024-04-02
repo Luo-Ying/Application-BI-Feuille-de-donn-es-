@@ -62,7 +62,22 @@ def script_pair(connexion):
     """awardPrice & contractDuration"""
     # draw_awardPrice_contractDuration(connexion)
     """awardPrice & topType"""
-    draw_awardPrice_topType(connexion)
+    # draw_awardPrice_topType(connexion)
+    """awardPrice & multipleCae"""
+    draw_awardPrice_multipleCae(connexion)
+
+
+def draw_awardPrice_multipleCae(conn):
+    df = create_df_from_query(conn, "SELECT multipleCae, awardPrice FROM Lots")
+    print(df)
+    draw_box_plot_multiple(
+        df,
+        "multipleCae",
+        "awardPrice",
+        "Boxplot des multipleCae en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
 
 
 def draw_awardPrice_topType(conn):
