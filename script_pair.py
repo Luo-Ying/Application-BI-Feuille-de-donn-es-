@@ -2,6 +2,7 @@ from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawScatterPlots import *
+from scriptGraphics.drawLineChart import *
 from scriptReadSql import *
 from tabulate import tabulate
 
@@ -55,7 +56,26 @@ def script_pair(connexion):
     """accelerated & topType"""
     # draw_accelerated_topType(connexion)
     """accelerateed & publicityDuration"""
-    draw_accelerated_publicityDuration(connexion)
+    # draw_accelerated_publicityDuration(connexion)
+    """awardPrice & publicityDuration"""
+    draw_awardPrice_publicityDuration(connexion)
+
+
+def draw_awardPrice_publicityDuration(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT publicityDuration, awardPrice FROM Lots WHERE publicityDuration IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["publicityDuration"],
+        df["awardPrice"],
+        "publicityDuration",
+        "awardPrice",
+        "Scatter Plot of publicityDuration vs awardPrice",
+        False,
+        True,
+    )
 
 
 def draw_accelerated_publicityDuration(conn):
