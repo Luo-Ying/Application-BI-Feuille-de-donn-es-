@@ -64,7 +64,43 @@ def script_pair(connexion):
     """awardPrice & topType"""
     # draw_awardPrice_topType(connexion)
     """awardPrice & multipleCae"""
-    draw_awardPrice_multipleCae(connexion)
+    # draw_awardPrice_multipleCae(connexion)
+    """awardPrice & accelerated"""
+    draw_awardPrice_accelerated(connexion)
+
+
+def draw_awardPrice_accelerated(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, awardPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "awardPrice",
+        "Boxplot des accelerated en fonction des awardPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as awardPrice, count(awardPrice) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as awardPrice, SUM(CASE WHEN awardPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "awardPrice",
+        "Nombre d'occurence de awardPrice pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
 
 
 def draw_awardPrice_multipleCae(conn):
