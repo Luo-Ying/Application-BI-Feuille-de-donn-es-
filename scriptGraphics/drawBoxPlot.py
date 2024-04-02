@@ -151,7 +151,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
             backgroundcolor="w",
         )
         plt.text(
-            i + 0.4,
+            i + 0.25,
             stats['50%'],
             f"Moyenne: {stats['mean']:.2f}",
             va="center",
@@ -185,15 +185,15 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
             color="red",
         )
         plt.text(
-            i + 0.2,
-            whisker_low,
+            i + 0.1,
+            whisker_low + 2,
             f"Whisker bas: {whisker_low:.2f}",
             va="center",
             ha="left",
             backgroundcolor="w",
         )
         plt.text(
-            i + 0.2,
+            i + 0.1,
             whisker_high,
             f"Whisker haut: {whisker_high:.2f}",
             va="center",
@@ -496,72 +496,85 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
 
 
 def draw_box_plot_multiple_numberTenders_NumberTendersSme(
-    data, xlabel, ylabel, title, file, log=False, dropNaN=True
+        data, xlabel, ylabel, title, file, log=False, dropNaN=True, bin_width=5
 ):
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
 
-    unique_values = data[xlabel].unique()
-    data_to_plot = [data[data[xlabel] == val][ylabel] for val in unique_values]
+    # Determine the range for binning based on min and max of x values
+    min_x, max_x = 5, data[xlabel].max()
+    bins = np.arange(min_x - bin_width, max_x + bin_width, bin_width)
+
+    # Create a new column 'x_bin' for the binned x values
+    data['x_bin'] = pd.cut(data[xlabel], bins=bins, include_lowest=True, right=False)
+
+    # Group the data by 'x_bin' and collect the y values in lists
+    grouped_data = data.groupby('x_bin')[ylabel].apply(list).reset_index(name='y_values')
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
-    # Creating plot
+    # Creating plot with binned x labels
     boxplot_elements = ax.boxplot(
-        data_to_plot, patch_artist=True, labels=[str(val) for val in unique_values]
+        grouped_data['y_values'],
+        patch_artist=True,
+        labels=[str(interval) for interval in grouped_data['x_bin']]
     )
 
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
 
-    for i, val in enumerate(unique_values, start=1):
-        stats = data[data[xlabel] == val][ylabel].describe()
-        y_min, y_max = stats["min"], stats["max"]
-        whiskers = [
-            item.get_ydata()
-            for item in boxplot_elements["whiskers"][2 * (i - 1) : 2 * i]
-        ]
-        # Moyenne
-        # if y_max - y_min > 20:
-        plt.text(
-            i + 0.4,
-            stats["50%"],
-            f"{stats['mean']:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="black",
-        )
-        # Min
-        plt.text(
-            i + 0.1,
-            y_min / 3,
-            f"{y_min:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="blue",
-            rotation=45,
-        )
-        # Max
-        plt.text(
-            i + 0.1,
-            y_max * 2,
-            f"{y_max:.2f}",
-            va="center",
-            ha="left",
-            # backgroundcolor="w",
-            color="red",
-            rotation=45,
-        )
-
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
-    else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
-    # show plot
+
+    # Rotate the x-axis labels for better readability
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+
+    # Annotate statistics for each bin
+    for i, (interval, y_values) in enumerate(zip(grouped_data['x_bin'], grouped_data['y_values']), start=1):
+        if y_values:  # Check if y_values list is not empty
+            stats = pd.Series(y_values).describe()
+            if 'min' in stats.index and 'max' in stats.index:
+                y_min, y_max = stats["min"], stats["max"]
+                median = stats["50%"]
+                mean = stats["mean"]
+
+                # Display the mean value
+                plt.text(
+                    i + 0.3,
+                    median,
+                    f"{median:.2f}",
+                    va="center",
+                    ha="left",
+                    color="black",
+                )
+                # Display the min value
+                plt.text(
+                    i + 0.3,
+                    y_min,
+                    f"{y_min:.2f}",
+                    va="center",
+                    ha="left",
+                    color="blue",
+                )
+                # Display the max value
+                plt.text(
+                    i + 0.3,
+                    y_max + 10,
+                    f"{y_max:.2f}",
+                    va="center",
+                    ha="left",
+                    color="red",
+                )
+            else:
+                print(f"No statistical data for {interval}")
+        else:
+            print(f"No data to plot for {interval}")
+
+    # Save the plot
+    plt.tight_layout()  # Adjust layout to fit everything nicely
+    generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log" if log else "boxplot")
+
     plt.show()
 
 

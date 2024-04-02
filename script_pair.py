@@ -696,6 +696,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "Boxplot des numberTenders en fonction des numberTendersSme avec échelle logarithmique",
         "Lots",
         True,
+        True,
     )
 
 
