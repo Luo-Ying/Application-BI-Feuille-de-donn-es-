@@ -1,6 +1,7 @@
 from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
 from scriptGraphics.drawHist import *
+from scriptGraphics.drawScatterPlots import *
 from scriptReadSql import *
 from tabulate import tabulate
 
@@ -35,8 +36,176 @@ def script_pair(connexion):
     # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
+    """numberTenders & contractorSme (à voir)"""
+    # draw_numberTenders_contractorSme(connexion)
+    """numberTenders & topType"""
+    # draw_numberTendedrs_topType(connexion)
     """numberTenders & typeOfContract"""
-    draw_numberTenders_typeOfContract(connexion)
+    # draw_numberTenders_typeOfContract(connexion)
+    """numberTenders & awardEstimatedPrice"""
+    # draw_numberTenders_awardEstimatedPrice(connexion)
+    """numberTendersSme & awardEstimatedPrice"""
+    # draw_numberTendersSme_awardEstimatedPrice(connexion)
+    """numberTenders & awardPrice"""
+    # draw_numberTenders_awardPrice(connexion)
+    """accelerated & awardEstimatedPrice"""
+    draw_accelerated_awardEstimatedPrice(connexion)
+
+
+def draw_accelerated_awardEstimatedPrice(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, awardEstimatedPrice FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Boxplot des accelerated en fonction des awardEstimatedPrice avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as awardEstimatedPrice, count(awardEstimatedPrice) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as awardEstimatedPrice, SUM(CASE WHEN awardEstimatedPrice IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "awardEstimatedPrice",
+        "Nombre d'occurence de awardEstimatedPrice pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
+
+
+def draw_numberTenders_awardPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme, awardPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTendersSme"],
+        df["awardPrice"],
+        "numberTendersSme",
+        "awardPrice",
+        "Scatter Plot of numberTendersSme vs awardPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTendersSme_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme, awardEstimatedPrice FROM Lots WHERE numberTendersSme IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTendersSme"],
+        df["awardEstimatedPrice"],
+        "numberTendersSme",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTendersSme vs awardEstimatedPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTenders_awardEstimatedPrice(conn):
+    df = create_df_from_query(
+        conn,
+        "SELECT numberTenders, awardEstimatedPrice FROM Lots WHERE numberTenders IS NOT null AND awardEstimatedPrice IS NOT null",
+    )
+    print(df)
+    draw_scatter_plots(
+        df["numberTenders"],
+        df["awardEstimatedPrice"],
+        "numberTenders",
+        "awardEstimatedPrice",
+        "Scatter Plot of numberTenders vs awardEstimatedPrice",
+        False,
+        True,
+    )
+
+
+def draw_numberTendedrs_topType(conn):
+    df = create_df_from_query(conn, "SELECT topType, numberTenders FROM Lots")
+    draw_box_plot_multiple_dense(
+        df,
+        "topType",
+        "numberTenders",
+        "Boxplot des topType en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT topType as topType, 'occurence' as numberTenders, count(numberTenders) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+
+            UNION
+
+            SELECT topType as topType, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+            FROM Lots
+            WHERE topType IS NOT NULL
+            GROUP BY topType
+        """,
+    )
+    draw_multiple_hist(
+        df2,
+        "topType",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de topType",
+        "Lots",
+        True,
+        True,
+        30,
+    )
+
+
+def draw_numberTenders_contractorSme(conn):
+    df = create_df_from_query(conn, "SELECT contractorSme, numberTenders FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "contractorSme",
+        "numberTenders",
+        "Boxplot des contractorSme en fonction des numberTenders avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT contractorSme as contractorSme, 'occurence' as numberTenders, count(numberTenders) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme
+
+        UNION
+
+        SELECT contractorSme as contractorSme, 'nullCount' as numberTenders, SUM(CASE WHEN numberTenders IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE contractorSme IS NOT NULL
+        GROUP BY contractorSme;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "contractorSme",
+        "numberTenders",
+        "Nombre d'occurence de numberTenders pour chaque element de contractorSme",
+        "Lots",
+        True,
+    )
 
 
 def draw_numberTenders_typeOfContract(conn):
@@ -77,6 +246,7 @@ def draw_numberTenders_typeOfContract(conn):
         "Lots",
         True,
     )
+
 
 def draw_numberTenders_numberTendersSme(conn):
 
