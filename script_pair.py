@@ -1,6 +1,6 @@
 import re
 
-from scriptGraphics.drawScatterPlots import draw_scatter_plots
+from scriptGraphics.drawScatterPlots import draw_scatter_plots2
 from scriptGraphics.drawTop import get_top_multiple, get_top
 from scriptReadSql import create_df_from_query
 from scriptGraphics.drawBoxPlot import *
@@ -78,7 +78,7 @@ def draw_awardPrice_lotsNumber(conn):
     )
     print(df)
     df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
-    draw_scatter_plots(
+    draw_scatter_plots2(
         df,
         "awardPrice",
         "lotsNumber",
@@ -160,7 +160,7 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
     )
     print(df)
     df['lotsNumber'] = pd.to_numeric(df['lotsNumber'], errors='coerce')
-    draw_scatter_plots(
+    draw_scatter_plots2(
         df,
         "awardEstimatedPrice",
         "lotsNumber",
