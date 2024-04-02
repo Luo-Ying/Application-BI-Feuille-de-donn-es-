@@ -693,10 +693,9 @@ def draw_numberTenders_numberTendersSme(conn):
         df,
         "numberTenders",
         "numberTendersSme",
-        "Boxplot des numberTenders en fonction des numberTendersSme avec échelle logarithmique",
-        "Lots",
-        True,
-        True,
+        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders",
+        False,
+        True
     )
 
 
