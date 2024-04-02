@@ -3,10 +3,12 @@ import numpy as np
 import pandas as pd
 
 
-def draw_scatter_plots(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
+def draw_scatter_plots(df, xlabel, ylabel, title, xlog=None, ylog=None):
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
+    x = df[xlabel]
+    y = df[ylabel]
     plt.scatter(x, y)
 
     if xlog:
@@ -32,6 +34,8 @@ def draw_scatter_plots(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
     median_x = np.median(x)
     median_y = np.median(y)
 
+    print(mean_x)
+    print(mean_y)
     for idx in {min_x_idx, max_x_idx, min_y_idx, max_y_idx}:
         plt.text(x[idx], y[idx], f"({x[idx]}, {y[idx]})", fontsize=9, ha="left")
 
