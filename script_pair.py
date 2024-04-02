@@ -53,7 +53,43 @@ def script_pair(connexion):
     """accelerated & typeOfContract"""
     # draw_accelerated_typeOfContract(connexion)
     """accelerated & topType"""
-    draw_accelerated_topType(connexion)
+    # draw_accelerated_topType(connexion)
+    """accelerateed & publicityDuration"""
+    draw_accelerated_publicityDuration(connexion)
+
+
+def draw_accelerated_publicityDuration(conn):
+    df = create_df_from_query(conn, "SELECT accelerated, publicityDuration FROM Lots")
+    draw_box_plot_multiple(
+        df,
+        "accelerated",
+        "publicityDuration",
+        "Boxplot des accelerated en fonction des publicityDuration avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+    df2 = create_df_from_query(
+        conn,
+        """SELECT accelerated as accelerated, 'occurence' as publicityDuration, count(publicityDuration) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated
+
+        UNION
+
+        SELECT accelerated as accelerated, 'nullCount' as publicityDuration, SUM(CASE WHEN publicityDuration IS NULL THEN 1 ELSE 0 END) as count
+        FROM Lots
+        WHERE accelerated IS NOT NULL
+        GROUP BY accelerated;""",
+    )
+    draw_multiple_hist(
+        df2,
+        "accelerated",
+        "publicityDuration",
+        "Nombre d'occurence de publicityDuration pour chaque element de accelerated",
+        "Lots",
+        True,
+    )
 
 
 def draw_accelerated_topType(conn):
