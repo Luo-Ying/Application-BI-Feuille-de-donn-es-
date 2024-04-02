@@ -2,3 +2,8 @@ Input/*
 Output/*
 Sujet/*
 fig/*
+__pycache__/*
+scriptGraphics/__pycache__/*
+*.ipynb_checkpoints
+*.csv
+testGraphics.ipynb
