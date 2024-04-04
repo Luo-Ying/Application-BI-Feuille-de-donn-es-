@@ -16,7 +16,41 @@ def script_clean_variables_manually(connexion):
     """numberTendersSme"""
     # replace_abnormal_numberTendersSme(connexion)
     """contractDuration"""
-    replace_abnormal_contractDuration(connexion)
+    # replace_abnormal_contractDuration(connexion)
+    """awardPrice"""
+    clean_awardPrice(connexion)
+
+def clean_awardPrice(conn):
+    # Fetching top contract for type 'S'
+    df_top1_contractS = create_df_from_query(
+        conn,
+        "SELECT lotId, awardPrice, awardEstimatedPrice, typeOfContract FROM Lots WHERE typeOfContract = 'S' ORDER BY awardPrice DESC LIMIT 1;"
+    )
+
+    # Fetching top contract for type 'U'
+    df_top1_contractU = create_df_from_query(
+        conn,
+        "SELECT lotId, awardPrice, awardEstimatedPrice, typeOfContract FROM Lots WHERE typeOfContract = 'U' ORDER BY awardPrice DESC LIMIT 1;"
+    )
+
+    # Modifying awardPrice based on awardEstimatedPrice for contractS
+    df_top1_contractS['awardPrice'] = df_top1_contractS['awardEstimatedPrice'] if df_top1_contractS['awardEstimatedPrice'] is not None else None
+
+    # Modifying awardPrice based on awardEstimatedPrice for contractU
+    df_top1_contractU['awardPrice'] = df_top1_contractU['awardEstimatedPrice'] if df_top1_contractU['awardEstimatedPrice'] is not None else None
+
+    cursor = conn.cursor()
+    for _, row in df_top1_contractS.iterrows():
+        cursor.execute("UPDATE Lots SET awardPrice = ? WHERE lotId = ?", (str(row['awardPrice']), row['lotId']))
+    conn.commit()
+
+    cursor = conn.cursor()
+    for _, row in df_top1_contractU.iterrows():
+        cursor.execute("UPDATE Lots SET awardPrice = ? WHERE lotId = ?", (str(row['awardPrice']), row['lotId']))
+    conn.commit()
+
+    print("Mise à jour effectuée avec succès.")
+
 
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(

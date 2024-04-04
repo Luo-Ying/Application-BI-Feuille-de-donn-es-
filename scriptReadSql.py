@@ -1,5 +1,13 @@
 # Chemin du sqlite => "D:\Program Files\sqlite-tools-win-x64-3450100\sqlite3.exe"
 
+""""
+.open "Foppa - copy.db"
+.headers on
+.mode table
+.tables
+
+"""
+
 import sqlite3
 from sqlite3 import Error
 import pandas as pd

@@ -36,9 +36,9 @@ def script_pair(connexion):
     """cancelled & topType"""
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     """awardEstimatedPrice & awardPrice"""
-    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    draw_numberTenders_numberTendersSme(connexion)
+    # draw_numberTenders_numberTendersSme(connexion)
     """numberTenders & contractorSme (à voir)"""
     # draw_numberTenders_contractorSme(connexion)
     """numberTenders & topType"""
@@ -1182,31 +1182,31 @@ def draw_numberTenders_numberTendersSme(conn):
         True
     )
 
-    # # print(df)
-    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
-    #     df_contratS,
-    #     "numberTenders",
-    #     "numberTendersSme",
-    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'S'",
-    #     False,
-    #     True,
-    # )
-    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
-    #     df_contratW,
-    #     "numberTenders",
-    #     "numberTendersSme",
-    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast W'",
-    #     False,
-    #     True,
-    # )
-    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
-    #     df_contratU,
-    #     "numberTenders",
-    #     "numberTendersSme",
-    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'U'",
-    #     False,
-    #     True,
-    # )
+    # print(df)
+    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+        df_contratS,
+        "numberTenders",
+        "numberTendersSme",
+        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'S'",
+        False,
+        True,
+    )
+    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+        df_contratW,
+        "numberTenders",
+        "numberTendersSme",
+        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast W'",
+        False,
+        True,
+    )
+    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+        df_contratU,
+        "numberTenders",
+        "numberTendersSme",
+        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'U'",
+        False,
+        True,
+    )
 
 
 def draw_cancelled_awardPrice(conn):
