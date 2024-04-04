@@ -49,7 +49,7 @@ def convert_string_contractorSme(conn):
     cursor = conn.cursor()
     cursor.execute("UPDATE Lots SET contractorSme = NULL WHERE contractorSme NOT IN ('0', '1')")
     conn.commit()
-    print("Mise à jour effectuée : valeurs non conformes remplacées et type de colonne modifié.")
+    print("Mise à jour effectuée pour tous les contractorSme spécifiés.")
 
 def replace_abnormal_numberTendersSme(conn):
     cursor = conn.cursor()
