@@ -64,7 +64,7 @@ def script_single(connexion):
     """type"""
     # draw_type(connexion)
     """totalLots"""
-    draw_totalLots(connexion, "totalLots")
+    # draw_totalLots(connexion, "totalLots")
 
 
 def draw_departement(conn):

@@ -20,7 +20,7 @@ def main():
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        # script_single(conn)
+        script_single(conn)
 
         ##################################################
         # ############ Attribut En Paire #################
@@ -28,7 +28,7 @@ def main():
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
         # script_pair(conn)
-        script_clean_variables_manually(conn)
+        # script_clean_variables_manually(conn)
 
     close_db(conn)
 
