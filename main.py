@@ -1,11 +1,11 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
+from script_correct_value_automatically import *
 from script_single import *
 from script_calcule_correlation_paires import *
 from script_single import script_single
 from script_pair import script_pair
-from script_clean_variables_manually import *
 
 
 def main():
@@ -16,6 +16,7 @@ def main():
 
     conn = create_connection(database)
     with conn:
+        # correctedData(conn)
         # draw_numberTenders_numberTenderSme(conn)
 
         ##################################################
