@@ -126,7 +126,7 @@ def draw_type(conn):
 
 def draw_weight(conn):
     df = create_df_from_query(
-        conn, "SELECT weight, count(weight) AS 'NbWeight' FROM Criteria GROUP BY weight"
+        conn, "SELECT weight FROM Criteria"
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_box_plot(
@@ -137,8 +137,11 @@ def draw_weight(conn):
         "Criteria",
         True,
     )
+    df2 = create_df_from_query(
+        conn, "SELECT weight, count(weight) AS 'NbWeight' FROM Criteria GROUP BY weight"
+    )
     draw_custom_hist(
-        df,
+        df2,
         "weight",
         "NbWeight",
         "Distribution des poids par tranche de 50000",
