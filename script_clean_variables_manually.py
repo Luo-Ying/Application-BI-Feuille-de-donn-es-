@@ -18,7 +18,11 @@ def script_clean_variables_manually(connexion):
     """contractDuration"""
     # replace_abnormal_contractDuration(connexion)
     """lotsNumber"""
-    # replace_replace_lotsNumber(connexion)
+    # replace_total_lotsNumber(connexion)
+    """publicityDuration"""
+    # replace_values_publicityDuration(connexion)
+    """awardPrice""" 
+    # replace_values_awardPrice(connexion)
 
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(
@@ -57,7 +61,7 @@ def replace_abnormal_numberTendersSme(conn):
     cursor = conn.cursor()
     cursor.execute("""UPDATE Lots SET numberTendersSme = numberTenders WHERE numberTendersSme > numberTenders""")
     conn.commit()
-    print("Mise à jour effectuée pour tous les lotId spécifiés.")
+    print("Mise à jour effectuée pour tous les numberTendersSme spécifiés.")
 
 def replace_abnormal_contractDuration(conn):
     cursor = conn.cursor()
@@ -65,7 +69,7 @@ def replace_abnormal_contractDuration(conn):
     conn.commit()
     print("Mise à jour effectuée pour les contractDuration spécifiés.")
 
-def replace_replace_lotsNumber(conn):
+def replace_total_lotsNumber(conn):
     cursor = conn.cursor()
     df = create_df_from_query(
         conn,
@@ -79,3 +83,14 @@ def replace_replace_lotsNumber(conn):
 
     df.to_sql(name='Lots', if_exists='replace', con=conn)
     print("Mise à jour effectuée pour les lotsNumber spécifiés.")
+
+def replace_values_publicityDuration(conn):
+    cursor = conn.cursor()
+    cursor.execute("UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration < 0 ")
+    cursor.execute("UPDATE Lots SET publicityDuration = 5 WHERE publicityDuration < 6 ")
+    cursor.execute("UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration > 144 ")
+    conn.commit()
+    print("Mise à jour effectuée pour tous les publicityDuration spécifiés.")
+
+# def replace_values_awardPrice(conn):
+    
