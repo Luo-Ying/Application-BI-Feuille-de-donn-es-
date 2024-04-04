@@ -221,7 +221,7 @@ def draw_numberTendersSme(conn):
         "numberTendersSme",
         "Boxplot des numberTendersSme avec échelle logarithmique",
         "Lots",
-        True
+        True,
     )
     draw_custom_hist(
         df,
@@ -471,30 +471,21 @@ def draw_awardEstimatedPrice_2(conn):
 
 
 def draw_award_price(connexion):
+    draw_awardPrice_2(connexion)
     df = create_df_from_query(
         connexion,
-        f"SELECT awardPrice, COUNT(awardPrice) AS 'NbawardPrice' FROM Lots GROUP BY awardPrice UNION ALL SELECT 'NaN' AS awardPrice, COUNT(*) AS 'NbawardPrice' FROM Lots WHERE awardPrice IS NULL ORDER BY NbawardPrice DESC",
+        f"SELECT awardPrice From Lots WHERE awardPrice IS NOT null",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot_special(
-    #     df,
-    #     "awardPrice",
-    #     "awardPrice",
-    #     f"Boxplot des awardPrice avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    #     True,
-    # )
-    draw_awardPrice_2(connexion)
+    print(df)
     df2 = create_df_from_query(
         connexion,
-        f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardPrice ASC",
+        f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null",
     )
     draw_box_plot_special(
-        df2,
+        df,
         "awardPrice",
         "awardPrice",
-        f"Boxplot des awardPrice avec échelle logarithmique",
+        f"Boxplot des awardPrice",
         "Lots",
         True,
         True,

@@ -203,9 +203,9 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
     plt.show()
 
@@ -276,11 +276,11 @@ def draw_box_plot_multiple_dense(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_dense_show_moy_med_up_and_down(
@@ -349,11 +349,11 @@ def draw_box_plot_multiple_dense_show_moy_med_up_and_down(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_multiple_box_plot(data, title, xlabel=None, ylabel=None):
@@ -363,15 +363,14 @@ def draw_multiple_box_plot(data, title, xlabel=None, ylabel=None):
     plt.xticks(rotation=45)
     plt.ylabel(ylabel)
     plt.yscale("log")
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
 
     data[xlabel] = data[xlabel].astype(float)
-
     if dropNaN:
-        data = data.dropna(subset=[xlabel])
+        data = data.dropna(subset=[xlabel, ylabel])
 
     # print(data.head())
     fig, ax = plt.subplots(figsize=(20, 10))
@@ -492,7 +491,7 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
     else:
         generateFileChart(file, xlabel, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_numberTenders_NumberTendersSme(
@@ -577,11 +576,9 @@ def draw_box_plot_multiple_numberTenders_NumberTendersSme(
 
     # Save the plot
     plt.tight_layout()  # Adjust layout to fit everything nicely
-    generateFileChart(
-        file, xlabel + "_" + ylabel, "boxplot_with_log" if log else "boxplot"
-    )
+    generateFileChart(file, title, "boxplot_with_log" if log else "boxplot")
 
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_numberTenders_typeOfContract(
@@ -652,11 +649,11 @@ def draw_box_plot_multiple_numberTenders_typeOfContract(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_simple_stats(
@@ -708,11 +705,11 @@ def draw_box_plot_multiple_simple_stats(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_simple_stats(
@@ -764,8 +761,8 @@ def draw_box_plot_multiple_simple_stats(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()

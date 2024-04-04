@@ -10,8 +10,8 @@ from script_clean_variables_manually import *
 
 def main():
     # database = "Input\\Foppa.db"
-    # # database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa.db"
-    database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
+    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa copy.db"
+    # database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
     # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
@@ -21,19 +21,22 @@ def main():
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        script_single(conn)
+        # script_single(conn)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
-        script_pair(conn)
+        # script_pair(conn)
 
         ##################################################
         ################## Netoyage ######################
-        ##################################################        
-        # script_clean_variables_manually(conn)
+        ##################################################
+        script_clean_variables_manually(conn)
+
+        script_single(conn)
+        script_pair(conn)
 
     close_db(conn)
 
