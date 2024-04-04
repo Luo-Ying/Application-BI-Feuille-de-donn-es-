@@ -163,6 +163,7 @@ def draw_awardPrice_lotsNumber(conn):
         "lotsNumber",
         "awardPrice",
         "Scatterplot de awardPrice pour chaque element de lotsNumber en type de contrat S",
+        "Lots",
         True,
         True,
     )
@@ -171,6 +172,7 @@ def draw_awardPrice_lotsNumber(conn):
         "lotsNumber",
         "awardPrice",
         "Scatterplot de awardPrice pour chaque element de lotsNumber en type de contrat W",
+        "Lots",
         True,
         True,
     )
@@ -179,6 +181,7 @@ def draw_awardPrice_lotsNumber(conn):
         "lotsNumber",
         "awardPrice",
         "Scatterplot de awardPrice pour chaque element de lotsNumber en type de contrat U",
+        "Lots",
         True,
         True,
     )
@@ -189,8 +192,6 @@ def draw_awardPrice_numberTendersSme(conn):
         conn,
         "SELECT awardPrice, numberTendersSme From Lots WHERE awardPrice IS NOT null and numberTendersSme IS NOT null ORDER BY awardPrice ASC",
     )
-
-    print(df)
     draw_box_plot_multiple_numberTenders_NumberTendersSme(
         df,
         "numberTendersSme",
@@ -199,6 +200,46 @@ def draw_awardPrice_numberTendersSme(conn):
         "Lots",
         True,
     )
+    df_contractS = create_df_from_query(
+        conn,
+        "SELECT awardPrice, numberTendersSme From Lots WHERE typeOfContract = 'S'",
+    )
+    df_contractW = create_df_from_query(
+        conn,
+        "SELECT awardPrice, numberTendersSme From Lots WHERE typeOfContract = 'W'",
+    )
+    df_contractU = create_df_from_query(
+        conn,
+        "SELECT awardPrice, numberTendersSme From Lots WHERE typeOfContract = 'U'",
+    )
+    draw_scatter_plots2(
+        df_contractS,
+        "awardPrice",
+        "numberTendersSme",
+        "Nuage de points des awardPrice et numberTendersSme de type de contrat 'S'",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractW,
+        "awardPrice",
+        "numberTendersSme",
+        "Nuage de points des awardPrice et numberTendersSme de type de contrat  'W'",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractU,
+        "awardPrice",
+        "numberTendersSme",
+        "Nuage de points des awardPrice et numberTendersSme de type de contrat  'U'",
+        "Lots",
+        True,
+        True,
+    )
+
 
 
 def draw_awardPrice_subContracted(conn):
@@ -242,16 +283,39 @@ def draw_awardPrice_subContracted(conn):
 
 
 def draw_awardPrice_typeOfContract(conn):
-    df = create_df_from_query(
+    df_contratS = create_df_from_query(
         conn,
-        "SELECT awardPrice, typeOfContract From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardPrice ASC",
+        "SELECT awardPrice, typeOfContract From Lots WHERE typeOfContract = 'S'",
     )
-    print(df)
+    df_contratW = create_df_from_query(
+        conn,
+        "SELECT awardPrice, typeOfContract From Lots WHERE typeOfContract = 'W'",
+    )
+    df_contratU = create_df_from_query(
+        conn,
+        "SELECT awardPrice, typeOfContract From Lots WHERE typeOfContract = 'U'",
+    )
     draw_box_plot_multiple(
-        df,
+        df_contratS,
         f"typeOfContract",
         f"awardPrice",
-        f"Boxplot des awardPrice en fonction des typeOfContract avec échelle logarithmique",
+        f"Boxplot des awardPrice en fonction des typeOfContract de type 'S'",
+        "Lots",
+        True,
+    )
+    draw_box_plot_multiple(
+        df_contratW,
+        f"typeOfContract",
+        f"awardPrice",
+        f"Boxplot des awardPrice en fonction des typeOfContract de type 'W'",
+        "Lots",
+        True,
+    )
+    draw_box_plot_multiple(
+        df_contratU,
+        f"typeOfContract",
+        f"awardPrice",
+        f"Boxplot des awardPrice en fonction des typeOfContract de type 'U'",
         "Lots",
         True,
     )
@@ -301,6 +365,7 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         "lotsNumber",
         "awardEstimatedPrice",
         "Scatterplot de lotsNumber pour chaque element de awardEstimatedPrice en type de contrat S",
+        "Lots",
         True,
         True,
     )
@@ -309,6 +374,7 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         "lotsNumber",
         "awardEstimatedPrice",
         "Scatterplot de lotsNumber pour chaque element de awardEstimatedPrice en type de contrat W",
+        "Lots",
         True,
         True,
     )
@@ -317,6 +383,7 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         "lotsNumber",
         "awardEstimatedPrice",
         "Scatterplot de lotsNumber pour chaque element de awardEstimatedPrice en type de contrat U",
+        "Lots",
         True,
         True,
     )
@@ -1046,6 +1113,18 @@ def draw_numberTenders_typeOfContract(conn):
         "Lots",
         True,
     )
+    df3 = create_df_from_query(
+        conn,
+        "SELECT typeOfContract, count(numberTenders) as 'NbnumberTenders', count(numberTendersSme) as 'NbnumberTendersSme' From Lots GROUP BY typeOfContract ORDER BY numberTenders ASC",
+    )
+    hist_pivot_multplie(
+        df3,
+        "typeOfContract",
+        "NbnumberTenders",
+        "NbnumberTendersSme",
+        "Nombre d'occurence de numberTenders pour chaque element de typeOfContract",
+        "Lots"
+    )
 
 
 def draw_numberTenders_numberTendersSme(conn):
@@ -1292,23 +1371,48 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         connexion,
         f"SELECT {colonne_1}, {colonne_2}, ({colonne_1} - {colonne_2}) AS difference FROM Lots WHERE {colonne_1} IS NOT NULL AND {colonne_2} IS NOT NULL",
     )
-    draw_box_plot_special(
-        df,
-        "difference",
-        "difference",
-        f"Boxplot de la différence des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
-        "Lots",
-        False,
-        False,
+    # draw_box_plot_special(
+    #     df,
+    #     "difference",
+    #     "difference",
+    #     f"Boxplot de la différence des {colonne_1} en fonction des {colonne_2} avec échelle logarithmique",
+    #     "Lots",
+    #     False,
+    #     False,
+    # )
+    df_contratS = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} FROM Lots WHERE typeOfContract = 'S' AND {colonne_1} IS NOT null AND {colonne_2} IS NOT null",
+    )
+    df_contraW = create_df_from_query(
+        connexion,
+        f"SELECT {colonne_1}, {colonne_2} FROM Lots WHERE typeOfContract = 'W' AND {colonne_1} IS NOT null AND {colonne_2} IS NOT null",
+    )
+    df_contratU = create_df_from_query(
+        connexion,
+        f"SELECT  {colonne_1}, {colonne_2} FROM Lots WHERE typeOfContract = 'U' AND {colonne_1} IS NOT null AND {colonne_2} IS NOT null",
+    )
+    # print(df)
+    draw_scatter_plots(
+        df_contratS[colonne_2],
+        df_contratS[colonne_1],
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'S'",
     )
     draw_scatter_plots(
-        df[colonne_1],
-        df[colonne_2],
-        "awardPrice",
-        "awardEstimatedPrice",
-        "Nombre d'occurence de awardEstimatedPrice pour chaque element de awardPrice",
-        True,
-        True,
+        df_contraW[colonne_2],
+        df_contraW[colonne_1],
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'W'",
+    )
+    draw_scatter_plots(
+        df_contratU[colonne_2],
+        df_contratU[colonne_1],
+        f"{colonne_2}",
+        f"{colonne_1}",
+        f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat  'U'",
     )
 
 
