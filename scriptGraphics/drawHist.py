@@ -274,3 +274,59 @@ def hist_pivot(
         generateFileChart(file, text, "hist_pivot")
 
     plt.show()
+
+
+def hist_pivot_multplie(
+    data,
+    xlabel,
+    ylabel,
+    ylabel2,
+    title,
+    file,
+    log=False,
+    dropNaN=True,
+    rotation_annotation=None,
+    rotation_xlabel=None,):
+
+    if dropNaN:
+        data = data.dropna(subset=[xlabel, ylabel, ylabel2])
+
+    # Calculer le nombre d'offres non-PME
+    data['NbNonPme'] = data[ylabel] - data[ylabel2]
+
+    # Création de l'histogramme
+    ax = data.plot(x=xlabel,
+                   y=[ylabel2, 'NbNonPme'],
+                   kind='bar',
+                   stacked=True,
+                   figsize=(20, 10))
+
+    plt.xlabel(xlabel)
+    plt.ylabel('Nombre d’offres')
+    plt.title(title)
+
+    if rotation_xlabel is not None:
+        plt.xticks(rotation=rotation_xlabel)
+
+    for rect in ax.patches:
+        width, height = rect.get_width(), rect.get_height()
+        x, y = rect.get_x(), rect.get_y()
+        if height > 0:
+            label_index = int(x + width / 2)
+            total = data[ylabel].iloc[label_index]
+            percentage = f'{height / total:.1%}'
+            label = f'{int(height)} ({percentage})'
+            ax.text(x + width / 2, y + height / 2, label, ha='center', va='center', fontsize=10, color='black')
+
+    for i, total in enumerate(data[ylabel]):
+        ax.annotate(f"{total}", (i, total), ha='center', va='bottom', fontsize=10, color='black')
+
+    text = xlabel + "_" + ylabel + "_" + ylabel2
+    plt.tight_layout()
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, text, "hist_pivot_with_log")
+    else:
+        generateFileChart(file, text, "hist_pivot")
+
+    plt.show()
