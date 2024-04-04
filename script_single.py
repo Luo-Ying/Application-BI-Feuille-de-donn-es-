@@ -178,7 +178,7 @@ def draw_publicityDuration(conn):
         df2,
         "typeOfContract",
         "publicityDuration",
-        "Boxplot des typeOfContract en catéggories des type de contrat",
+        "Boxplot des publicityDuration en fonction du type de contrat",
         "Lots",
         True,
     )
@@ -215,13 +215,14 @@ def draw_numberTendersSme(conn):
         "SELECT numberTendersSme, count(numberTendersSme) AS 'NbNumberTendersSme' FROM Lots GROUP BY numberTendersSme",
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot(
-    #     df,
-    #     "numberTendersSme",
-    #     "numberTendersSme",
-    #     "Boxplot des numberTendersSme sans échelle logarithmique",
-    #     "Lots",
-    # )
+    draw_box_plot(
+        df,
+        "numberTendersSme",
+        "numberTendersSme",
+        "Boxplot des numberTendersSme avec échelle logarithmique",
+        "Lots",
+        True
+    )
     draw_custom_hist(
         df,
         "numberTendersSme",
@@ -240,7 +241,7 @@ def draw_numberTendersSme(conn):
         df2,
         "typeOfContract",
         "numberTendersSme",
-        "Boxplot des typeOfContract en catéggories des type de contrat",
+        "Boxplot des numberTendersSme en fonction du type de contrat",
         "Lots",
         True,
     )
