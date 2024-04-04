@@ -420,27 +420,27 @@ def draw_award_estimated_price(connexion):
     #     True,
     # )
     draw_awardEstimatedPrice_2(connexion)
-    df2 = create_df_from_query(
-        connexion,
-        f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
-    )
-    draw_box_plot_special(
-        df2,
-        "awardEstimatedPrice",
-        "awardEstimatedPrice",
-        f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
-        "Lots",
-        True,
-        True,
-    )
-    draw_box_plot_multiple_dense(
-        df2,
-        "typeOfContract",
-        "awardEstimatedPrice",
-        "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
-        "Lots",
-        True,
-    )
+    # df2 = create_df_from_query(
+    #     connexion,
+    #     f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
+    # )
+    # draw_box_plot_special(
+    #     df2,
+    #     "awardEstimatedPrice",
+    #     "awardEstimatedPrice",
+    #     f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
+    #     "Lots",
+    #     True,
+    #     True,
+    # )
+    # draw_box_plot_multiple_dense(
+    #     df2,
+    #     "typeOfContract",
+    #     "awardEstimatedPrice",
+    #     "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
+    #     "Lots",
+    #     True,
+    # )
 
 
 def draw_awardEstimatedPrice_2(conn):
@@ -449,6 +449,14 @@ def draw_awardEstimatedPrice_2(conn):
         conn,
         f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC",
     )
+    df_cleaned = df.dropna(subset=["awardEstimatedPrice"])
+
+    # Convert 'awardEstimatedPrice' to numeric type
+    df_cleaned["awardEstimatedPrice"] = pd.to_numeric(
+        df_cleaned["awardEstimatedPrice"], errors="coerce"
+    )
+    print(df_cleaned["awardEstimatedPrice"].max())
+    print(df_cleaned["awardEstimatedPrice"].min())
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     # draw_box_plot(
     #     df,
@@ -464,9 +472,9 @@ def draw_awardEstimatedPrice_2(conn):
         f"Nb{colonne_1}",
         f"Occurences des {colonne_1} par tranche de 100",
         "Lots",
-        0,
-        2500,
-        100,
+        df_cleaned["awardEstimatedPrice"].min(),
+        df_cleaned["awardEstimatedPrice"].max(),
+        df_cleaned["awardEstimatedPrice"].max() / 5000,
     )
 
 

@@ -21,7 +21,7 @@ def main():
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        # script_single(conn)
+        script_single(conn)
 
         ##################################################
         ############# Attribut En Paire #################
@@ -33,10 +33,10 @@ def main():
         ##################################################
         ################## Netoyage ######################
         ##################################################
-        script_clean_variables_manually(conn)
+        # script_clean_variables_manually(conn)
 
-        script_single(conn)
-        script_pair(conn)
+        # script_single(conn)
+        # script_pair(conn)
 
     close_db(conn)
 
