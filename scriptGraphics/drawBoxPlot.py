@@ -247,7 +247,7 @@ def draw_box_plot_multiple_dense(
             ha="left",
         )
         plt.text(
-            i + 0.1,
+            i + 0.4,
             stats["50%"],
             f"Moy: {stats['mean']:.2f}",
             va="center",
