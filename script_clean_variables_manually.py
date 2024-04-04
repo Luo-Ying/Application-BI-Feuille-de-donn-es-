@@ -16,7 +16,9 @@ def script_clean_variables_manually(connexion):
     """numberTendersSme"""
     # replace_abnormal_numberTendersSme(connexion)
     """contractDuration"""
-    replace_abnormal_contractDuration(connexion)
+    # replace_abnormal_contractDuration(connexion)
+    """lotsNumber"""
+    # replace_replace_lotsNumber(connexion)
 
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(
@@ -62,3 +64,18 @@ def replace_abnormal_contractDuration(conn):
     cursor.execute("""UPDATE Lots SET contractDuration = ROUND(contractDuration / 30.0, 2) WHERE contractDuration > 145 """)
     conn.commit()
     print("Mise à jour effectuée pour les contractDuration spécifiés.")
+
+def replace_replace_lotsNumber(conn):
+    cursor = conn.cursor()
+    df = create_df_from_query(
+        conn,
+        "SELECT * FROM Lots"
+    )
+    df2 = create_df_from_query(
+        conn,
+        "WITH Counts AS ( SELECT tedCanId, COUNT(*) AS totalLots  FROM Lots  GROUP BY tedCanId ) SELECT Counts.totalLots FROM Lots JOIN Counts ON Lots.tedCanId = Counts.tedCanId LIMIT 10"
+    )
+    df['totalLots'] = df2['totalLots']
+
+    df.to_sql(name='Lots', if_exists='replace', con=conn)
+    print("Mise à jour effectuée pour les lotsNumber spécifiés.")
