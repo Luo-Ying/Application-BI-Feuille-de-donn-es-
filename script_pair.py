@@ -36,9 +36,9 @@ def script_pair(connexion):
     """cancelled & topType"""
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     """awardEstimatedPrice & awardPrice"""
-    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     """numberTenders & numberTendersSme"""
-    # draw_numberTenders_numberTendersSme(connexion)
+    draw_numberTenders_numberTendersSme(connexion)
     """numberTenders & contractorSme (à voir)"""
     # draw_numberTenders_contractorSme(connexion)
     """numberTenders & topType"""
@@ -1129,6 +1129,21 @@ def draw_numberTenders_typeOfContract(conn):
 
 def draw_numberTenders_numberTendersSme(conn):
 
+    df = create_df_from_query(
+    conn,
+    "SELECT numberTenders, numberTendersSme From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
+    )
+
+    print(df)
+    draw_scatter_plots2(
+        df,
+        "numberTenders",
+        "numberTendersSme",
+        "Nuage de points des numberTendersSme en fonction des numberTenders",
+        True,
+        True
+    )
+    
     df_contratS = create_df_from_query(
         conn,
         "SELECT numberTenders, numberTendersSme From Lots WHERE typeOfContract = 'S' AND numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
@@ -1142,31 +1157,56 @@ def draw_numberTenders_numberTendersSme(conn):
         "SELECT numberTenders, numberTendersSme From Lots WHERE typeOfContract = 'U' AND numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
     )
 
-    # print(df)
-    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    draw_scatter_plots2(
         df_contratS,
         "numberTenders",
         "numberTendersSme",
-        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'S'",
-        False,
+        "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'S'",
         True,
+        True
     )
-    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    draw_scatter_plots2(
         df_contratW,
         "numberTenders",
         "numberTendersSme",
-        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast W'",
-        False,
+        "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'W'",
         True,
+        True
     )
-    draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    draw_scatter_plots2(
         df_contratU,
         "numberTenders",
         "numberTendersSme",
-        "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'U'",
-        False,
+        "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'U'",
         True,
+        True
     )
+
+    # # print(df)
+    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    #     df_contratS,
+    #     "numberTenders",
+    #     "numberTendersSme",
+    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'S'",
+    #     False,
+    #     True,
+    # )
+    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    #     df_contratW,
+    #     "numberTenders",
+    #     "numberTendersSme",
+    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast W'",
+    #     False,
+    #     True,
+    # )
+    # draw_box_plot_multiple_numberTenders_NumberTendersSme(
+    #     df_contratU,
+    #     "numberTenders",
+    #     "numberTendersSme",
+    #     "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'U'",
+    #     False,
+    #     True,
+    # )
 
 
 def draw_cancelled_awardPrice(conn):
