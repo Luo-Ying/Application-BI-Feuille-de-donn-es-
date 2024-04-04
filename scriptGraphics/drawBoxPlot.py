@@ -203,9 +203,9 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
     plt.show()
 
@@ -247,7 +247,7 @@ def draw_box_plot_multiple_dense(
             ha="left",
         )
         plt.text(
-            i + 0.1,
+            i + 0.4,
             stats["50%"],
             f"Moy: {stats['mean']:.2f}",
             va="center",
@@ -276,11 +276,11 @@ def draw_box_plot_multiple_dense(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_dense_show_moy_med_up_and_down(
@@ -349,11 +349,11 @@ def draw_box_plot_multiple_dense_show_moy_med_up_and_down(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_multiple_box_plot(data, title, xlabel=None, ylabel=None):
@@ -363,15 +363,14 @@ def draw_multiple_box_plot(data, title, xlabel=None, ylabel=None):
     plt.xticks(rotation=45)
     plt.ylabel(ylabel)
     plt.yscale("log")
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
 
     data[xlabel] = data[xlabel].astype(float)
-
     if dropNaN:
-        data = data.dropna(subset=[xlabel])
+        data = data.dropna(subset=[xlabel, ylabel])
 
     # print(data.head())
     fig, ax = plt.subplots(figsize=(20, 10))
@@ -492,7 +491,7 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
     else:
         generateFileChart(file, xlabel, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_numberTenders_NumberTendersSme(
@@ -577,11 +576,9 @@ def draw_box_plot_multiple_numberTenders_NumberTendersSme(
 
     # Save the plot
     plt.tight_layout()  # Adjust layout to fit everything nicely
-    generateFileChart(
-        file, xlabel + "_" + ylabel, "boxplot_with_log" if log else "boxplot"
-    )
+    generateFileChart(file, title, "boxplot_with_log" if log else "boxplot")
 
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_numberTenders_typeOfContract(
@@ -652,11 +649,11 @@ def draw_box_plot_multiple_numberTenders_typeOfContract(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_simple_stats(
@@ -708,11 +705,11 @@ def draw_box_plot_multiple_simple_stats(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_simple_stats(
@@ -764,10 +761,33 @@ def draw_box_plot_multiple_simple_stats(
 
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot_with_log")
+        generateFileChart(file, title, "boxplot_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "boxplot")
+        generateFileChart(file, title, "boxplot")
     # show plot
+    # plt.show()
+
+
+def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df):
+    # Visualiser les moyennes en utilisant l'index comme label sur l'axe des x
+    plt.figure(figsize=(14, 7))  # Ajustez la taille selon vos besoins
+    sns.boxplot(x='group_id', y='awardPrice', data=df)
+
+    # Ajuster les paramètres de l'axe des x pour améliorer la lisibilité
+    plt.xticks(
+        rotation=90, 
+        horizontalalignment='center',
+        fontweight='light',
+        fontsize='x-small'
+    )
+
+    # Ajouter des titres et des labels aux axes
+    plt.title('Moyenne des awardPrice par groupe')
+    plt.xlabel('Index du groupe')
+    plt.ylabel('Moyenne des awardPrice')
+    plt.yscale("log")
+    # Afficher le graphique
+    plt.tight_layout()  # Ajuste automatiquement les sous-tracés pour qu'ils tiennent dans la figure
     plt.show()
 
 

@@ -52,7 +52,7 @@ def draw_bar(
         generateFileChart(file, xlabel, "hist_with_log")
     else:
         generateFileChart(file, xlabel, "hist")
-    plt.show()
+    # plt.show()
 
 
 def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=True):
@@ -65,7 +65,11 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
 
     top_5 = data.groupby(xlabel).sum().nlargest(5, ylabel)
     legend_text = "Top 5:\n" + "\n".join(
-        [f"{i + 1}. {cat}: {val[ylabel]}" for i, (cat, val) in enumerate(top_5.iterrows())])
+        [
+            f"{i + 1}. {cat}: {val[ylabel]}"
+            for i, (cat, val) in enumerate(top_5.iterrows())
+        ]
+    )
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -102,13 +106,13 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
         )
 
     if top:
-        plt.legend(title=legend_text, loc='upper right')
+        plt.legend(title=legend_text, loc="upper right")
     if log:
         plt.yscale("log")
         generateFileChart(file, xlabel, "hist_with_log")
     else:
         generateFileChart(file, xlabel, "hist")
-    plt.show()
+    # plt.show()
 
 
 def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
@@ -174,7 +178,7 @@ def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bi
     plt.yscale("log")
     generateFileChart(file, xlabel, "hist")
 
-    plt.show()
+    # plt.show()
 
 
 def draw_multiple_hist(
@@ -192,9 +196,13 @@ def draw_multiple_hist(
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
 
-    top_5 = data.groupby(xlabel).sum().nlargest(5, 'count')
+    top_5 = data.groupby(xlabel).sum().nlargest(5, "count")
     legend_text = "Top 5:\n" + "\n".join(
-        [f"{i + 1}. {cat}: {val['count']}" for i, (cat, val) in enumerate(top_5.iterrows())])
+        [
+            f"{i + 1}. {cat}: {val['count']}"
+            for i, (cat, val) in enumerate(top_5.iterrows())
+        ]
+    )
 
     sns_plot = sns.catplot(
         x=xlabel, y="count", hue=ylabel, data=data, kind="bar", height=6, aspect=2
@@ -219,13 +227,13 @@ def draw_multiple_hist(
     text = xlabel + "_" + ylabel
 
     if top:
-        plt.legend(title=legend_text, loc='upper right')
+        plt.legend(title=legend_text, loc="upper right")
     if log:
         plt.yscale("log")
         generateFileChart(file, text, "hist_with_log")
     else:
         generateFileChart(file, text, "hist")
-    plt.show()
+    # plt.show()
 
 
 def hist_pivot(
@@ -237,18 +245,19 @@ def hist_pivot(
     log=False,
     dropNaN=True,
     rotation_annotation=None,
-    rotation_xlabel=None,):
+    rotation_xlabel=None,
+):
 
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
 
-    df_pivot = data.pivot(index=xlabel, columns=ylabel, values=f'Nb{ylabel}').fillna(0)
+    df_pivot = data.pivot(index=xlabel, columns=ylabel, values=f"Nb{ylabel}").fillna(0)
 
-    ax = df_pivot.plot(kind='bar', stacked=True, figsize=(20, 10))
+    ax = df_pivot.plot(kind="bar", stacked=True, figsize=(20, 10))
 
     plt.xlabel(xlabel)
-    plt.ylabel(f'Nombre de {ylabel}')
-    plt.title(f'Histogramme cumulée des {ylabel} en fonction des {xlabel}')
+    plt.ylabel(f"Nombre de {ylabel}")
+    plt.title(f"Histogramme cumulée des {ylabel} en fonction des {xlabel}")
 
     text = xlabel + "_" + ylabel
 
@@ -259,12 +268,22 @@ def hist_pivot(
         if height > 0:
             label_index = int(x + width / 2)
             total = totals.iloc[label_index]
-            percentage = f'{height / total:.1%}'
-            label = f'{int(height)} ({percentage})'
-            ax.text(x + width / 2, y + height / 2, label, ha='center', va='center', fontsize=10, color='black')
+            percentage = f"{height / total:.1%}"
+            label = f"{int(height)} ({percentage})"
+            ax.text(
+                x + width / 2,
+                y + height / 2,
+                label,
+                ha="center",
+                va="center",
+                fontsize=10,
+                color="black",
+            )
 
     for i, total in enumerate(totals):
-        ax.annotate(f"{total}", (i, total), ha='center', va='bottom', fontsize=10, color='black')
+        ax.annotate(
+            f"{total}", (i, total), ha="center", va="bottom", fontsize=10, color="black"
+        )
 
     plt.tight_layout()
     if log:
@@ -273,4 +292,69 @@ def hist_pivot(
     else:
         generateFileChart(file, text, "hist_pivot")
 
-    plt.show()
+    # plt.show()
+
+
+def hist_pivot_multplie(
+    data,
+    xlabel,
+    ylabel,
+    ylabel2,
+    title,
+    file,
+    log=False,
+    dropNaN=True,
+    rotation_annotation=None,
+    rotation_xlabel=None,
+):
+
+    if dropNaN:
+        data = data.dropna(subset=[xlabel, ylabel, ylabel2])
+
+    # Calculer le nombre d'offres non-PME
+    data["NbNonPme"] = data[ylabel] - data[ylabel2]
+
+    # Création de l'histogramme
+    ax = data.plot(
+        x=xlabel, y=[ylabel2, "NbNonPme"], kind="bar", stacked=True, figsize=(20, 10)
+    )
+
+    plt.xlabel(xlabel)
+    plt.ylabel("Nombre d’offres")
+    plt.title(title)
+
+    if rotation_xlabel is not None:
+        plt.xticks(rotation=rotation_xlabel)
+
+    for rect in ax.patches:
+        width, height = rect.get_width(), rect.get_height()
+        x, y = rect.get_x(), rect.get_y()
+        if height > 0:
+            label_index = int(x + width / 2)
+            total = data[ylabel].iloc[label_index]
+            percentage = f"{height / total:.1%}"
+            label = f"{int(height)} ({percentage})"
+            ax.text(
+                x + width / 2,
+                y + height / 2,
+                label,
+                ha="center",
+                va="center",
+                fontsize=10,
+                color="black",
+            )
+
+    for i, total in enumerate(data[ylabel]):
+        ax.annotate(
+            f"{total}", (i, total), ha="center", va="bottom", fontsize=10, color="black"
+        )
+
+    text = xlabel + "_" + ylabel + "_" + ylabel2
+    plt.tight_layout()
+    if log:
+        plt.yscale("log")
+        generateFileChart(file, text, "hist_pivot_with_log")
+    else:
+        generateFileChart(file, text, "hist_pivot")
+
+    # plt.show()
