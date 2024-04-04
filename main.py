@@ -29,14 +29,7 @@ def main():
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
         # script_pair(conn)
-
-        ##################################################
-        ################## Netoyage ######################
-        ##################################################
         # script_clean_variables_manually(conn)
-
-        # script_single(conn)
-        # script_pair(conn)
 
     close_db(conn)
 

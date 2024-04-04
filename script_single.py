@@ -14,51 +14,53 @@ def script_single(connexion):
     #################################################
     ##################### Lots ######################
     #################################################
-    # """correctionsNb"""
+    """correctionsNb"""
     # draw_correctionsNb(connexion)
-    # """cancelled"""
+    """cancelled"""
     # draw_cancelled(connexion)
-    # """awardDate"""
+    """awardDate"""
     # draw_awardDate(connexion, 5)
     # draw_awardDate(connexion, 10)
     # draw_awardDate(connexion, 15)
     # draw_awardDate(connexion, 20)
-    # """awardEstimatedPrice"""
-    # draw_award_estimated_price(connexion)
-    # """awardPrice"""
-    draw_award_price(connexion)
-    # """cpv"""
+    """awardEstimatedPrice"""
+    # draw_award_estimated_price(connexion, "awardEstimatedPrice")
+    """awardPrice"""
+    # draw_award_price(connexion, "awardPrice")
+    """cpv"""
     # draw_cpv_lots(connexion)
-    # """numberTenders"""
+    """numberTenders"""
     # draw_numberTenders(connexion)
-    # """fraEstimated"""
+    """fraEstimated"""
     # draw_fraEstimated(connexion)
-    # """lotsNumber"""
+    """lotsNumber"""
     # draw_lotsNumber(connexion)
-    # """numberTendersSme"""
+    """numberTendersSme"""
     # draw_numberTendersSme(connexion)
-    # """typeOfContract"""
+    """typeOfContract"""
     # draw_typeOfContract(connexion)
-    # """topType"""
+    """topType"""
     # draw_topType(connexion)
-    # """contractDuration"""
-    # draw_contract_duration(connexion)
-    # """publicityDuration"""
+    """contractDuration"""
+    # draw_contract_duration(connexion, "contractDuration")
+    """publicityDuration"""
     # draw_publicityDuration(connexion)
-    # #################################################
-    # #################### Agents #####################
-    # #################################################
-    # """siret"""
+    #################################################
+    #################### Agents #####################
+    #################################################
+    """siret"""
     # draw_siret(connexion)
-    # """department"""
+    """department"""
     # draw_departement(connexion)
-    # #################################################
-    # ################### Criteria ####################
-    # #################################################
-    # """weight"""
+    #################################################
+    ################### Criteria ####################
+    #################################################
+    """weight"""
     # draw_weight(connexion)
-    # """type"""
+    """type"""
     # draw_type(connexion)
+    """totalLots"""
+    # draw_totalLots(connexion, "totalLots")
 
 
 def draw_departement(conn):
@@ -574,6 +576,38 @@ def draw_contract_duration(connexion):
         "typeOfContract",
         "contractDuration",
         "Boxplot des typeOfContract en fonction des contractDuration",
+        "Lots",
+        True,
+    )
+
+
+def draw_totalLots(conn, colonne_1):
+    df = create_df_from_query(
+        conn,
+        f"SELECT {colonne_1} FROM Lots",
+    )
+
+    draw_box_plot(
+        df,
+        colonne_1,
+        colonne_1,
+        f"Boxplot des {colonne_1} avec échelle logarithmique",
+        "Lots",
+        True,
+    )
+
+
+def draw_totalLots(conn, colonne_1):
+    df = create_df_from_query(
+        conn,
+        f"SELECT {colonne_1} FROM Lots",
+    )
+
+    draw_box_plot(
+        df,
+        colonne_1,
+        colonne_1,
+        f"Boxplot des {colonne_1} avec échelle logarithmique",
         "Lots",
         True,
     )
