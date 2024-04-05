@@ -14,51 +14,51 @@ def script_single(connexion):
     #################################################
     ##################### Lots ######################
     #################################################
-    """correctionsNb"""
-    draw_correctionsNb(connexion)
-    """cancelled"""
-    draw_cancelled(connexion)
-    """awardDate"""
-    draw_awardDate(connexion, 5)
-    draw_awardDate(connexion, 10)
-    draw_awardDate(connexion, 15)
-    draw_awardDate(connexion, 20)
-    """awardEstimatedPrice"""
-    draw_award_estimated_price(connexion)
-    """awardPrice"""
-    draw_award_price(connexion)
-    """cpv"""
-    draw_cpv_lots(connexion)
-    """numberTenders"""
+    # """correctionsNb"""
+    # draw_correctionsNb(connexion)
+    # """cancelled"""
+    # draw_cancelled(connexion)
+    # """awardDate"""
+    # draw_awardDate(connexion, 5)
+    # draw_awardDate(connexion, 10)
+    # draw_awardDate(connexion, 15)
+    # draw_awardDate(connexion, 20)
+    # """awardEstimatedPrice"""
+    # draw_award_estimated_price(connexion)
+    # """awardPrice"""
+    # draw_award_price(connexion)
+    # """cpv"""
+    # draw_cpv_lots(connexion)
+    # """numberTenders"""
     draw_numberTenders(connexion)
-    """fraEstimated"""
-    draw_fraEstimated(connexion)
-    """lotsNumber"""
-    draw_lotsNumber(connexion)
-    """numberTendersSme"""
-    draw_numberTendersSme(connexion)
-    """typeOfContract"""
-    draw_typeOfContract(connexion)
-    """topType"""
-    draw_topType(connexion)
-    """contractDuration"""
-    draw_contract_duration(connexion)
-    """publicityDuration"""
-    draw_publicityDuration(connexion)
-    #################################################
-    #################### Agents #####################
-    #################################################
-    """siret"""
-    draw_siret(connexion)
-    """department"""
-    draw_departement(connexion)
-    #################################################
-    ################### Criteria ####################
-    #################################################
-    """weight"""
-    draw_weight(connexion)
-    """type"""
-    draw_type(connexion)
+    # """fraEstimated"""
+    # draw_fraEstimated(connexion)
+    # """lotsNumber"""
+    # draw_lotsNumber(connexion)
+    # """numberTendersSme"""
+    # draw_numberTendersSme(connexion)
+    # """typeOfContract"""
+    # draw_typeOfContract(connexion)
+    # """topType"""
+    # draw_topType(connexion)
+    # """contractDuration"""
+    # draw_contract_duration(connexion)
+    # """publicityDuration"""
+    # draw_publicityDuration(connexion)
+    # #################################################
+    # #################### Agents #####################
+    # #################################################
+    # """siret"""
+    # draw_siret(connexion)
+    # """department"""
+    # draw_departement(connexion)
+    # #################################################
+    # ################### Criteria ####################
+    # #################################################
+    # """weight"""
+    # draw_weight(connexion)
+    # """type"""
+    # draw_type(connexion)
 
 
 def draw_departement(conn):
@@ -138,17 +138,17 @@ def draw_weight(conn):
         True,
     )
     df2 = create_df_from_query(
-        conn, "SELECT weight, count(weight) AS 'NbWeight' FROM Criteria GROUP BY weight"
+        conn, "SELECT weight FROM Criteria WHERE weight IS NOT NULL"
     )
     draw_custom_hist(
         df2,
         "weight",
-        "NbWeight",
-        "Distribution des poids par tranche de 50000",
+        "weight",
+        "Distribution des poids par tranche de 10",
         "Criteria",
         0,
-        500000,
-        50000,
+        100,
+        10,
     )
 
 
@@ -226,15 +226,19 @@ def draw_numberTendersSme(conn):
         "Lots",
         True
     )
+    df3 = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme FROM Lots WHERE numberTendersSme IS NOT NULL",
+    )
     draw_custom_hist(
-        df,
+        df3,
         "numberTendersSme",
-        "NbNumberTendersSme",
-        "Distribution des numberTendersSme par tranche de 100",
+        "numberTendersSme",
+        "Distribution des numberTendersSme par tranche de 10",
         "Lots",
         0,
-        1000,
-        100,
+        80,
+        10,
     )
     df2 = create_df_from_query(
         conn,
@@ -372,12 +376,12 @@ def draw_numberTenders(conn):
     colonne_1 = "numberTenders"
     df = create_df_from_query(
         conn,
-        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1}",
+        f"SELECT {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
     )
     draw_custom_hist(
         df,
         f"{colonne_1}",
-        f"Nb{colonne_1}",
+        f"{colonne_1}",
         f"Occurences des {colonne_1} par tranche de 100",
         "Lots",
         0,
@@ -423,34 +427,34 @@ def draw_award_estimated_price(connexion):
     #     True,
     # )
     draw_awardEstimatedPrice_2(connexion)
-    df2 = create_df_from_query(
-        connexion,
-        f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
-    )
-    draw_box_plot_special(
-        df2,
-        "awardEstimatedPrice",
-        "awardEstimatedPrice",
-        f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
-        "Lots",
-        True,
-        True,
-    )
-    draw_box_plot_multiple_dense(
-        df2,
-        "typeOfContract",
-        "awardEstimatedPrice",
-        "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
-        "Lots",
-        True,
-    )
+    # df2 = create_df_from_query(
+    #     connexion,
+    #     f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
+    # )
+    # draw_box_plot_special(
+    #     df2,
+    #     "awardEstimatedPrice",
+    #     "awardEstimatedPrice",
+    #     f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
+    #     "Lots",
+    #     True,
+    #     True,
+    # )
+    # draw_box_plot_multiple_dense(
+    #     df2,
+    #     "typeOfContract",
+    #     "awardEstimatedPrice",
+    #     "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
+    #     "Lots",
+    #     True,
+    # )
 
 
 def draw_awardEstimatedPrice_2(conn):
     colonne_1 = "awardEstimatedPrice"
     df = create_df_from_query(
         conn,
-        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC",
+        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots  UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC",
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     # draw_box_plot(
