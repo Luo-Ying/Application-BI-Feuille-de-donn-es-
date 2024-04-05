@@ -33,25 +33,20 @@ def script_clean_variables_manually(connexion):
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(
         conn,
-        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 OR CAST(strftime('%Y', awardDate) AS INTEGER) < 2010 GROUP BY strftime('%Y', awardDate)",
+        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 OR CAST(strftime('%Y', awardDate) AS INTEGER) < 2010",
     )
     df["awardDate"] = pd.to_datetime(df["awardDate"])
-
     # Extraire les 4 premiers chiffres de tedCanId car c'est l'année de parution de l'offre
     df["yearFromId"] = (df["tedCanId"].astype(str).str[:4]).astype(int)
-
     # Remplacer dans awardDate
     df["awardDate"] = df.apply(
         lambda x: x["awardDate"].replace(year=int(x["yearFromId"])), axis=1
     )
-    df = df.drop(columns=["yearFromId"])
-
     cursor = conn.cursor()
     for _, row in df.iterrows():
+        data = (str(row["awardDate"]), row["lotId"])
         cursor.execute(
-            "UPDATE Lots SET awardDate = ? WHERE lotId = ?",
-            (str(row["awardDate"]), row["lotId"]),
-        )
+            "UPDATE Lots SET awardDate = ? WHERE lotId = ?",data)
     conn.commit()
     print("Mise à jour effectuée avec succès.")
 
@@ -144,6 +139,12 @@ def replace_values_awardPrice(conn):
     merged_df.drop(columns=['awardPrice_new'], inplace=True)
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
 
+
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice < 100""")
+    conn.commit()
+
     print("Mise à jour effectuée pour tous les awardPrice spécifiés.")
 
     # draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, "Lots", "After")
@@ -186,6 +187,11 @@ def replace_values_awardEstimatedPrice(conn):
     merged_df['awardEstimatedPrice'] = merged_df['awardEstimatedPrice_new']
     merged_df.drop(columns=['awardEstimatedPrice_new'], inplace=True)
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
+
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice < 100""")
+    conn.commit()
 
     print("Mise à jour effectuée pour tous les awardEstimatedPrice spécifiés.")
 
