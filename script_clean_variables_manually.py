@@ -33,7 +33,7 @@ def script_clean_variables_manually(connexion):
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(
         conn,
-        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 GROUP BY strftime('%Y', awardDate)",
+        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 OR CAST(strftime('%Y', awardDate) AS INTEGER) < 2010 GROUP BY strftime('%Y', awardDate)",
     )
     df["awardDate"] = pd.to_datetime(df["awardDate"])
 
@@ -53,7 +53,6 @@ def convert_abnormal_awardDate(conn):
             (str(row["awardDate"]), row["lotId"]),
         )
     conn.commit()
-
     print("Mise à jour effectuée avec succès.")
 
 
