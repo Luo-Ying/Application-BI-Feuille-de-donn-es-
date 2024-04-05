@@ -6,6 +6,7 @@ from script_calcule_correlation_paires import *
 from script_single import script_single
 from script_pair import script_pair
 from script_clean_variables_manually import *
+from script_clean_variable_apiSiret import *
 
 
 def main():
@@ -22,22 +23,15 @@ def main():
         ############# Attribut Individuel ################
         ##################################################
         # script_single(conn)
-        # script_single(conn)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
+        # script_pair(conn)
+        #check_agents_with_siret(conn)
+        script_clean_variables_manually(conn)
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
-        # script_pair(conn)
-
-        ##################################################
-        ################## Netoyage ######################
-        ##################################################
-        script_clean_variables_manually(conn)
-
-        # script_single(conn)
-        # script_pair(conn)
 
     close_db(conn)
 

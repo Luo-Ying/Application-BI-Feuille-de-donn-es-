@@ -2,7 +2,7 @@ import re
 from scriptReadSql import create_df_from_query
 from scriptReadSql import *
 from tabulate import tabulate
-from scriptGraphics.drawBoxPlot import *
+import numpy as np
 
 def script_clean_variables_manually(connexion):
     ##############################################
@@ -85,26 +85,29 @@ def replace_abnormal_contractDuration(conn):
 
 def replace_total_lotsNumber(conn):
     cursor = conn.cursor()
-    df = create_df_from_query(
-        conn,
-        "SELECT * FROM Lots"
-    )
+    df = create_df_from_query(conn, "SELECT * FROM Lots")
     df2 = create_df_from_query(
         conn,
         "WITH Counts AS ( SELECT tedCanId, COUNT(*) AS totalLots  FROM Lots  GROUP BY tedCanId ) SELECT Counts.totalLots FROM Lots JOIN Counts ON Lots.tedCanId = Counts.tedCanId"
     )
-    df['totalLots'] = df2['totalLots']
+    df["totalLots"] = df2["totalLots"]
 
     df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
     print("Mise à jour effectuée pour les lotsNumber spécifiés.")
 
+
 def replace_values_publicityDuration(conn):
     cursor = conn.cursor()
-    cursor.execute("UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration < 0 ")
+    cursor.execute(
+        "UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration < 0 "
+    )
     cursor.execute("UPDATE Lots SET publicityDuration = 5 WHERE publicityDuration < 6 ")
-    cursor.execute("UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration > 144 ")
+    cursor.execute(
+        "UPDATE Lots SET publicityDuration = NULL WHERE publicityDuration > 144 "
+    )
     conn.commit()
     print("Mise à jour effectuée pour tous les publicityDuration spécifiés.")
+
 
 def replace_values_awardPrice(conn):
     df = create_df_from_query(
@@ -135,10 +138,7 @@ def replace_values_awardPrice(conn):
     df.loc[df['awardPrice'] < df['whisker_low'], 'awardPrice'] = np.nan
 
     # Mettre à jour la base de données
-    df2 = create_df_from_query(
-        conn,
-        "SELECT * FROM Lots"
-    )
+    df2 = create_df_from_query(conn, "SELECT * FROM Lots")
 
     merged_df = pd.merge(df2, df[['lotId', 'awardPrice']], on='lotId', how='left', suffixes=('', '_new'))
     merged_df['awardPrice'] = merged_df['awardPrice_new']
