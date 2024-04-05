@@ -26,7 +26,7 @@ def script_single(connexion):
     """awardEstimatedPrice"""
     # draw_award_estimated_price(connexion, "awardEstimatedPrice")
     """awardPrice"""
-    # draw_award_price(connexion, "awardPrice")
+    # draw_award_price(connexion)
     """cpv"""
     # draw_cpv_lots(connexion)
     """numberTenders"""

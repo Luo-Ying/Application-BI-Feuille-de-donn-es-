@@ -10,19 +10,19 @@ def script_clean_variables_manually(connexion):
     ##############################################
     """awardDate"""
     # convert_abnormal_awardDate(connexion)
-    """accelerated"""
+    # """accelerated"""
     # convert_null_accelerated(connexion)
-    """contractorSme"""
-    # convert_string_contractorSme(connexion)
-    """numberTendersSme"""
+    # """contractorSme"""
+    # # convert_string_contractorSme(connexion)
+    # """numberTendersSme"""
     # replace_abnormal_numberTendersSme(connexion)
-    """contractDuration"""
+    # """contractDuration"""
     # replace_abnormal_contractDuration(connexion)
-    """lotsNumber"""
+    # """lotsNumber"""
     # replace_total_lotsNumber(connexion)
-    """publicityDuration"""
+    # """publicityDuration"""
     # replace_values_publicityDuration(connexion)
-    """awardPrice""" 
+    # """awardPrice""" 
     # replace_values_awardPrice(connexion)
 
 def convert_abnormal_awardDate(conn):
@@ -93,11 +93,11 @@ def replace_total_lotsNumber(conn):
     )
     df2 = create_df_from_query(
         conn,
-        "WITH Counts AS ( SELECT tedCanId, COUNT(*) AS totalLots  FROM Lots  GROUP BY tedCanId ) SELECT Counts.totalLots FROM Lots JOIN Counts ON Lots.tedCanId = Counts.tedCanId LIMIT 10"
+        "WITH Counts AS ( SELECT tedCanId, COUNT(*) AS totalLots  FROM Lots  GROUP BY tedCanId ) SELECT Counts.totalLots FROM Lots JOIN Counts ON Lots.tedCanId = Counts.tedCanId"
     )
     df['totalLots'] = df2['totalLots']
 
-    df.to_sql(name='Lots', if_exists='replace', con=conn)
+    df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
     print("Mise à jour effectuée pour les lotsNumber spécifiés.")
 
 def replace_values_publicityDuration(conn):
@@ -109,7 +109,6 @@ def replace_values_publicityDuration(conn):
     print("Mise à jour effectuée pour tous les publicityDuration spécifiés.")
 
 def replace_values_awardPrice(conn):
-    cursor = conn.cursor()
     df = create_df_from_query(
         conn,
         f"""SELECT lotId, awardPrice, typeOfContract, SUBSTR(CAST(cpv AS TEXT), 1, 2) AS cpv, totalLots, accelerated, subContracted, FLOOR(contractDuration / 12.0) AS contractDuration FROM Lots WHERE awardPrice IS NOT NULL""",
@@ -123,15 +122,15 @@ def replace_values_awardPrice(conn):
         df['subContracted'].astype(str) + "_" +
         df['contractDuration'].astype(str)
     )
-
-    # Calculer le whisker haut pour chaque group_id
+    # draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, "Lots", "Before")
+    # # Calculer le whisker haut pour chaque group_id
     q1 = df.groupby('group_id')['awardPrice'].quantile(0.25)
     q3 = df.groupby('group_id')['awardPrice'].quantile(0.75)
     iqr = q3 - q1
     whisker_high = q3 + 1.5 * iqr
     whisker_high_df = whisker_high.reset_index().rename(columns={'awardPrice': 'whisker_high'})
     df = pd.merge(df, whisker_high_df, on='group_id', how='left')
-    df.loc[df['awardPrice'] > df['whisker_high'], 'awardPrice'] = None
+    df.loc[df['awardPrice'] > df['whisker_high'], 'awardPrice'] = np.nan
 
     # Mettre à jour la base de données
     df2 = create_df_from_query(
@@ -139,10 +138,12 @@ def replace_values_awardPrice(conn):
         "SELECT * FROM Lots"
     )
 
-    df2['awardPrice'] = df['awardPrice']
+    merged_df = pd.merge(df2, df[['lotId', 'awardPrice']], on='lotId', how='left', suffixes=('', '_new'))
+    merged_df['awardPrice'] = merged_df['awardPrice_new']
+    merged_df.drop(columns=['awardPrice_new'], inplace=True)
+    merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
 
-    df2.to_sql(name='Lots', if_exists='replace', con=conn)
     print("Mise à jour effectuée pour tous les awardPrice spécifiés.")
 
-    # draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df)
+    # draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, "Lots", "After")
     
