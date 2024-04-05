@@ -1,3 +1,5 @@
+import os
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -5,12 +7,13 @@ from extractor import get_total, extract
 
 
 def createXML(filename):
-    url = f"https://ted.europa.eu/fr/notice/{filename}/xml"
-    response = requests.get(url)
-    data = response.text
     file_path = f'./tedId/{filename}.xml'
-    with open(file_path, 'w', encoding="utf-8") as file:
-        file.write(data)
+    if not os.path.exists(file_path):
+        url = f"https://ted.europa.eu/fr/notice/{filename}/xml"
+        response = requests.get(url)
+        data = response.text
+        with open(file_path, 'w', encoding="utf-8") as file:
+            file.write(data)
 
 
 def transform(tedCanId):
