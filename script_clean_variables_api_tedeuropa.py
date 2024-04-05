@@ -265,7 +265,7 @@ def get_contractDuration(fileXML):
 def is_renewal(fileXML):
     try:
         tag = get_content_tag(fileXML, "RENEWAL")
-        return 1 if tag else 0
+        return 1 if tag else None
     except Exception as e:
         return None
 
