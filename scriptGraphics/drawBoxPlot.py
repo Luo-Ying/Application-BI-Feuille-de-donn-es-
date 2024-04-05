@@ -104,7 +104,7 @@ def draw_box_plot(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     else:
         generateFileChart(file, xlabel, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
@@ -207,7 +207,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
     else:
         generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_dense(
