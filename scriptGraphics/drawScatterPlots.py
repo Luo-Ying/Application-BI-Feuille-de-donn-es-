@@ -48,10 +48,12 @@ def draw_scatter_plots(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
         ha="left",
     )
 
-    plt.show()
+    # plt.show()
 
 
-def draw_scatter_plots2(df, xlabel, ylabel, title, file, xlog=None, ylog=None, dropNaN=True):
+def draw_scatter_plots2(
+    df, xlabel, ylabel, title, file, xlog=None, ylog=None, dropNaN=True
+):
     if dropNaN:
         df = df.dropna(subset=[xlabel, ylabel])
 
@@ -88,8 +90,7 @@ def draw_scatter_plots2(df, xlabel, ylabel, title, file, xlog=None, ylog=None, d
         plt.text(x[idx], y[idx], f"({x[idx]}, {y[idx]})", fontsize=9, ha="left")
 
     plt.text(
-        mean_x,
-        mean_y, f"Mean\n({mean_x:.2f}, {mean_y:.2f})", fontsize=9, ha="left"
+        mean_x, mean_y, f"Mean\n({mean_x:.2f}, {mean_y:.2f})", fontsize=9, ha="left"
     )
     plt.text(
         median_x,
@@ -104,4 +105,4 @@ def draw_scatter_plots2(df, xlabel, ylabel, title, file, xlog=None, ylog=None, d
         generateFileChart(file, xlabel + "_" + ylabel, "scatter_with_log")
     else:
         generateFileChart(file, xlabel + "_" + ylabel, "scatter")
-    plt.show()
+    # plt.show()

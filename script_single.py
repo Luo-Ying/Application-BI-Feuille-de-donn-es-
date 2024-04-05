@@ -14,51 +14,53 @@ def script_single(connexion):
     #################################################
     ##################### Lots ######################
     #################################################
-    # """correctionsNb"""
+    """correctionsNb"""
     # draw_correctionsNb(connexion)
-    # """cancelled"""
+    """cancelled"""
     # draw_cancelled(connexion)
-    # """awardDate"""
+    """awardDate"""
     # draw_awardDate(connexion, 5)
     # draw_awardDate(connexion, 10)
     # draw_awardDate(connexion, 15)
     # draw_awardDate(connexion, 20)
-    # """awardEstimatedPrice"""
-    # draw_award_estimated_price(connexion)
-    # """awardPrice"""
+    """awardEstimatedPrice"""
+    # draw_award_estimated_price(connexion, "awardEstimatedPrice")
+    """awardPrice"""
     # draw_award_price(connexion)
-    # """cpv"""
+    """cpv"""
     # draw_cpv_lots(connexion)
-    # """numberTenders"""
+    """numberTenders"""
     draw_numberTenders(connexion)
-    # """fraEstimated"""
+    """fraEstimated"""
     # draw_fraEstimated(connexion)
-    # """lotsNumber"""
+    """lotsNumber"""
     # draw_lotsNumber(connexion)
-    # """numberTendersSme"""
+    """numberTendersSme"""
     # draw_numberTendersSme(connexion)
-    # """typeOfContract"""
+    """typeOfContract"""
     # draw_typeOfContract(connexion)
-    # """topType"""
+    """topType"""
     # draw_topType(connexion)
-    # """contractDuration"""
-    # draw_contract_duration(connexion)
-    # """publicityDuration"""
+    """contractDuration"""
+    # draw_contract_duration(connexion, "contractDuration")
+    """publicityDuration"""
     # draw_publicityDuration(connexion)
-    # #################################################
-    # #################### Agents #####################
-    # #################################################
-    # """siret"""
+    #################################################
+    #################### Agents #####################
+    #################################################
+    """siret"""
     # draw_siret(connexion)
-    # """department"""
+    """department"""
     # draw_departement(connexion)
-    # #################################################
-    # ################### Criteria ####################
-    # #################################################
-    # """weight"""
+    #################################################
+    ################### Criteria ####################
+    #################################################
+    """weight"""
     # draw_weight(connexion)
-    # """type"""
+    """type"""
     # draw_type(connexion)
+    """totalLots"""
+    # draw_totalLots(connexion, "totalLots")
 
 
 def draw_departement(conn):
@@ -382,11 +384,11 @@ def draw_numberTenders(conn):
         df,
         f"{colonne_1}",
         f"{colonne_1}",
-        f"Occurences des {colonne_1} par tranche de 100",
+        f"Occurences des {colonne_1} par tranche de 10",
         "Lots",
         0,
-        1000,
-        100,
+        130,
+        10,
     )
     df2 = create_df_from_query(
         conn,
@@ -454,8 +456,16 @@ def draw_awardEstimatedPrice_2(conn):
     colonne_1 = "awardEstimatedPrice"
     df = create_df_from_query(
         conn,
-        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots  UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC",
+        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1} UNION ALL SELECT 'NaN' AS {colonne_1}, COUNT(*) AS 'Nb{colonne_1}' FROM Lots WHERE {colonne_1} IS NULL ORDER BY Nb{colonne_1} DESC",
     )
+    df_cleaned = df.dropna(subset=["awardEstimatedPrice"])
+
+    # Convert 'awardEstimatedPrice' to numeric type
+    df_cleaned["awardEstimatedPrice"] = pd.to_numeric(
+        df_cleaned["awardEstimatedPrice"], errors="coerce"
+    )
+    print(df_cleaned["awardEstimatedPrice"].max())
+    print(df_cleaned["awardEstimatedPrice"].min())
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     # draw_box_plot(
     #     df,
@@ -471,37 +481,28 @@ def draw_awardEstimatedPrice_2(conn):
         f"Nb{colonne_1}",
         f"Occurences des {colonne_1} par tranche de 100",
         "Lots",
-        0,
-        2500,
-        100,
+        df_cleaned["awardEstimatedPrice"].min(),
+        df_cleaned["awardEstimatedPrice"].max(),
+        df_cleaned["awardEstimatedPrice"].max() / 5000,
     )
 
 
 def draw_award_price(connexion):
+    draw_awardPrice_2(connexion)
     df = create_df_from_query(
         connexion,
-        f"SELECT awardPrice, COUNT(awardPrice) AS 'NbawardPrice' FROM Lots GROUP BY awardPrice UNION ALL SELECT 'NaN' AS awardPrice, COUNT(*) AS 'NbawardPrice' FROM Lots WHERE awardPrice IS NULL ORDER BY NbawardPrice DESC",
+        f"SELECT awardPrice From Lots WHERE awardPrice IS NOT null",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot_special(
-    #     df,
-    #     "awardPrice",
-    #     "awardPrice",
-    #     f"Boxplot des awardPrice avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    #     True,
-    # )
-    draw_awardPrice_2(connexion)
+    print(df)
     df2 = create_df_from_query(
         connexion,
-        f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardPrice ASC",
+        f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null",
     )
     draw_box_plot_special(
-        df2,
+        df,
         "awardPrice",
         "awardPrice",
-        f"Boxplot des awardPrice avec échelle logarithmique",
+        f"Boxplot des awardPrice",
         "Lots",
         True,
         True,
@@ -582,6 +583,21 @@ def draw_contract_duration(connexion):
         "typeOfContract",
         "contractDuration",
         "Boxplot des typeOfContract en fonction des contractDuration",
+        "Lots",
+        True,
+    )
+
+def draw_totalLots(conn, colonne_1):
+    df = create_df_from_query(
+        conn,
+         f"SELECT {colonne_1} FROM Lots",
+    )
+
+    draw_box_plot(
+        df,
+        colonne_1,
+        colonne_1,
+        f"Boxplot des {colonne_1} avec échelle logarithmique",
         "Lots",
         True,
     )
