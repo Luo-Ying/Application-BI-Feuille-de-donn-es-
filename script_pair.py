@@ -1360,14 +1360,14 @@ def draw_cancelled_numberTenders(conn):
 def draw_cancelled_fraEstimated(connexion, colonne_1, colonne_2):
     df = create_df_from_query(
         connexion,
-        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS count FROM Lots WHERE {colonne_1} = 1 GROUP BY {colonne_1}, {colonne_2}",
+        f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS Nb{colonne_1} FROM Lots GROUP BY {colonne_2}, {colonne_1} ORDER BY {colonne_1} DESC",
     )
     # print(df)
-    draw_multiple_hist(
+    hist_pivot(
         df,
-        f"{colonne_1}",
         f"{colonne_2}",
-        f"Histogramme des {colonne_1} en fonction des {colonne_2} when cancelled is True",
+        f"{colonne_1}",
+        f"Histogramme des {colonne_2} en fonction des {colonne_1}",
         "Lots",
         True,
         True,
