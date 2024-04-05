@@ -30,7 +30,7 @@ def script_single(connexion):
     """cpv"""
     # draw_cpv_lots(connexion)
     """numberTenders"""
-    draw_numberTenders(connexion)
+    # draw_numberTenders(connexion)
     """fraEstimated"""
     # draw_fraEstimated(connexion)
     """lotsNumber"""
@@ -56,7 +56,7 @@ def script_single(connexion):
     ################### Criteria ####################
     #################################################
     """weight"""
-    # draw_weight(connexion)
+    draw_weight(connexion)
     """type"""
     # draw_type(connexion)
     """totalLots"""
@@ -128,16 +128,16 @@ def draw_type(conn):
 
 def draw_weight(conn):
     df = create_df_from_query(
-        conn, "SELECT weight FROM Criteria"
+        conn, "SELECT weight, type FROM Criteria"
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
-    draw_box_plot(
+    draw_box_plot_multiple_dense(
         df,
-        "weight",
+        "type",
         "weight",
         "Boxplot des poids avec échelle logarithmique",
         "Criteria",
-        True,
+        False,
     )
     df2 = create_df_from_query(
         conn, "SELECT weight FROM Criteria WHERE weight IS NOT NULL"
