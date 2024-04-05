@@ -26,11 +26,11 @@ def script_single(connexion):
     """awardEstimatedPrice"""
     # draw_award_estimated_price(connexion, "awardEstimatedPrice")
     """awardPrice"""
-    # draw_award_price(connexion, "awardPrice")
+    # draw_award_price(connexion)
     """cpv"""
     # draw_cpv_lots(connexion)
     """numberTenders"""
-    # draw_numberTenders(connexion)
+    draw_numberTenders(connexion)
     """fraEstimated"""
     # draw_fraEstimated(connexion)
     """lotsNumber"""
@@ -371,17 +371,17 @@ def draw_numberTenders(conn):
     colonne_1 = "numberTenders"
     df = create_df_from_query(
         conn,
-        f"SELECT {colonne_1}, COUNT({colonne_1}) AS 'Nb{colonne_1}' FROM Lots GROUP BY {colonne_1}",
+        f"SELECT {colonne_1} FROM Lots WHERE {colonne_1} IS NOT NULL",
     )
     draw_custom_hist(
         df,
         f"{colonne_1}",
-        f"Nb{colonne_1}",
-        f"Occurences des {colonne_1} par tranche de 100",
+        f"{colonne_1}",
+        f"Occurences des {colonne_1} par tranche de 10",
         "Lots",
         0,
-        1000,
-        100,
+        130,
+        10,
     )
     df2 = create_df_from_query(
         conn,
@@ -580,27 +580,10 @@ def draw_contract_duration(connexion):
         True,
     )
 
-
-def draw_totalLots(conn, colonne_1):
+def draw_totalLots(conn, colonne_1): 
     df = create_df_from_query(
         conn,
-        f"SELECT {colonne_1} FROM Lots",
-    )
-
-    draw_box_plot(
-        df,
-        colonne_1,
-        colonne_1,
-        f"Boxplot des {colonne_1} avec échelle logarithmique",
-        "Lots",
-        True,
-    )
-
-
-def draw_totalLots(conn, colonne_1):
-    df = create_df_from_query(
-        conn,
-        f"SELECT {colonne_1} FROM Lots",
+         f"SELECT {colonne_1} FROM Lots",
     )
 
     draw_box_plot(

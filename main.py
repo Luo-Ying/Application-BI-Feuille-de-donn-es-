@@ -11,9 +11,9 @@ from script_clean_variable_apiSiret import *
 
 def main():
     # database = "Input\\Foppa.db"
-    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa copy.db"
+    # database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa copy.db"
     # database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
-    # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
+    database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
     with conn:
@@ -28,10 +28,8 @@ def main():
         ############# Attribut En Paire #################
         ##################################################
         # script_pair(conn)
-
-        # script_clean_variables_manually(conn)
-        check_agents_with_siret(conn)
-
+        # check_agents_with_siret(conn)
+        script_clean_variables_manually(conn)
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
 

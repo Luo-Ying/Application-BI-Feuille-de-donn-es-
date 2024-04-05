@@ -765,11 +765,11 @@ def draw_box_plot_multiple_simple_stats(
     else:
         generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
-    plt.show()
+    # plt.show()
 
 
-def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df):
+def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, file, title):
+    df = df.dropna(subset=['awardPrice'])
     # Visualiser les moyennes en utilisant l'index comme label sur l'axe des x
     plt.figure(figsize=(14, 7))  # Ajustez la taille selon vos besoins
     sns.boxplot(x="group_id", y="awardPrice", data=df)
@@ -789,4 +789,5 @@ def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate
     plt.yscale("log")
     # Afficher le graphique
     plt.tight_layout()  # Ajuste automatiquement les sous-tracés pour qu'ils tiennent dans la figure
+    generateFileChart(file, title, "boxplot_with_log")
     plt.show()
