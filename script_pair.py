@@ -36,7 +36,7 @@ def script_pair(connexion):
     # """cancelled & topType"""
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     # """awardEstimatedPrice & awardPrice"""
-    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     # """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
     # """numberTenders & contractorSme (à voir)"""
@@ -632,6 +632,7 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'S'",
+        "Lots",
         False,
         True,
     )
@@ -641,6 +642,7 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'W'",
+        "Lots",
         False,
         True,
     )
@@ -650,6 +652,7 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'U'",
+        "Lots",
         False,
         True,
     )
@@ -675,6 +678,7 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -684,6 +688,7 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -693,6 +698,7 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -893,6 +899,7 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -902,6 +909,7 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -911,6 +919,7 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -936,6 +945,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -945,6 +955,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -954,6 +965,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -980,6 +992,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -989,6 +1002,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -998,6 +1012,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -1457,6 +1472,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'S'",
+        "Lots"
     )
     draw_scatter_plots(
         df_contraW[colonne_2],
@@ -1464,6 +1480,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'W'",
+        "Lots"
     )
     draw_scatter_plots(
         df_contratU[colonne_2],
@@ -1471,6 +1488,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat  'U'",
+        "Lots"
     )
 
 

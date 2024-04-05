@@ -429,27 +429,27 @@ def draw_award_estimated_price(connexion):
     #     True,
     # )
     draw_awardEstimatedPrice_2(connexion)
-    # df2 = create_df_from_query(
-    #     connexion,
-    #     f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
-    # )
-    # draw_box_plot_special(
-    #     df2,
-    #     "awardEstimatedPrice",
-    #     "awardEstimatedPrice",
-    #     f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    #     True,
-    # )
-    # draw_box_plot_multiple_dense(
-    #     df2,
-    #     "typeOfContract",
-    #     "awardEstimatedPrice",
-    #     "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
-    #     "Lots",
-    #     True,
-    # )
+    df2 = create_df_from_query(
+        connexion,
+        f"SELECT typeOfContract, awardEstimatedPrice From Lots WHERE awardEstimatedPrice IS NOT null and typeOfContract IS NOT null ORDER BY awardEstimatedPrice ASC",
+    )
+    draw_box_plot_special(
+        df2,
+        "awardEstimatedPrice",
+        "awardEstimatedPrice",
+        f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
+        "Lots",
+        True,
+        True,
+    )
+    draw_box_plot_multiple_dense(
+        df2,
+        "typeOfContract",
+        "awardEstimatedPrice",
+        "Boxplot des typeOfContract en fonction des awardEstimatedPrice",
+        "Lots",
+        True,
+    )
 
 
 def draw_awardEstimatedPrice_2(conn):
