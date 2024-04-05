@@ -790,4 +790,4 @@ def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate
     # Afficher le graphique
     plt.tight_layout()  # Ajuste automatiquement les sous-tracés pour qu'ils tiennent dans la figure
     generateFileChart(file, title, "boxplot_with_log")
-    plt.show()
+    # plt.show()

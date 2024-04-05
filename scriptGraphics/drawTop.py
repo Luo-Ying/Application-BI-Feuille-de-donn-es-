@@ -23,7 +23,7 @@ def get_top_multiple(data, column1, column2, N, nom_fichier):
 
     # generateFileChart(nom_fichier, columns, f"top {N}")
     generateFileChart(nom_fichier, f'{column1}_{column2}', f"worst {N}")
-    plt.show()
+    # plt.show()
 
 
 def get_top(data, column, N, nom_fichier, reversed=True):
@@ -59,4 +59,4 @@ def get_top(data, column, N, nom_fichier, reversed=True):
         print(table)
 
     generateFileChart(nom_fichier, column, "top")
-    plt.show()
+    # plt.show()

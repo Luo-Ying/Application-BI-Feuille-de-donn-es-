@@ -21,4 +21,4 @@ def draw_line_chart(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
 
     # Displaying the plot
     plt.grid(True)
-    plt.show()
+    # plt.show()
