@@ -1,7 +1,7 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
-from script_correct_value_automatically import *
+from script_clean_variables_api_tedeuropa import *
 from script_single import *
 from script_calcule_correlation_paires import *
 from script_single import script_single
@@ -18,7 +18,7 @@ def main():
 
     conn = create_connection(database)
     with conn:
-        # correctedData(conn)
+        correctedData(conn)
         # draw_numberTenders_numberTenderSme(conn)
 
         ##################################################
@@ -31,7 +31,7 @@ def main():
         ##################################################
         # script_pair(conn)
         # check_agents_with_siret(conn)
-        script_clean_variables_manually(conn)
+        # script_clean_variables_manually(conn)
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
 
