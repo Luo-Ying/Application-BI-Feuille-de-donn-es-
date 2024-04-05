@@ -44,7 +44,6 @@ def check_agents_with_siret(conn):
                     df.at[index, "zipcode"] = res["etablissement"][
                         "adresseEtablissement"
                     ]["codePostalEtablissement"]
-                    print()
                 if (
                     res["etablissement"]["adresseEtablissement"][
                         "codeCommuneEtablissement"
