@@ -9,7 +9,7 @@ from scriptReadSql import *
 from tabulate import tabulate
 
 
-def script_pair(connexion):
+def script_pair(connexion, cleaned):
     # ##############################################
     # ################ Criteria a###################
     # ##############################################
@@ -65,10 +65,6 @@ def script_pair(connexion):
     # draw_accelerated_topType(connexion)
     # """accelerateed & publicityDuration"""
     # draw_accelerated_publicityDuration(connexion)
-    # """awardPrice & publicityDuration"""
-    # draw_awardPrice_publicityDuration(connexion)
-    # """awardPrice & contractDuration"""
-    # draw_awardPrice_contractDuration(connexion)
     # """awardPrice & topType"""
     # draw_awardPrice_topType(connexion)
     # """awardPrice & multipleCae"""
@@ -81,8 +77,6 @@ def script_pair(connexion):
     # draw_awardPrice_onBehalf(connexion)
     # """numberTenders & typeOfContract"""
     # draw_numberTenders_typeOfContract(connexion)
-    # """awardEstimatedPrice & lotsNumber"""
-    # draw_awardEstimatedPrice_lotsNumber(connexion)
     # """onBehalf & typeOfContract"""
     # draw_onBehalf_typeOfContract(connexion)
     # """awardPrice & typeOfContract"""
@@ -91,10 +85,26 @@ def script_pair(connexion):
     # draw_awardPrice_subContracted(connexion)
     # """awardPrice & numberTendersSme"""
     # draw_awardPrice_numberTendersSme(connexion)
-    # """awardPrice & lotsNumber"""
-    # draw_awardPrice_lotsNumber(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
+    if(cleaned):
+        # """awardEstimatedPrice & totalLots"""
+        # draw_awardEstimatedPrice_totalLots(connexion)
+        # """awardPrice & totalLots"""
+        # draw_awardPrice_totalLots(connexion)
+        # """awardPrice & contractDuration"""
+        # draw_awardPrice_contractDuration(connexion, False)
+        """awardPrice & publicityDuration"""
+        draw_awardPrice_publicityDuration(connexion, False)
+    else:
+        # """awardEstimatedPrice & lotsNumber"""
+        # draw_awardEstimatedPrice_lotsNumber(connexion)
+        # """awardPrice & lotsNumber"""
+        # draw_awardPrice_lotsNumber(connexion)
+        # """awardPrice & contractDuration"""
+        # draw_awardPrice_contractDuration(connexion, True)
+        """awardPrice & publicityDuration"""
+        draw_awardPrice_publicityDuration(connexion, True)
 
 
 def draw_awardPrice_jointProcurement(conn):
@@ -186,6 +196,56 @@ def draw_awardPrice_lotsNumber(conn):
         True,
     )
 
+
+def draw_awardPrice_totalLots(conn):
+    df_contractS = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'S' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractW = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'W' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractU = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'U' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractS["totalLots"] = pd.to_numeric(
+        df_contractS["totalLots"], errors="coerce"
+    )
+    df_contractW["totalLots"] = pd.to_numeric(
+        df_contractW["totalLots"], errors="coerce"
+    )
+    df_contractU["totalLots"] = pd.to_numeric(
+        df_contractU["totalLots"], errors="coerce"
+    )
+    draw_scatter_plots2(
+        df_contractS,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat S",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractW,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat W",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractU,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat U",
+        "Lots",
+        True,
+        True,
+    )
 
 def draw_awardPrice_numberTendersSme(conn):
     df = create_df_from_query(
@@ -336,6 +396,57 @@ def draw_onBehalf_typeOfContract(conn):
     )
 
 
+def draw_awardEstimatedPrice_totalLots(conn):
+    df_contractS = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'S' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractW = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'W' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractU = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'U' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    # print(df)
+    df_contractS["totalLots"] = pd.to_numeric(
+        df_contractS["totalLots"], errors="coerce"
+    )
+    df_contractW["totalLots"] = pd.to_numeric(
+        df_contractW["totalLots"], errors="coerce"
+    )
+    df_contractU["lotsNumber"] = pd.to_numeric(
+        df_contractU["totalLots"], errors="coerce"
+    )
+    draw_scatter_plots2(
+        df_contractS,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat S",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractW,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat W",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractU,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat U",
+        "Lots",
+        True,
+        True,
+    )
+
 def draw_awardEstimatedPrice_lotsNumber(conn):
     df_contractS = create_df_from_query(
         conn,
@@ -386,7 +497,6 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         True,
         True,
     )
-
 
 def draw_awardPrice_onBehalf(conn):
     df_contract_S = create_df_from_query(
@@ -612,7 +722,7 @@ def draw_awardPrice_topType(conn):
     )
 
 
-def draw_awardPrice_contractDuration(conn):
+def draw_awardPrice_contractDuration(conn, log):
     df_contratS = create_df_from_query(
         conn,
         "SELECT contractDuration, awardPrice FROM Lots WHERE typeOfContract = 'S' AND contractDuration IS NOT null AND awardPrice IS NOT null",
@@ -632,8 +742,9 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'S'",
+        "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contraW["contractDuration"],
@@ -641,8 +752,9 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'W'",
+        "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contratU["contractDuration"],
@@ -650,12 +762,13 @@ def draw_awardPrice_contractDuration(conn):
         "contractDuration",
         "awardPrice",
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'U'",
+        "Lots",
         False,
-        True,
+        log,
     )
 
 
-def draw_awardPrice_publicityDuration(conn):
+def draw_awardPrice_publicityDuration(conn, log):
     df_contractS = create_df_from_query(
         conn,
         "SELECT publicityDuration, awardPrice FROM Lots WHERE typeOfContract = 'S' AND publicityDuration IS NOT null AND awardPrice IS NOT null",
@@ -675,8 +788,9 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'S'",
+        "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contractW["publicityDuration"],
@@ -684,8 +798,9 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'W'",
+        "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contractU["publicityDuration"],
@@ -693,8 +808,9 @@ def draw_awardPrice_publicityDuration(conn):
         "publicityDuration",
         "awardPrice",
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'U'",
+        "Lots",
         False,
-        True,
+        log,
     )
 
 
@@ -893,8 +1009,9 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'S'",
+        "Lots",
         False,
-        True,
+        False,
     )
     draw_scatter_plots(
         df_contractW["numberTenders"],
@@ -902,8 +1019,9 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'W'",
+        "Lots",
         False,
-        True,
+        False,
     )
     draw_scatter_plots(
         df_contractU["numberTenders"],
@@ -911,8 +1029,9 @@ def draw_numberTenders_awardPrice(conn):
         "numberTenders",
         "awardPrice",
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'U'",
+        "Lots",
         False,
-        True,
+        False,
     )
 
 
@@ -936,6 +1055,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -945,6 +1065,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -954,6 +1075,7 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         "numberTendersSme",
         "awardEstimatedPrice",
         "Scatter Plot of numberTendersSme vs awardEstimatedPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -980,6 +1102,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -989,6 +1112,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'W'",
+        "Lots",
         False,
         True,
     )
@@ -998,6 +1122,7 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "numberTenders",
         "awardEstimatedPrice",
         "Scatter Plot of numberTenders vs awardEstimatedPrice en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -1457,6 +1582,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'S'",
+        "Lots"
     )
     draw_scatter_plots(
         df_contraW[colonne_2],
@@ -1464,6 +1590,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'W'",
+        "Lots"
     )
     draw_scatter_plots(
         df_contratU[colonne_2],
@@ -1471,6 +1598,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat  'U'",
+        "Lots"
     )
 
 

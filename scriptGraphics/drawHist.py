@@ -61,7 +61,7 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
         data = data.dropna(subset=[ylabel])
 
     keys = list(data[xlabel].astype(str))
-    values = list(data[ylabel].astype(int))
+    values = list(data[ylabel].astype(float))
 
     top_5 = data.groupby(xlabel).sum().nlargest(5, ylabel)
     legend_text = "Top 5:\n" + "\n".join(
@@ -102,17 +102,18 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
             textcoords="offset points",
             ha="center",
             va="bottom",
-            rotation=0,
+            rotation=45,
         )
 
     if top:
         plt.legend(title=legend_text, loc="upper right")
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel, "hist_with_log")
+        generateFileChart(file, title, "hist_with_log")
     else:
-        generateFileChart(file, xlabel, "hist")
+        generateFileChart(file, title, "hist")
     # plt.show()
+    plt.close()
 
 
 def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
@@ -141,7 +142,7 @@ def group_values(row, xlabel):
         return "Valeurs erronées"
 
 
-def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bin_size):
+def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bin_size,log = True):
     data = data.dropna(subset=[ylabel, xlabel])
     # Calcul des bornes des tranches
     bins = np.arange(value_min, value_max + bin_size, bin_size)
@@ -175,10 +176,11 @@ def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bi
             ha="center",
             va="bottom",
         )
-
-    plt.yscale("log")
-    generateFileChart(file, xlabel, "hist")
-
+    if(log):
+        plt.yscale("log")
+        generateFileChart(file, xlabel, "hist_with_log")
+    else:
+        generateFileChart(file, xlabel, "hist")
     # plt.show()
 
 
@@ -359,3 +361,53 @@ def hist_pivot_multplie(
         generateFileChart(file, text, "hist_pivot")
 
     # plt.show()
+
+def draw_custom_hist_cumul(data, xlabel, ylabel, title, file, value_min, value_max, bin_size,log = True):
+    # Assurez-vous que les données sont numériques
+    data[xlabel] = pd.to_numeric(data[xlabel], errors='coerce')
+    data[ylabel] = pd.to_numeric(data[ylabel], errors='coerce')
+    
+    data = data.dropna(subset=[ylabel, xlabel])
+
+    bins = np.arange(value_min, value_max + bin_size, bin_size)
+    
+    # Création de l'histogramme cumulé
+    plt.figure(figsize=(20, 10))
+    # Créer des données empilées
+    hist_total, _ = np.histogram(data[xlabel], bins=bins)
+    hist_sme, _ = np.histogram(data[ylabel], bins=bins)
+    
+    # Calculer le pourcentage de SME dans le total pour chaque bin
+    percentages = (hist_sme / hist_total) * 100
+    percentages_non_sme = 100 - percentages
+    
+    # Création de l'histogramme empilé
+    plt.figure(figsize=(20, 10))
+    plt.hist([data[xlabel], data[ylabel]], bins=bins, label=[xlabel, ylabel], color=['skyblue', 'lightgreen'], stacked=True, edgecolor='black')
+    
+    # Ajouter des pourcentages sur les barres
+    for bin_index in range(len(bins)-1):
+        if hist_total[bin_index] > 0:  # Éviter la division par zéro
+            plt.text(bins[bin_index] + bin_size / 2, hist_total[bin_index] + hist_sme[bin_index], f'{hist_sme[bin_index]}({percentages[bin_index]:.2f}%)', ha='center', va='bottom')
+            plt.text(bins[bin_index] + bin_size / 2, hist_total[bin_index]/ 1.1 , f'{hist_total[bin_index]}({percentages_non_sme[bin_index]:.2f}%)', ha='center', va='center')
+
+    
+    plt.xlabel(xlabel)
+    plt.ylabel('Nombre cumulé d’occurrences')
+    plt.title(title)
+    plt.legend()
+    # Définir les étiquettes de l'axe des x pour qu'elles correspondent au milieu de chaque tranche
+    tick_labels = [f"{int(bins[i])}-{int(bins[i + 1])}" for i in range(len(bins) - 1)]
+    plt.xticks(
+        ticks=np.arange(value_min + bin_size / 2, value_max, bin_size),
+        labels=tick_labels,
+        rotation=45,
+    )
+
+    if(log):
+        plt.yscale("log")
+        generateFileChart(file, title, "hist_with_log")
+    else:
+        generateFileChart(file, title, "hist")
+    # plt.show()
+

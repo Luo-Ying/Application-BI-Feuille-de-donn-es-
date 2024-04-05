@@ -5,7 +5,7 @@ import pandas as pd
 from scriptGraphics.generateFileChart import generateFileChart
 
 
-def draw_scatter_plots(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
+def draw_scatter_plots(x, y, xlabel, ylabel, title,file, xlog=False, ylog=False):
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -47,7 +47,11 @@ def draw_scatter_plots(x, y, xlabel, ylabel, title, xlog=None, ylog=None):
         fontsize=9,
         ha="left",
     )
-
+    if xlog or ylog:
+        plt.yscale("log")
+        generateFileChart(file,title, "scatter_with_log")
+    else:
+        generateFileChart(file,title, "scatter")
     # plt.show()
 
 
@@ -102,7 +106,7 @@ def draw_scatter_plots2(
 
     if xlog or ylog:
         plt.yscale("log")
-        generateFileChart(file, xlabel + "_" + ylabel, "scatter_with_log")
+        generateFileChart(file,title, "scatter_with_log")
     else:
-        generateFileChart(file, xlabel + "_" + ylabel, "scatter")
+        generateFileChart(file,title, "scatter")
     # plt.show()
