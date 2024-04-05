@@ -9,7 +9,7 @@ from scriptReadSql import *
 from tabulate import tabulate
 
 
-def script_pair(connexion):
+def script_pair(connexion, cleaned):
     # ##############################################
     # ################ Criteria a###################
     # ##############################################
@@ -21,7 +21,7 @@ def script_pair(connexion):
     # ##############################################
     # ################# weight a####################
     # ##############################################
-    """cancelled & numberTenders"""
+    # """cancelled & numberTenders"""
     # draw_cancelled_numberTenders(connexion)
     # """cancelled & numberTendersSme"""
     # draw_canccelled_numberTendersSme(connexion)
@@ -36,7 +36,7 @@ def script_pair(connexion):
     # """cancelled & topType"""
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     # """awardEstimatedPrice & awardPrice"""
-    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     # """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
     # """numberTenders & contractorSme (à voir)"""
@@ -95,6 +95,11 @@ def script_pair(connexion):
     # draw_awardPrice_lotsNumber(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
+    if(cleaned):
+        # """awardEstimatedPrice & totalLots"""
+        draw_awardEstimatedPrice_totalLots(connexion)
+        # """awardPrice & totalLots"""
+        draw_awardPrice_totalLots(connexion)
 
 
 def draw_awardPrice_jointProcurement(conn):
@@ -186,6 +191,56 @@ def draw_awardPrice_lotsNumber(conn):
         True,
     )
 
+
+def draw_awardPrice_totalLots(conn):
+    df_contractS = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'S' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractW = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'W' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractU = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardPrice From Lots WHERE typeOfContract = 'U' AND awardPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractS["totalLots"] = pd.to_numeric(
+        df_contractS["totalLots"], errors="coerce"
+    )
+    df_contractW["totalLots"] = pd.to_numeric(
+        df_contractW["totalLots"], errors="coerce"
+    )
+    df_contractU["totalLots"] = pd.to_numeric(
+        df_contractU["totalLots"], errors="coerce"
+    )
+    draw_scatter_plots2(
+        df_contractS,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat S",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractW,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat W",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractU,
+        "totalLots",
+        "awardPrice",
+        "Scatterplot de awardPrice pour chaque element de totalLots en type de contrat U",
+        "Lots",
+        True,
+        True,
+    )
 
 def draw_awardPrice_numberTendersSme(conn):
     df = create_df_from_query(
@@ -336,6 +391,57 @@ def draw_onBehalf_typeOfContract(conn):
     )
 
 
+def draw_awardEstimatedPrice_totalLots(conn):
+    df_contractS = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'S' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractW = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'W' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    df_contractU = create_df_from_query(
+        conn,
+        "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'U' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
+    )
+    # print(df)
+    df_contractS["totalLots"] = pd.to_numeric(
+        df_contractS["totalLots"], errors="coerce"
+    )
+    df_contractW["totalLots"] = pd.to_numeric(
+        df_contractW["totalLots"], errors="coerce"
+    )
+    df_contractU["lotsNumber"] = pd.to_numeric(
+        df_contractU["totalLots"], errors="coerce"
+    )
+    draw_scatter_plots2(
+        df_contractS,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat S",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractW,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat W",
+        "Lots",
+        True,
+        True,
+    )
+    draw_scatter_plots2(
+        df_contractU,
+        "totalLots",
+        "awardEstimatedPrice",
+        "Scatterplot de totalLots pour chaque element de awardEstimatedPrice en type de contrat U",
+        "Lots",
+        True,
+        True,
+    )
+
 def draw_awardEstimatedPrice_lotsNumber(conn):
     df_contractS = create_df_from_query(
         conn,
@@ -386,7 +492,6 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         True,
         True,
     )
-
 
 def draw_awardPrice_onBehalf(conn):
     df_contract_S = create_df_from_query(
@@ -901,7 +1006,7 @@ def draw_numberTenders_awardPrice(conn):
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'S'",
         "Lots",
         False,
-        True,
+        False,
     )
     draw_scatter_plots(
         df_contractW["numberTenders"],
@@ -911,7 +1016,7 @@ def draw_numberTenders_awardPrice(conn):
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'W'",
         "Lots",
         False,
-        True,
+        False,
     )
     draw_scatter_plots(
         df_contractU["numberTenders"],
@@ -921,7 +1026,7 @@ def draw_numberTenders_awardPrice(conn):
         "Scatter Plot of numberTenders vs awardPrice en type de contrast 'U'",
         "Lots",
         False,
-        True,
+        False,
     )
 
 

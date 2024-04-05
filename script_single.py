@@ -10,7 +10,7 @@ from tabulate import tabulate
 from scriptReadSql import *
 
 
-def script_single(connexion):
+def script_single(connexion,cleaned):
     #################################################
     ##################### Lots ######################
     #################################################
@@ -59,8 +59,9 @@ def script_single(connexion):
     # draw_weight(connexion)
     # """type"""
     # draw_type(connexion)
-    # """totalLots"""
-    # draw_totalLots(connexion, "totalLots")
+    # if(cleaned):
+        # """totalLots"""
+        # draw_totalLots(connexion, "totalLots")
 
 
 def draw_departement(conn):
