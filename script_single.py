@@ -19,7 +19,7 @@ def script_single(connexion, cleaned):
     # draw_awardDate(connexion, 15)
     # draw_awardDate(connexion, 20)
     # """cpv"""
-    draw_cpv_lots(connexion)
+    # draw_cpv_lots(connexion)
     # """numberTenders"""
     # draw_numberTenders(connexion)
     # """fraEstimated"""
@@ -38,7 +38,7 @@ def script_single(connexion, cleaned):
     # #################### Agents #####################
     # #################################################
     # """siret"""
-    # draw_siret(connexion)
+    draw_siret(connexion)
     # """department"""
     # draw_departement(connexion)
     # #################################################
@@ -108,6 +108,15 @@ def draw_siret(conn):
     # print(data_group)
     draw_box_plot_special(
         new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
+    )
+    top_50_df = new_df.sort_values(by=['count'], ascending=False).head(50)
+    draw_hist(
+        top_50_df,
+        "siret_prefix",
+        "count",
+        "Top 50 des entreprises avec le bâtiment",
+        "Agents",
+        True,
     )
 
 
