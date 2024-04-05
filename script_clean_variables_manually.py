@@ -9,49 +9,44 @@ def script_clean_variables_manually(connexion):
     ################ Lot ###################
     ##############################################
     """awardDate"""
-    # convert_abnormal_awardDate(connexion)
-    # """accelerated"""
-    # convert_null_accelerated(connexion)
-    # """contractorSme"""
-    # # convert_string_contractorSme(connexion)
-    # """contractDuration"""
-    # replace_abnormal_contractDuration(connexion)
-    # """lotsNumber"""
-    # replace_total_lotsNumber(connexion)
-    # """publicityDuration"""
-    # replace_values_publicityDuration(connexion)
-    # """awardPrice""" 
-    # replace_values_awardPrice(connexion)
-    # """awardEstimatedPrice""" 
-    # replace_values_awardEstimatedPrice(connexion)
-    # """Difference_awardPrice_awardEstimatedPrice""" 
-    # replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
-    # """numberTendersSme"""
-    # replace_abnormal_numberTendersSme(connexion)
+    convert_abnormal_awardDate(connexion)
+    """accelerated"""
+    convert_null_accelerated(connexion)
+    """contractorSme"""
+    # convert_string_contractorSme(connexion)
+    """contractDuration"""
+    replace_abnormal_contractDuration(connexion)
+    """lotsNumber"""
+    replace_total_lotsNumber(connexion)
+    """publicityDuration"""
+    replace_values_publicityDuration(connexion)
+    """awardPrice""" 
+    replace_values_awardPrice(connexion)
+    """awardEstimatedPrice""" 
+    replace_values_awardEstimatedPrice(connexion)
+    """Difference_awardPrice_awardEstimatedPrice""" 
+    replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
+    """numberTendersSme"""
+    replace_abnormal_numberTendersSme(connexion)
 
 
 def convert_abnormal_awardDate(conn):
     df = create_df_from_query(
         conn,
-        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 OR CAST(strftime('%Y', awardDate) AS INTEGER) < 2010 GROUP BY strftime('%Y', awardDate)",
+        "SELECT lotId, tedCanId, awardDate FROM Lots WHERE CAST(strftime('%Y', awardDate) AS INTEGER) > 2020 OR CAST(strftime('%Y', awardDate) AS INTEGER) < 2010",
     )
     df["awardDate"] = pd.to_datetime(df["awardDate"])
-
     # Extraire les 4 premiers chiffres de tedCanId car c'est l'année de parution de l'offre
     df["yearFromId"] = (df["tedCanId"].astype(str).str[:4]).astype(int)
-
     # Remplacer dans awardDate
     df["awardDate"] = df.apply(
         lambda x: x["awardDate"].replace(year=int(x["yearFromId"])), axis=1
     )
-    df = df.drop(columns=["yearFromId"])
-
     cursor = conn.cursor()
     for _, row in df.iterrows():
+        data = (str(row["awardDate"]), row["lotId"])
         cursor.execute(
-            "UPDATE Lots SET awardDate = ? WHERE lotId = ?",
-            (str(row["awardDate"]), row["lotId"]),
-        )
+            "UPDATE Lots SET awardDate = ? WHERE lotId = ?",data)
     conn.commit()
     print("Mise à jour effectuée avec succès.")
 
