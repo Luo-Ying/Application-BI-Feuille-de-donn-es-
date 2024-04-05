@@ -21,7 +21,7 @@ def script_pair(connexion):
     # ##############################################
     # ################# weight a####################
     # ##############################################
-    # """cancelled & numberTenders"""
+    """cancelled & numberTenders"""
     # draw_cancelled_numberTenders(connexion)
     # """cancelled & numberTendersSme"""
     # draw_canccelled_numberTendersSme(connexion)
