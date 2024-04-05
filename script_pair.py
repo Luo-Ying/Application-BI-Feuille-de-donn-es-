@@ -21,50 +21,50 @@ def script_pair(connexion):
     # ##############################################
     # ################# weight a####################
     # ##############################################
-    # """cancelled & numberTenders"""
-    # # draw_cancelled_numberTenders(connexion)
+    """cancelled & numberTenders"""
+    # draw_cancelled_numberTenders(connexion)
     # """cancelled & numberTendersSme"""
-    # # draw_canccelled_numberTendersSme(connexion)
+    # draw_canccelled_numberTendersSme(connexion)
     # """cancelled & fraEstimated"""
-    # # draw_cancelled_fraEstimated(connexion, "cancelled", "fraEstimated")
+    # draw_cancelled_fraEstimated(connexion, "cancelled", "fraEstimated")
     # """cancelled & typeOfContract"""
-    # # draw_cancelled_typeOfContract(connexion, "cancelled", "typeOfContract")
+    # draw_cancelled_typeOfContract(connexion, "cancelled", "typeOfContract")
     # """cancelled & awardEstimatedPrice"""
-    # # draw_cancelled_awardEstimatedPrice(connexion)
+    # draw_cancelled_awardEstimatedPrice(connexion)
     # """cancelled & awardPrice"""
     # draw_cancelled_awardPrice(connexion)
     # """cancelled & topType"""
-    # # draw_cancelled_topType(connexion, "cancelled", "topType")
+    # draw_cancelled_topType(connexion, "cancelled", "topType")
     # """awardEstimatedPrice & awardPrice"""
-    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     # """numberTenders & numberTendersSme"""
-    # # draw_numberTenders_numberTendersSme(connexion)
+    # draw_numberTenders_numberTendersSme(connexion)
     # """numberTenders & contractorSme (à voir)"""
-    # # draw_numberTenders_contractorSme(connexion)
+    # draw_numberTenders_contractorSme(connexion)
     # """numberTenders & topType"""
-    # # draw_numberTendedrs_topType(connexion)
+    # draw_numberTendedrs_topType(connexion)
     # """numberTenders & awardEstimatedPrice"""
-    # # draw_numberTenders_awardEstimatedPrice(connexion)
+    # draw_numberTenders_awardEstimatedPrice(connexion)
     # """numberTendersSme & awardEstimatedPrice"""
-    # # draw_numberTendersSme_awardEstimatedPrice(connexion)
+    # draw_numberTendersSme_awardEstimatedPrice(connexion)
     # """numberTenders & awardPrice"""
     # draw_numberTenders_awardPrice(connexion)
     # """numberTendersSme & typeOfContract"""
-    # # draw_numberTendersSme_typeOfContract(
-    # #     connexion, "numberTendersSme", "typeOfContract"
-    # # )
+    # draw_numberTendersSme_typeOfContract(
+    #     connexion, "numberTendersSme", "typeOfContract"
+    # )
     # """awardPrice & cpv"""
     # draw_awardPrice_cpv(connexion, "awardPrice", "cpv")
     # """awardPrice & fraAgreement"""
     # draw_awardPrice_fraAgreement(connexion, "awardPrice", "fraAgreement")
     # """accelerated & awardEstimatedPrice"""
-    # # draw_accelerated_awardEstimatedPrice(connexion)
+    # draw_accelerated_awardEstimatedPrice(connexion)
     # """accelerated & typeOfContract"""
-    # # draw_accelerated_typeOfContract(connexion)
+    # draw_accelerated_typeOfContract(connexion)
     # """accelerated & topType"""
-    # # draw_accelerated_topType(connexion)
+    # draw_accelerated_topType(connexion)
     # """accelerateed & publicityDuration"""
-    # # draw_accelerated_publicityDuration(connexion)
+    # draw_accelerated_publicityDuration(connexion)
     # """awardPrice & publicityDuration"""
     # draw_awardPrice_publicityDuration(connexion)
     # """awardPrice & contractDuration"""
@@ -80,11 +80,11 @@ def script_pair(connexion):
     # """awardPrice & onBehalf"""
     # draw_awardPrice_onBehalf(connexion)
     # """numberTenders & typeOfContract"""
-    # # draw_numberTenders_typeOfContract(connexion)
+    # draw_numberTenders_typeOfContract(connexion)
     # """awardEstimatedPrice & lotsNumber"""
-    # # draw_awardEstimatedPrice_lotsNumber(connexion)
+    # draw_awardEstimatedPrice_lotsNumber(connexion)
     # """onBehalf & typeOfContract"""
-    # # draw_onBehalf_typeOfContract(connexion)
+    # draw_onBehalf_typeOfContract(connexion)
     # """awardPrice & typeOfContract"""
     # # draw_awardPrice_typeOfContract(connexion)
     # """awardPrice & subContracted"""
@@ -325,7 +325,7 @@ def draw_onBehalf_typeOfContract(conn):
         conn,
         "SELECT onBehalf, typeOfContract, count(onBehalf) AS 'NbonBehalf' FROM Lots GROUP BY onBehalf, typeOfContract",
     )
-    print(df)
+    # print(df)
     hist_pivot(
         df,
         "typeOfContract",
@@ -601,7 +601,7 @@ def draw_awardPrice_multipleCae(conn):
 
 def draw_awardPrice_topType(conn):
     df = create_df_from_query(conn, "SELECT topType, awardPrice FROM Lots")
-    print(df)
+    # print(df)
     draw_box_plot_multiple_dense_show_moy_med_up_and_down(
         df,
         "topType",
@@ -1080,7 +1080,7 @@ def draw_numberTenders_typeOfContract(conn):
         conn,
         "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and typeOfContract IS NOT null ORDER BY numberTenders ASC",
     )
-    print(df)
+    # print(df)
     draw_box_plot_multiple(
         df,
         "typeOfContract",
@@ -1133,12 +1133,13 @@ def draw_numberTenders_numberTendersSme(conn):
         "SELECT numberTenders, numberTendersSme From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
     )
 
-    print(df)
+    # print(df)
     draw_scatter_plots2(
         df,
         "numberTenders",
         "numberTendersSme",
         "Nuage de points des numberTendersSme en fonction des numberTenders",
+        "Lots",
         True,
         True,
     )
@@ -1161,6 +1162,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'S'",
+        "Lots",
         True,
         True,
     )
@@ -1169,6 +1171,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'W'",
+        "Lots",
         True,
         True,
     )
@@ -1177,6 +1180,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nuage de points des numberTendersSme en fonction des numberTenders en type de contrat 'U'",
+        "Lots",
         True,
         True,
     )
@@ -1187,6 +1191,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'S'",
+        "Lots",
         False,
         True,
     )
@@ -1195,6 +1200,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast W'",
+        "Lots",
         False,
         True,
     )
@@ -1203,6 +1209,7 @@ def draw_numberTenders_numberTendersSme(conn):
         "numberTenders",
         "numberTendersSme",
         "Nombre d'occurence de numberTendersSme pour chaque element de numberTenders en type de contrast 'U'",
+        "Lots",
         False,
         True,
     )
@@ -1244,7 +1251,7 @@ def draw_cancelled_awardPrice(conn):
 
 def draw_cancelled_awardEstimatedPrice(conn):
     df = create_df_from_query(conn, "SELECT cancelled, awardEstimatedPrice FROM Lots")
-    print(df)
+    # print(df)
     draw_box_plot_multiple(
         df,
         "cancelled",

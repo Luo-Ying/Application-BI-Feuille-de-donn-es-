@@ -16,50 +16,50 @@ def script_single(connexion):
     #################################################
     """correctionsNb"""
     # draw_correctionsNb(connexion)
-    """cancelled"""
+    # """cancelled"""
     # draw_cancelled(connexion)
-    """awardDate"""
+    # """awardDate"""
     # draw_awardDate(connexion, 5)
     # draw_awardDate(connexion, 10)
     # draw_awardDate(connexion, 15)
     # draw_awardDate(connexion, 20)
-    """awardEstimatedPrice"""
-    # draw_award_estimated_price(connexion, "awardEstimatedPrice")
-    """awardPrice"""
+    # """awardEstimatedPrice"""
+    # draw_award_estimated_price(connexion)
+    # """awardPrice"""
     # draw_award_price(connexion)
-    """cpv"""
+    # """cpv"""
     # draw_cpv_lots(connexion)
-    """numberTenders"""
-    draw_numberTenders(connexion)
-    """fraEstimated"""
+    # """numberTenders"""
+    # draw_numberTenders(connexion)
+    # """fraEstimated"""
     # draw_fraEstimated(connexion)
-    """lotsNumber"""
+    # """lotsNumber"""
     # draw_lotsNumber(connexion)
-    """numberTendersSme"""
+    # """numberTendersSme"""
     # draw_numberTendersSme(connexion)
-    """typeOfContract"""
+    # """typeOfContract"""
     # draw_typeOfContract(connexion)
-    """topType"""
+    # """topType"""
     # draw_topType(connexion)
-    """contractDuration"""
-    # draw_contract_duration(connexion, "contractDuration")
-    """publicityDuration"""
+    # """contractDuration"""
+    # draw_contract_duration(connexion)
+    # """publicityDuration"""
     # draw_publicityDuration(connexion)
-    #################################################
-    #################### Agents #####################
-    #################################################
-    """siret"""
+    # #################################################
+    # #################### Agents #####################
+    # #################################################
+    # """siret"""
     # draw_siret(connexion)
-    """department"""
+    # """department"""
     # draw_departement(connexion)
-    #################################################
-    ################### Criteria ####################
-    #################################################
-    """weight"""
+    # #################################################
+    # ################### Criteria ####################
+    # #################################################
+    # """weight"""
     # draw_weight(connexion)
-    """type"""
+    # """type"""
     # draw_type(connexion)
-    """totalLots"""
+    # """totalLots"""
     # draw_totalLots(connexion, "totalLots")
 
 
@@ -128,16 +128,16 @@ def draw_type(conn):
 
 def draw_weight(conn):
     df = create_df_from_query(
-        conn, "SELECT weight FROM Criteria"
+        conn, "SELECT weight, type FROM Criteria"
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
-    draw_box_plot(
+    draw_box_plot_multiple_dense(
         df,
-        "weight",
+        "type",
         "weight",
         "Boxplot des poids avec échelle logarithmique",
         "Criteria",
-        True,
+        False,
     )
     df2 = create_df_from_query(
         conn, "SELECT weight FROM Criteria WHERE weight IS NOT NULL"
@@ -301,7 +301,7 @@ def draw_cancelled(conn):
         data_count_elements[str(row[0])] = row[1]
 
     draw_bar(
-        data_count_elements, "Les éléments", "nombre d'appaîtion", "cancelled", True
+        data_count_elements, "Les éléments", "Nombre d'apparîtion","Nombre d'apparitions de cancelled","Lots", "cancelled", True
     )
 
 
@@ -464,8 +464,8 @@ def draw_awardEstimatedPrice_2(conn):
     df_cleaned["awardEstimatedPrice"] = pd.to_numeric(
         df_cleaned["awardEstimatedPrice"], errors="coerce"
     )
-    print(df_cleaned["awardEstimatedPrice"].max())
-    print(df_cleaned["awardEstimatedPrice"].min())
+    # print(df_cleaned["awardEstimatedPrice"].max())
+    # print(df_cleaned["awardEstimatedPrice"].min())
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     # draw_box_plot(
     #     df,
@@ -493,7 +493,7 @@ def draw_award_price(connexion):
         connexion,
         f"SELECT awardPrice From Lots WHERE awardPrice IS NOT null",
     )
-    print(df)
+    # print(df)
     df2 = create_df_from_query(
         connexion,
         f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null",

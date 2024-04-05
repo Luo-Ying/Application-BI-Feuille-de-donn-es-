@@ -104,7 +104,7 @@ def draw_box_plot(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
     else:
         generateFileChart(file, xlabel, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN=True):
@@ -207,7 +207,7 @@ def draw_box_plot_multiple(data, xlabel, ylabel, title, file, log=False, dropNaN
     else:
         generateFileChart(file, title, "boxplot")
     # show plot
-    plt.show()
+    # plt.show()
 
 
 def draw_box_plot_multiple_dense(
@@ -790,4 +790,4 @@ def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate
     # Afficher le graphique
     plt.tight_layout()  # Ajuste automatiquement les sous-tracés pour qu'ils tiennent dans la figure
     generateFileChart(file, title, "boxplot_with_log")
-    plt.show()
+    # plt.show()
