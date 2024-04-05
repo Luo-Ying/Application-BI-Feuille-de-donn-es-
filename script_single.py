@@ -128,7 +128,7 @@ def draw_type(conn):
 
 def draw_weight(conn):
     df = create_df_from_query(
-        conn, "SELECT weight, count(weight) AS 'NbWeight' FROM Criteria GROUP BY weight"
+        conn, "SELECT weight FROM Criteria"
     )
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_box_plot(
@@ -139,15 +139,18 @@ def draw_weight(conn):
         "Criteria",
         True,
     )
+    df2 = create_df_from_query(
+        conn, "SELECT weight FROM Criteria WHERE weight IS NOT NULL"
+    )
     draw_custom_hist(
-        df,
+        df2,
         "weight",
-        "NbWeight",
-        "Distribution des poids par tranche de 50000",
+        "weight",
+        "Distribution des poids par tranche de 10",
         "Criteria",
         0,
-        500000,
-        50000,
+        100,
+        10,
     )
 
 
@@ -223,17 +226,21 @@ def draw_numberTendersSme(conn):
         "numberTendersSme",
         "Boxplot des numberTendersSme avec échelle logarithmique",
         "Lots",
-        True,
+        True
+    )
+    df3 = create_df_from_query(
+        conn,
+        "SELECT numberTendersSme FROM Lots WHERE numberTendersSme IS NOT NULL",
     )
     draw_custom_hist(
-        df,
+        df3,
         "numberTendersSme",
-        "NbNumberTendersSme",
-        "Distribution des numberTendersSme par tranche de 100",
+        "numberTendersSme",
+        "Distribution des numberTendersSme par tranche de 10",
         "Lots",
         0,
-        1000,
-        100,
+        80,
+        10,
     )
     df2 = create_df_from_query(
         conn,
@@ -580,7 +587,7 @@ def draw_contract_duration(connexion):
         True,
     )
 
-def draw_totalLots(conn, colonne_1): 
+def draw_totalLots(conn, colonne_1):
     df = create_df_from_query(
         conn,
          f"SELECT {colonne_1} FROM Lots",
