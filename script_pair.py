@@ -21,7 +21,7 @@ def script_pair(connexion, cleaned):
     # ##############################################
     # ################# weight a####################
     # ##############################################
-    # """cancelled & numberTenders"""
+    """cancelled & numberTenders"""
     # draw_cancelled_numberTenders(connexion)
     # """cancelled & numberTendersSme"""
     # draw_canccelled_numberTendersSme(connexion)
@@ -81,8 +81,6 @@ def script_pair(connexion, cleaned):
     # draw_awardPrice_onBehalf(connexion)
     # """numberTenders & typeOfContract"""
     # draw_numberTenders_typeOfContract(connexion)
-    # """awardEstimatedPrice & lotsNumber"""
-    # draw_awardEstimatedPrice_lotsNumber(connexion)
     # """onBehalf & typeOfContract"""
     # draw_onBehalf_typeOfContract(connexion)
     # """awardPrice & typeOfContract"""
@@ -91,15 +89,18 @@ def script_pair(connexion, cleaned):
     # draw_awardPrice_subContracted(connexion)
     # """awardPrice & numberTendersSme"""
     # draw_awardPrice_numberTendersSme(connexion)
-    # """awardPrice & lotsNumber"""
-    # draw_awardPrice_lotsNumber(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
-    if(cleaned):
-        # """awardEstimatedPrice & totalLots"""
-        draw_awardEstimatedPrice_totalLots(connexion)
-        # """awardPrice & totalLots"""
-        draw_awardPrice_totalLots(connexion)
+    # if(cleaned):
+    #     """awardEstimatedPrice & totalLots"""
+    #     draw_awardEstimatedPrice_totalLots(connexion)
+    #     """awardPrice & totalLots"""
+    #     draw_awardPrice_totalLots(connexion)
+    # else:
+    #     """awardEstimatedPrice & lotsNumber"""
+    #     draw_awardEstimatedPrice_lotsNumber(connexion)
+    #     """awardPrice & lotsNumber"""
+    #     draw_awardPrice_lotsNumber(connexion)
 
 
 def draw_awardPrice_jointProcurement(conn):

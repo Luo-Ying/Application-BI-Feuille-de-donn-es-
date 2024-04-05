@@ -9,25 +9,25 @@ def script_clean_variables_manually(connexion):
     ################ Lot ###################
     ##############################################
     """awardDate"""
-    convert_abnormal_awardDate(connexion)
-    """accelerated"""
-    convert_null_accelerated(connexion)
-    """contractorSme"""
-    # convert_string_contractorSme(connexion)
-    """contractDuration"""
-    replace_abnormal_contractDuration(connexion)
-    """lotsNumber"""
-    replace_total_lotsNumber(connexion)
-    """publicityDuration"""
-    replace_values_publicityDuration(connexion)
-    """awardPrice""" 
-    replace_values_awardPrice(connexion)
-    """awardEstimatedPrice""" 
-    replace_values_awardEstimatedPrice(connexion)
-    """Difference_awardPrice_awardEstimatedPrice""" 
-    replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
-    """numberTendersSme"""
-    replace_abnormal_numberTendersSme(connexion)
+    # convert_abnormal_awardDate(connexion)
+    # """accelerated"""
+    # convert_null_accelerated(connexion)
+    # """contractorSme"""
+    # # convert_string_contractorSme(connexion)
+    # """contractDuration"""
+    # replace_abnormal_contractDuration(connexion)
+    # """lotsNumber"""
+    # replace_total_lotsNumber(connexion)
+    # """publicityDuration"""
+    # replace_values_publicityDuration(connexion)
+    # """awardPrice""" 
+    # replace_values_awardPrice(connexion)
+    # """awardEstimatedPrice""" 
+    # replace_values_awardEstimatedPrice(connexion)
+    # """Difference_awardPrice_awardEstimatedPrice""" 
+    # replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
+    # """numberTendersSme"""
+    # replace_abnormal_numberTendersSme(connexion)
 
 
 def convert_abnormal_awardDate(conn):
@@ -139,6 +139,12 @@ def replace_values_awardPrice(conn):
     merged_df.drop(columns=['awardPrice_new'], inplace=True)
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
 
+
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice < 100""")
+    conn.commit()
+
     print("Mise à jour effectuée pour tous les awardPrice spécifiés.")
 
     # draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, "Lots", "After")
@@ -181,6 +187,11 @@ def replace_values_awardEstimatedPrice(conn):
     merged_df['awardEstimatedPrice'] = merged_df['awardEstimatedPrice_new']
     merged_df.drop(columns=['awardEstimatedPrice_new'], inplace=True)
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
+
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice < 100""")
+    conn.commit()
 
     print("Mise à jour effectuée pour tous les awardEstimatedPrice spécifiés.")
 
