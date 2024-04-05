@@ -142,6 +142,7 @@ def group_values(row, xlabel):
 
 
 def draw_custom_hist(data, xlabel, ylabel, title, file, value_min, value_max, bin_size):
+    data = data.dropna(subset=[ylabel, xlabel])
     # Calcul des bornes des tranches
     bins = np.arange(value_min, value_max + bin_size, bin_size)
 
