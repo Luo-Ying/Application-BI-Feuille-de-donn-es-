@@ -22,23 +22,19 @@ def check_agents_with_siret(conn):
         "SELECT * FROM Agents",
     )
     print(df)
+    # n = 0
     for index, row in df.iterrows():
+        # n += 1
         if row["siret"] is not None:
             try:
                 res = requests.get(
                     endpoint + row["siret"], auth=BearerAuth(BEARER_TOKEN)
                 )
                 res = res.json()
-                # print(res["etablissement"]["siren"])
                 df.at[index, "siren"] = res["etablissement"]["siren"]
-                # print(df)
                 df.at[index, "categorieEntreprise"] = res["etablissement"][
                     "uniteLegale"
                 ]["categorieEntreprise"]
-                # print(type(res["etablissement"]["adresseEtablissement"]["codePostalEtablissement"]))
-                # print(type(df["zipcode"][0]))
-                # print(type(df["department"][0]))
-                # print(res["etablissement"]["adresseEtablissement"]["codePostalEtablissement"][:2])
                 if (
                     row["zipcode"]
                     != res["etablissement"]["adresseEtablissement"][
@@ -48,18 +44,38 @@ def check_agents_with_siret(conn):
                     df.at[index, "zipcode"] = res["etablissement"][
                         "adresseEtablissement"
                     ]["codePostalEtablissement"]
+                    print()
                 if (
-                    row["department"]
-                    != res["etablissement"]["adresseEtablissement"][
-                        "codePostalEtablissement"
+                    res["etablissement"]["adresseEtablissement"][
+                        "codeCommuneEtablissement"
                     ][:2]
+                    == "97"
                 ):
-                    df.at[index, "department"] = res["etablissement"][
-                        "adresseEtablissement"
-                    ]["codePostalEtablissement"][:2]
+                    if (
+                        row["department"]
+                        != res["etablissement"]["adresseEtablissement"][
+                            "codeCommuneEtablissement"
+                        ][:3]
+                    ):
+                        df.at[index, "department"] = res["etablissement"][
+                            "adresseEtablissement"
+                        ]["codeCommuneEtablissement"][:3]
+                else:
+                    if (
+                        row["department"]
+                        != res["etablissement"]["adresseEtablissement"][
+                            "codeCommuneEtablissement"
+                        ][:2]
+                    ):
+                        df.at[index, "department"] = res["etablissement"][
+                            "adresseEtablissement"
+                        ]["codeCommuneEtablissement"][:2]
             except Exception as e:
-                print(f"Error processing row {index}: {e}")
-    print(df)
+                print(f"Error processing row {index}: {e}. ")
+        # if n == 10:
+        #     break
+    df.to_sql(name="Agents", if_exists="replace", con=conn, index=False)
+    print("Mise à jour effectuée pour les lotsNumber spécifiés.")
 
 
 def testapi():
