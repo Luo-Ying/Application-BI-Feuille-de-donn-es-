@@ -44,31 +44,31 @@ def check_agents_with_siret(conn):
                     df.at[index, "zipcode"] = res["etablissement"][
                         "adresseEtablissement"
                     ]["codePostalEtablissement"]
-                if (
-                    res["etablissement"]["adresseEtablissement"][
-                        "codeCommuneEtablissement"
-                    ][:2]
-                    == "97"
-                ):
-                    if (
-                        row["department"]
-                        != res["etablissement"]["adresseEtablissement"][
-                            "codeCommuneEtablissement"
-                        ][:3]
-                    ):
-                        df.at[index, "department"] = res["etablissement"][
-                            "adresseEtablissement"
-                        ]["codeCommuneEtablissement"][:3]
-                else:
-                    if (
-                        row["department"]
-                        != res["etablissement"]["adresseEtablissement"][
-                            "codeCommuneEtablissement"
-                        ][:2]
-                    ):
-                        df.at[index, "department"] = res["etablissement"][
-                            "adresseEtablissement"
-                        ]["codeCommuneEtablissement"][:2]
+                # if (
+                #     res["etablissement"]["adresseEtablissement"][
+                #         "codeCommuneEtablissement"
+                #     ][:2]
+                #     == "97"
+                # ):
+                #     if (
+                #         row["department"]
+                #         != res["etablissement"]["adresseEtablissement"][
+                #             "codeCommuneEtablissement"
+                #         ][:3]
+                #     ):
+                #         df.at[index, "department"] = res["etablissement"][
+                #             "adresseEtablissement"
+                #         ]["codeCommuneEtablissement"][:3]
+                # else:
+                #     if (
+                #         row["department"]
+                #         != res["etablissement"]["adresseEtablissement"][
+                #             "codeCommuneEtablissement"
+                #         ][:2]
+                #     ):
+                #         df.at[index, "department"] = res["etablissement"][
+                #             "adresseEtablissement"
+                #         ]["codeCommuneEtablissement"][:2]
             except Exception as e:
                 print(f"Error processing row {index}: {e}. ")
         # if n == 10:

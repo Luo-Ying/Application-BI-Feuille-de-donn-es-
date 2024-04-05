@@ -61,7 +61,7 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
         data = data.dropna(subset=[ylabel])
 
     keys = list(data[xlabel].astype(str))
-    values = list(data[ylabel].astype(int))
+    values = list(data[ylabel].astype(float))
 
     top_5 = data.groupby(xlabel).sum().nlargest(5, ylabel)
     legend_text = "Top 5:\n" + "\n".join(
@@ -102,17 +102,18 @@ def draw_hist(data, xlabel, ylabel, title, file, log=False, dropNaN=True, top=Tr
             textcoords="offset points",
             ha="center",
             va="bottom",
-            rotation=0,
+            rotation=45,
         )
 
     if top:
         plt.legend(title=legend_text, loc="upper right")
     if log:
         plt.yscale("log")
-        generateFileChart(file, xlabel, "hist_with_log")
+        generateFileChart(file, title, "hist_with_log")
     else:
-        generateFileChart(file, xlabel, "hist")
+        generateFileChart(file, title, "hist")
     # plt.show()
+    plt.close()
 
 
 def draw_hist_with_errors(data, xlabel, ylabel, title, file, log=False, dropNaN=True):

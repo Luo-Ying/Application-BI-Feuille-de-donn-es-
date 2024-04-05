@@ -28,7 +28,7 @@ def script_single(connexion):
     # """awardPrice"""
     # draw_award_price(connexion)
     # """cpv"""
-    # draw_cpv_lots(connexion)
+    draw_cpv_lots(connexion)
     # """numberTenders"""
     # draw_numberTenders(connexion)
     # """fraEstimated"""
@@ -127,9 +127,7 @@ def draw_type(conn):
 
 
 def draw_weight(conn):
-    df = create_df_from_query(
-        conn, "SELECT weight, type FROM Criteria"
-    )
+    df = create_df_from_query(conn, "SELECT weight, type FROM Criteria")
     # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_box_plot_multiple_dense(
         df,
@@ -226,7 +224,7 @@ def draw_numberTendersSme(conn):
         "numberTendersSme",
         "Boxplot des numberTendersSme avec échelle logarithmique",
         "Lots",
-        True
+        True,
     )
     df3 = create_df_from_query(
         conn,
@@ -301,7 +299,13 @@ def draw_cancelled(conn):
         data_count_elements[str(row[0])] = row[1]
 
     draw_bar(
-        data_count_elements, "Les éléments", "Nombre d'apparîtion","Nombre d'apparitions de cancelled","Lots", "cancelled", True
+        data_count_elements,
+        "Les éléments",
+        "Nombre d'apparîtion",
+        "Nombre d'apparitions de cancelled",
+        "Lots",
+        "cancelled",
+        True,
     )
 
 
@@ -587,10 +591,11 @@ def draw_contract_duration(connexion):
         True,
     )
 
+
 def draw_totalLots(conn, colonne_1):
     df = create_df_from_query(
         conn,
-         f"SELECT {colonne_1} FROM Lots",
+        f"SELECT {colonne_1} FROM Lots",
     )
 
     draw_box_plot(
