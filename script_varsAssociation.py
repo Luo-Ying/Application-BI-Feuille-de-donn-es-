@@ -1,8 +1,9 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import draw_hist
+from apiSiren import *
 
 
-def communication_beteewn_Agents(conn):
+def top50(conn):
     df_Buyers = create_df_from_query(
         conn,
         "SELECT lotId, agentId as idBuyer FROM LotBuyers",
@@ -102,6 +103,12 @@ def communication_beteewn_Agents(conn):
         "siret_supplier"
     ].str[:9]
 
+    merged_df_supplier_buyer = merged_df_supplier_buyer.rename(
+        columns={"idBuyer": "siren_Buyer", "idSupplier": "siren_Supplier"}
+    )
+
+    # print(merged_df_supplier_buyer)
+
     merged_df_Lot_comm = pd.merge(
         merged_df_supplier_buyer, df_Lots[["lotId", "awardPrice"]], on="lotId"
     )
@@ -112,33 +119,35 @@ def communication_beteewn_Agents(conn):
         inplace=True,
     )
 
-    # Count occurrences of idBuyer
-    buyer_counts = merged_df_Lot_comm["idBuyer"].value_counts().reset_index()
-    buyer_counts.columns = ["idBuyer", "Buyer_Count"]
+    # Count occurrences of siren_Buyer
+    buyer_counts = merged_df_Lot_comm["siren_Buyer"].value_counts().reset_index()
+    buyer_counts.columns = ["siren_Buyer", "Buyer_Count"]
 
-    # Count occurrences of idSupplier
-    supplier_counts = merged_df_Lot_comm["idSupplier"].value_counts().reset_index()
-    supplier_counts.columns = ["idSupplier", "Supplier_Count"]
+    # Count occurrences of siren_Supplier
+    supplier_counts = merged_df_Lot_comm["siren_Supplier"].value_counts().reset_index()
+    supplier_counts.columns = ["siren_Supplier", "Supplier_Count"]
 
-    # Count occurrences of pairs of idBuyer and idSupplier
+    # Count occurrences of pairs of siren_Buyer and siren_Supplier
     pair_counts = (
-        merged_df_Lot_comm.groupby(["idBuyer", "idSupplier"])
+        merged_df_Lot_comm.groupby(["siren_Buyer", "siren_Supplier"])
         .size()
         .reset_index(name="Pair_Count")
     )
     pair_counts = pair_counts.sort_values(by="Pair_Count", ascending=False)
 
     pair_counts["id_BuyerAndSupplier"] = (
-        pair_counts["idBuyer"].astype(str) + "_" + pair_counts["idSupplier"].astype(str)
+        pair_counts["siren_Buyer"].astype(str)
+        + "_"
+        + pair_counts["siren_Supplier"].astype(str)
     )
 
     buyer_total = (
-        merged_df_Lot_comm.groupby("idBuyer")["awardPrice"].sum().reset_index()
+        merged_df_Lot_comm.groupby("siren_Buyer")["awardPrice"].sum().reset_index()
     )
     buyer_total = buyer_total.rename(columns={"awardPrice": "totalAwardPriceBuyer"})
 
     supplier_total = (
-        merged_df_Lot_comm.groupby("idSupplier")["awardPrice"].sum().reset_index()
+        merged_df_Lot_comm.groupby("siren_Supplier")["awardPrice"].sum().reset_index()
     )
     supplier_total = supplier_total.rename(
         columns={"awardPrice": "totalAwardPriceSupplier"}
@@ -189,9 +198,10 @@ def draw_hist_top_50_Suppliers_departement(data):
 
 
 def draw_hist_top_50_Buyers_communication(data):
+    get_info_detail_Agents(data, "des_acheteurs_qui_communiquent_le_plus")
     draw_hist(
         data,
-        "idBuyer",
+        "siren_Buyer",
         "Buyer_Count",
         "Top 50 des acheteurs qui communiquent le plus",
         "Flux",
@@ -201,7 +211,7 @@ def draw_hist_top_50_Buyers_communication(data):
 def draw_hist_top_50_Suppliers_communication(data):
     draw_hist(
         data,
-        "idSupplier",
+        "siren_Supplier",
         "Supplier_Count",
         "Top 50 des fournisseurs qui communiquent le plus",
         "Flux",
@@ -221,7 +231,7 @@ def draw_hist_top_50_Buyers_and_Suppliers_communication_paire(data):
 def draw_hist_top_50_Buyers_paid(data):
     draw_hist(
         data,
-        "idBuyer",
+        "siren_Buyer",
         "totalAwardPriceBuyer",
         "Top 50 des acheteurs avec le plus de flux d'agent sortant",
         "Flux",
@@ -232,7 +242,7 @@ def draw_hist_top_50_Buyers_paid(data):
 def draw_hist_top_50_Sppliers_awrd(data):
     draw_hist(
         data,
-        "idSupplier",
+        "siren_Supplier",
         "totalAwardPriceSupplier",
         "Top 50 des fournisseurs avec le plus de flux d'agent entrant",
         "Flux",
