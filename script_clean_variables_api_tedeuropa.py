@@ -1,78 +1,276 @@
 import numpy as np
+import csv
+
+from datetime import datetime
 from bs4 import BeautifulSoup
 from getTedXML import *
 from scriptReadSql import *
 
 
 def correctedData(conn):
-    all_db = create_df_from_query(
+    all_tedCanId = create_df_from_query(
         conn,
-        f"SELECT * FROM Lots",
+        f"SELECT DISTINCT(tedCanId) FROM Lots",
     )
-    # tedCanId = "2012208072"
-    # tedCanId = "2017407163"
-    # tedCanId = "2010142"
-    # tedCanId = "201484598"
-    tedCanId = "2020154110"
-    df = create_df_from_query(
-        conn,
-        f"SELECT * FROM Lots WHERE tedCanId IN ({tedCanId})",
-    )
-    # print(df)
-    ted = transform(tedCanId)
-    # createXML(ted)
-    fileXML = openXML(ted)
-    # fileJSON = openJSON(ted)
-    display_information(tedCanId, fileXML)
+    for tedCanId in all_tedCanId.index:
+        tedCanId = all_tedCanId['tedCanId'][tedCanId]
+        ted = transform(tedCanId)
+        createXML(ted)
+        fileXML = openXML(ted)
+        # fileJSON = openJSON(ted)
+        # print("NEW")
+        # display_information(tedCanId, fileXML)
+        # Récupération des ids des Lots
+        lots_numbers_xml = get_lotsNumber(fileXML)
+
+        i = 0
+        if lots_numbers_xml:
+            cur = conn.cursor()
+            update_lotsNumber_from_xml(conn, cur, tedCanId, lots_numbers_xml)
+            for lot_number in lots_numbers_xml:
+                cur = conn.cursor()
+                cur.execute(f"SELECT * FROM Lots WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                row = cur.fetchone()
+                en_tetes = ['tedCanId', 'lot_number', 'columnName', 'oldValue', 'newValue']
+                filename = 'historique_modifications.csv'
+                fichier_vide = not os.path.exists(filename) or os.stat(filename).st_size == 0
+                with open('historique_modifications.csv', mode='a', newline='') as file:
+                    writer = csv.writer(file)
+                    if fichier_vide:
+                        writer.writerow(en_tetes)
+                    """awardDate"""
+                    if get_awardDate(fileXML):
+                        if i < len(get_awardDate(fileXML)) and type(get_awardDate(fileXML)) == list:
+                            new_value_awardDate = get_awardDate(fileXML)[i]
+                            if row and row[4] != new_value_awardDate and new_value_awardDate is not None:
+                                writer.writerow([tedCanId, lot_number, 'awardDate', row[4], new_value_awardDate])
+                                cur = conn.cursor()
+                                cur.execute(f"UPDATE Lots SET awardDate='{new_value_awardDate}' WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                                conn.commit()
+
+                    """awardEstimatedPrice"""
+                    if get_awardEstimatedPrice(fileXML):
+                        if i < len(get_awardEstimatedPrice(fileXML)) and type(get_awardEstimatedPrice(fileXML)) == list:
+                            new_value_awardEstimatedPrice = get_awardEstimatedPrice(fileXML)[i]
+                            if row and row[5] != new_value_awardEstimatedPrice and new_value_awardEstimatedPrice is not None:
+                                writer.writerow(
+                                    [tedCanId, lot_number, 'awardEstimatedPrice', row[5],
+                                     new_value_awardEstimatedPrice])
+                                cur = conn.cursor()
+                                cur.execute(
+                                    f"UPDATE Lots SET awardEstimatedPrice={new_value_awardEstimatedPrice} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                                conn.commit()
+
+                    """awardPrice"""
+                    if get_awardPrice(fileXML):
+                        if i < len(get_awardPrice(fileXML)) and type(get_awardPrice(fileXML)) == list:
+                            new_value_awardPrice = get_awardPrice(fileXML)[i]
+                            if row and row[6] != new_value_awardPrice and new_value_awardPrice is not None:
+                                writer.writerow([tedCanId, lot_number, 'awardPrice', row[6], new_value_awardPrice])
+                                cur = conn.cursor()
+                                cur.execute(f"UPDATE Lots SET awardPrice={new_value_awardPrice} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                                conn.commit()
+
+                    """CPV"""
+                    new_value_cpv = get_CPV(fileXML)
+                    if row and new_value_cpv is not None:
+                        if row[7] != new_value_cpv:
+                            writer.writerow([tedCanId, lot_number, 'cpv', row[7], new_value_cpv])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET cpv={new_value_cpv} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """NumberTenders"""
+                    if get_numberTenders(fileXML):
+                        if i < len(get_numberTenders(fileXML)) and type(get_numberTenders(fileXML)) == list:
+                            new_value_numberTenders = get_numberTenders(fileXML)[i]
+                            if row and new_value_numberTenders is not None:
+                                if row[8] != new_value_numberTenders:
+                                    writer.writerow(
+                                        [tedCanId, lot_number, 'numberTenders', row[8], new_value_numberTenders])
+                                    cur = conn.cursor()
+                                    cur.execute(
+                                        f"UPDATE Lots SET numberTenders={new_value_numberTenders} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                                    conn.commit()
+
+                    """fraAgreement"""
+                    new_value_fraAgreement = is_fraAgreement(fileXML)
+                    if row and new_value_fraAgreement is not None:
+                        if row[11] != new_value_fraAgreement:
+                            writer.writerow([tedCanId, lot_number, 'fraAgreement', row[11], new_value_fraAgreement])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET fraAgreement={new_value_fraAgreement} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """accelerated"""
+                    new_value_accelerated = is_accelerated(fileXML)
+                    if row and new_value_accelerated is not None:
+                        if row[14] != new_value_accelerated:
+                            writer.writerow([tedCanId, lot_number, 'accelerated', row[14], new_value_accelerated])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET accelerated={new_value_accelerated} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """NumberTendersSme"""
+                    new_value_numberTendersSme = get_numberTendersSme(fileXML)
+                    if row and new_value_numberTendersSme is not None:
+                        if row[17] != new_value_numberTendersSme:
+                            writer.writerow(
+                                [tedCanId, lot_number, 'numberTendersSme', row[17], new_value_numberTendersSme])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET numberTendersSme={new_value_numberTendersSme} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """GPA"""
+                    new_value_gpa = is_gpa(fileXML)
+                    if row and new_value_gpa is not None:
+                        if row[19] != new_value_gpa:
+                            writer.writerow([tedCanId, lot_number, 'gpa', row[19], new_value_gpa])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET gpa={new_value_gpa} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """typeOfContract"""
+                    new_value_typeOfContract = which_typeOfContract(fileXML)
+                    if row and new_value_typeOfContract is not None:
+                        if row[21] != new_value_typeOfContract:
+                            writer.writerow([tedCanId, lot_number, 'typeOfContract', row[21], new_value_typeOfContract])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET typeOfContract='{new_value_typeOfContract}' WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """renewal"""
+                    new_value_renewal = is_renewal(fileXML)
+                    if row and new_value_renewal is not None:
+                        if row[23] != new_value_renewal:
+                            writer.writerow([tedCanId, lot_number, 'renewal', row[23], new_value_renewal])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET renewal={new_value_renewal} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """contractDuration"""
+                    new_value_contractDuration = get_contractDuration(fileXML)
+                    if row and len(new_value_contractDuration) > 0:
+                        if row[24] != new_value_contractDuration:
+                            writer.writerow(
+                                [tedCanId, lot_number, 'contractDuration', row[24], new_value_contractDuration])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET contractDuration={new_value_contractDuration} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
+                            conn.commit()
+
+                    """publicityDuration"""
+                    new_value_publicityDuration = calculate_publicityDuration(fileXML)
+                    if row and new_value_publicityDuration is not None:
+                        if row[25] != new_value_publicityDuration:
+                            writer.writerow(
+                                [tedCanId, lot_number, 'publicityDuration', row[25], new_value_publicityDuration])
+                            cur = conn.cursor()
+                            cur.execute(f"UPDATE Lots SET publicityDuration={new_value_publicityDuration} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}"  )
+                            conn.commit()
+                    i += 1
 
 
 def display_information(tedCanId, fileXML):
     """TedCanId"""
     print(f"TedCanId : {tedCanId}")
-    """GPA"""
-    print(f"GPA ? {is_gpa(fileXML)}")
-    """NumberTenders"""
-    print(f"NumberTenders : {get_numberTenders(fileXML)}")
-    """NumberTenders"""
-    print(f"NumberTendersSme : {get_numberTendersSme(fileXML)}")
-    """NumberTenders"""
-    print(f"LotsNumber : {get_lotsNumber(fileXML)}")
-    """Accelerated"""
-    print(f"Accelerated ? {is_accelerated(fileXML)}")
-    """CPV"""
-    print(f"CPV : {get_CPV(fileXML)}")
     """AwardDate"""
     print(f"AwardDate : {get_awardDate(fileXML)}")
-    """TypeOfContract"""
-    print(f"TypeOfContract : {which_typeOfContract(fileXML)}")
     """awardEstimatedPrice"""
     print(f"awardEstimatedPrice : {get_awardEstimatedPrice(fileXML)}")
     """awardPrice"""
     print(f"awardPrice : {get_awardPrice(fileXML)}")
+    """CPV"""
+    print(f"CPV : {get_CPV(fileXML)}")
+    """NumberTenders"""
+    print(f"NumberTenders : {get_numberTenders(fileXML)}")
     """fraAgreement"""
     print(f"fraAgreement  : {is_fraAgreement(fileXML)}")
+    """LotsNumber"""
+    print(f"LotsNumber : {get_lotsNumber(fileXML)}")
+    """Accelerated"""
+    print(f"Accelerated ? {is_accelerated(fileXML)}")
+    """NumberTendersSme"""
+    print(f"NumberTendersSme : {get_numberTendersSme(fileXML)}")
+    """GPA"""
+    print(f"GPA ? {is_gpa(fileXML)}")
+    """TypeOfContract"""
+    print(f"TypeOfContract : {which_typeOfContract(fileXML)}")
     """renewal"""
     print(f"is_renewal  : {is_renewal(fileXML)}")
     """contractDuration"""
     print(f"contractDuration : {get_contractDuration(fileXML)}")
-    # """publicityDuration"""
-    # print(f"awardPrice : {calculate_publicityDuration(fileXML)}")
+    """publicityDuration"""
+    print(f"publicityDuration : {calculate_publicityDuration(fileXML)}")
+
+
+def check_lotsNumber_empty(conn, cur, tedCanId):
+    cur = conn.cursor()
+    cur.execute(f"SELECT COUNT(*) FROM Lots WHERE tedCanId={tedCanId} AND lotsNumber IS NULL")
+    count = cur.fetchone()[0]
+    return count == 0
+
+
+def get_lot_ids(conn, cur, tedCanId):
+    cur = conn.cursor()
+    cur.execute(f"SELECT lotId FROM Lots WHERE tedCanId={tedCanId}")
+    return [row[0] for row in cur.fetchall()]
+
+
+def update_lotsNumber_from_xml(conn, cur, tedCanId, lots_numbers_xml):
+    lot_ids = get_lot_ids(conn, cur, tedCanId)
+    if check_lotsNumber_empty(conn, cur, tedCanId):
+        for i in range(0, len(lots_numbers_xml)):
+            with open('historique_modifications.csv', mode='a', newline='') as file:
+                writer = csv.writer(file)
+                cur = conn.cursor()
+                cur.execute(
+                    f"UPDATE Lots SET lotsNumber={lots_numbers_xml[i]} WHERE tedCanId={tedCanId} AND lotId={lot_ids[i]}")
+                writer.writerow([tedCanId, '', 'lotsNumber', 'empty', lots_numbers_xml[i]])
+            conn.commit()
+
+
+def calculate_publicityDuration(fileXML):
+    try:
+        dateReceiptTenders = datetime.strptime(get_dateReceiptTenders(fileXML), '%Y-%m-%d')
+        dateDispatchNotice = datetime.strptime(get_dateDispatchNotice(fileXML), '%Y-%m-%d')
+        if dateReceiptTenders and dateDispatchNotice:
+            return (dateReceiptTenders - dateDispatchNotice).days
+        else:
+            return None
+    except Exception as e:
+        return None
+
+
+def get_dateDispatchNotice(fileXML):
+    try:
+        tags = get_content_tag(fileXML, "DATE_DISPATCH_NOTICE")
+        return str(tags[0].get_text())
+    except Exception as e:
+        return None
+
+
+def get_dateReceiptTenders(fileXML):
+    try:
+        tags = get_content_tag(fileXML, "DATE_RECEIPT_TENDERS")
+        return str(tags[0].get_text())
+    except Exception as e:
+        return None
 
 
 def get_contractDuration(fileXML):
     try:
         tags = get_content_tag(fileXML, "DURATION")
-        return [int(content.get_text()) for content in tags]
+        return [int(content.get_text()) for content in tags] if tags == [] else None
     except Exception as e:
-        return 0
+        return None
 
 
 def is_renewal(fileXML):
     try:
         tag = get_content_tag(fileXML, "RENEWAL")
-        return 1 if tag[0] else 0
+        return 1 if tag else None
     except Exception as e:
-        return 0
+        return None
 
 
 def is_fraAgreement(fileXML):
@@ -81,7 +279,7 @@ def is_fraAgreement(fileXML):
         fraAgreement = [get_value_tag(content, "VALUE") for content in tag]
         return 1 if fraAgreement[0] == "CONCLUSION_FRAMEWORK_AGREEMENT" else 0
     except Exception as e:
-        return 0
+        return None
 
 
 def get_awardEstimatedPrice(fileXML):
@@ -151,12 +349,14 @@ def get_awardDate(fileXML):
     try:
         tags = get_content_tag(fileXML, "DATE_CONCLUSION_CONTRACT")
         results = [content.get_text() for content in tags]
-        if not results:
+        dates_converties = [datetime.strptime(date, '%d%m%Y').strftime('%Y-%m-%d') for date in results]
+        if not dates_converties:
             tags = get_content_tag(fileXML, "CONTRACT_AWARD_DATE")
             dates = [content.get_text() for content in tags]
             formatted_dates = [date.strip().replace('\n', '-') for date in dates]
-            return formatted_dates
-        return results
+            dates_converties = [datetime.strptime(date, '%d%m%Y').strftime('%Y-%m-%d') for date in formatted_dates]
+            return dates_converties
+        return dates_converties
     except Exception as e:
         return None
 
@@ -164,16 +364,15 @@ def get_awardDate(fileXML):
 def is_gpa(fileXML):
     try:
         tag = get_content_tag(fileXML, "RP_REGULATION")
-        if (str(tag[0]).lower()).count("gpa") > 0:
-            return 1
+        return 1 if str(tag[0]).lower().count("gpa") else 0
     except Exception as e:
         try:
             tag = get_content_tag(fileXML, "CONTRACT_COVERED_GPA")
             value = get_value_tag(tag[0], "VALUE")
             return 1 if str(value) == "YES" else 0
         except Exception as e2:
-            return 0
-    return 0
+            return None
+    return None
 
 
 def get_numberTenders(fileXML):
@@ -184,7 +383,7 @@ def get_numberTenders(fileXML):
         tags = get_content_tag(fileXML, "OFFERS_RECEIVED_NUMBER")
         results = [int(content.get_text()) for content in tags]
         if not results:
-            return 0
+            return None
         return results
 
 
@@ -193,7 +392,7 @@ def get_numberTendersSme(fileXML):
         tag = get_content_tag(fileXML, "NB_TENDERS_RECEIVED_SME")
         return int(tag[0].get_text())
     except Exception as e:
-        return 0
+        return None
 
 
 def get_CPV(fileXML):
@@ -233,14 +432,13 @@ def get_lotsNumber(fileXML):
                     return results2 if results2 else results
                 return results
             except Exception as e4:
-                return 0
+                return None
 
 
 def is_accelerated(fileXML):
     try:
         tag = search_tag(fileXML, "ACCELERATED_PROC")
-        if tag:
-            return 1
+        return 1 if tag else 0
     except Exception as e:
-        return 0
-    return 0
+        return None
+    return None
