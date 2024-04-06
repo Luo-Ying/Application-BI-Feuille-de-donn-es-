@@ -378,7 +378,7 @@ def is_gpa(fileXML):
 def get_numberTenders(fileXML):
     try:
         tag = get_content_tag(fileXML, "NB_TENDERS_RECEIVED")
-        return int(tag[0].get_text())
+        return int(tag[0].get_text()) if tag[0] and type(tag[0]) == int else None
     except Exception as e:
         tags = get_content_tag(fileXML, "OFFERS_RECEIVED_NUMBER")
         results = [int(content.get_text()) for content in tags]
@@ -390,7 +390,7 @@ def get_numberTenders(fileXML):
 def get_numberTendersSme(fileXML):
     try:
         tag = get_content_tag(fileXML, "NB_TENDERS_RECEIVED_SME")
-        return int(tag[0].get_text())
+        return int(tag[0].get_text()) if tag[0] and type(tag[0]) == int else None
     except Exception as e:
         return None
 
