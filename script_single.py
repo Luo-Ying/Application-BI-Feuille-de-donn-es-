@@ -338,9 +338,9 @@ def draw_cancelled(conn):
     )
 
 
-def draw_awardDate(conn, range):
-    rangeLoop = range - 1
-    rangeStr = str(range)
+def draw_awardDate(conn, yearRange):
+    rangeLoop = yearRange - 1
+    rangeStr = str(yearRange)
     rows = select_awardDate_get_date_appearances(conn)
 
     data_date_appearances_by_each_year = {}
@@ -360,27 +360,44 @@ def draw_awardDate(conn, range):
     appearances = 0
     keys = list(data_date_appearances_by_each_year.keys())
     length = len(keys)
+
+    year_start = keys[0]
+    year_end = keys[-1]
+
+    nbOfRange = (int(year_end) - int(year_start)) // yearRange
+
+    for i in range(nbOfRange):
+        year_range_end = int(year_start) + yearRange - 1
+        data_date_appearances_by_each_decade[f"{year_start}-{year_range_end}"] = 0
+        year_start = year_range_end + 1
+
     for index, key in enumerate(keys):
         value = data_date_appearances_by_each_year[key]
-        year_end = int(key)
-        if year_start == 0:
-            year_start = int(key)
-        appearances += value
-        if year_end - year_start >= rangeLoop or index == length - 1:
-            data_date_appearances_by_each_decade[f"{year_start}-{year_end}"] = (
-                appearances
-            )
-            appearances = 0
-            year_start = year_end
-            year_end = 0
-    print(data_date_appearances_by_each_decade)
-    data_date_appearances_by_each_decade = pd.DataFrame(
-        data_date_appearances_by_each_decade.items(), columns=["Period", "Value"]
+        current_year = int(key)
+        for key in data_date_appearances_by_each_decade.keys():
+            keySplit = key.split("-")
+            if int(keySplit[0]) <= current_year and current_year <= int(keySplit[1]):
+
+                data_date_appearances_by_each_decade[key] = (
+                    data_date_appearances_by_each_decade[key] + value
+                )
+            else:
+                appearances = 0
+
+    filtered_data_date_appearances_by_each_decade = {
+        key: value
+        for key, value in data_date_appearances_by_each_decade.items()
+        if value != 0
+    }
+
+    print(filtered_data_date_appearances_by_each_decade)
+    filtered_data_date_appearances_by_each_decade = pd.DataFrame(
+        filtered_data_date_appearances_by_each_decade.items(),
+        columns=[f"Chaque {yearRange} ans", "Value"],
     )
-    # print(data_date_appearances_by_each_decade)
     draw_hist(
-        data_date_appearances_by_each_decade,
-        f"Period",
+        filtered_data_date_appearances_by_each_decade,
+        f"Chaque {yearRange} ans",
         "Value",
         "awardDate",
         "Lots",
