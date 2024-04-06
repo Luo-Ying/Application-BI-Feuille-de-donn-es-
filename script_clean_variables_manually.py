@@ -119,6 +119,7 @@ def replace_values_awardPrice(conn):
     # # Calculer les whiskers chaque group_id
     q1 = df.groupby('group_id')['awardPrice'].quantile(0.25)
     q3 = df.groupby('group_id')['awardPrice'].quantile(0.75)
+    
     iqr = q3 - q1
 
     whisker_high = q3 + 1.5 * iqr
@@ -131,6 +132,12 @@ def replace_values_awardPrice(conn):
     df = pd.merge(df, whisker_low_df, on='group_id', how='left')
     df.loc[df['awardPrice'] < df['whisker_low'], 'awardPrice'] = np.nan
 
+    median_awardPrice = df.groupby('group_id')['awardPrice'].median().reset_index().rename(columns={'awardPrice': 'median_awardPrice'})
+    df = pd.merge(df, median_awardPrice, on='group_id', how='left')
+    df.loc[df['awardPrice'] < 100, 'awardPrice'] = df['median_awardPrice']
+    df.loc[df['awardPrice'] > 10000000, 'awardPrice'] = df['median_awardPrice']
+
+
     # Mettre à jour la base de données
     df2 = create_df_from_query(conn, "SELECT * FROM Lots")
 
@@ -139,10 +146,9 @@ def replace_values_awardPrice(conn):
     merged_df.drop(columns=['awardPrice_new'], inplace=True)
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
 
-
     cursor = conn.cursor()
-    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice > 10000000""")
-    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice < 100""")
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice < 100""")
     conn.commit()
 
     print("Mise à jour effectuée pour tous les awardPrice spécifiés.")
@@ -177,6 +183,11 @@ def replace_values_awardEstimatedPrice(conn):
     df = pd.merge(df, whisker_low_df, on='group_id', how='left')
     df.loc[df['awardEstimatedPrice'] < df['whisker_low'], 'awardEstimatedPrice'] = np.nan
 
+    median_awardEstimatedPrice = df.groupby('group_id')['awardEstimatedPrice'].median().reset_index().rename(columns={'awardEstimatedPrice': 'median_awardEstimatedPrice'})
+    df = pd.merge(df, median_awardEstimatedPrice, on='group_id', how='left')
+    df.loc[df['awardEstimatedPrice'] < 100, 'awardEstimatedPrice'] = df['median_awardEstimatedPrice']
+    df.loc[df['awardEstimatedPrice'] > 10000000, 'awardEstimatedPrice'] = df['median_awardEstimatedPrice']
+
     # Mettre à jour la base de données
     df2 = create_df_from_query(
         conn,
@@ -189,8 +200,8 @@ def replace_values_awardEstimatedPrice(conn):
     merged_df.to_sql(name='Lots', if_exists='replace', con=conn, index=False)
 
     cursor = conn.cursor()
-    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice > 10000000""")
-    cursor.execute("""UPDATE Lots SET awardPrice = NULL WHERE awardPrice < 100""")
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice > 10000000""")
+    cursor.execute("""UPDATE Lots SET awardEstimatedPrice = NULL WHERE awardEstimatedPrice < 100""")
     conn.commit()
 
     print("Mise à jour effectuée pour tous les awardEstimatedPrice spécifiés.")

@@ -216,9 +216,10 @@ def draw_box_plot_multiple_dense(
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
 
+    data[ylabel] = data[ylabel].astype(float)
+
     unique_values = data[xlabel].unique()
     data_to_plot = [data[data[xlabel] == val][ylabel] for val in unique_values]
-
     fig, ax = plt.subplots(figsize=(20, 10))
 
     # Creating plot
