@@ -35,7 +35,7 @@ def main():
         # check_agents_with_siret(conn)
         # script_clean_variables_manually(conn)
         # script_single(conn, True)
-        script_pair(conn,True)
+        # script_pair(conn,True)
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
 
