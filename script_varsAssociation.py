@@ -209,6 +209,7 @@ def draw_hist_top_50_Buyers_communication(data):
 
 
 def draw_hist_top_50_Suppliers_communication(data):
+    get_info_detail_Agents(data, "des_fourniseurs_qui_communiquent_le_plus")
     draw_hist(
         data,
         "siren_Supplier",
@@ -219,6 +220,9 @@ def draw_hist_top_50_Suppliers_communication(data):
 
 
 def draw_hist_top_50_Buyers_and_Suppliers_communication_paire(data):
+    get_info_detail_Agents(
+        data, "des_acheterus_et_fourniseurs_qui_communiquent_entre_eux_le_plus"
+    )
     draw_hist(
         data,
         "id_BuyerAndSupplier",
@@ -229,6 +233,7 @@ def draw_hist_top_50_Buyers_and_Suppliers_communication_paire(data):
 
 
 def draw_hist_top_50_Buyers_paid(data):
+    get_info_detail_Agents(data, "des_acheterus_avec_le_plus_de_flux_argent_sortant")
     draw_hist(
         data,
         "siren_Buyer",
@@ -240,6 +245,7 @@ def draw_hist_top_50_Buyers_paid(data):
 
 
 def draw_hist_top_50_Sppliers_awrd(data):
+    get_info_detail_Agents(data, "des_fourniseurs_avec_le_plus_de_flux_argent_entrant")
     draw_hist(
         data,
         "siren_Supplier",

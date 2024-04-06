@@ -99,7 +99,7 @@ def get_info_detail_Agents(df, filename):
                         # break
                     values = clean_data(values)
                     values = replace_details_infos(values)
-                    print(values)
+                    # print(values)
                     data.append(values)
                 except Exception as e:
                     print(f"Error processing row {index} and column {column_name}: {e}")
