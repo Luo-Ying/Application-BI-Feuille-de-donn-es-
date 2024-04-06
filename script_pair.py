@@ -88,7 +88,7 @@ def script_pair(connexion, cleaned):
     # """awardPrice & subContracted"""
     # draw_awardPrice_subContracted(connexion)
     # """awardPrice & numberTendersSme"""
-    # draw_awardPrice_numberTendersSme(connexion)
+    draw_awardPrice_numberTendersSme(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
     # if(cleaned):
@@ -243,6 +243,7 @@ def draw_awardPrice_totalLots(conn):
         True,
     )
 
+
 def draw_awardPrice_numberTendersSme(conn):
     df = create_df_from_query(
         conn,
@@ -270,8 +271,8 @@ def draw_awardPrice_numberTendersSme(conn):
     )
     draw_scatter_plots2(
         df_contractS,
-        "awardPrice",
         "numberTendersSme",
+        "awardPrice",
         "Nuage de points des awardPrice et numberTendersSme de type de contrat 'S'",
         "Lots",
         True,
@@ -279,8 +280,8 @@ def draw_awardPrice_numberTendersSme(conn):
     )
     draw_scatter_plots2(
         df_contractW,
-        "awardPrice",
         "numberTendersSme",
+        "awardPrice",
         "Nuage de points des awardPrice et numberTendersSme de type de contrat  'W'",
         "Lots",
         True,
@@ -288,8 +289,8 @@ def draw_awardPrice_numberTendersSme(conn):
     )
     draw_scatter_plots2(
         df_contractU,
-        "awardPrice",
         "numberTendersSme",
+        "awardPrice",
         "Nuage de points des awardPrice et numberTendersSme de type de contrat  'U'",
         "Lots",
         True,
@@ -443,6 +444,7 @@ def draw_awardEstimatedPrice_totalLots(conn):
         True,
     )
 
+
 def draw_awardEstimatedPrice_lotsNumber(conn):
     df_contractS = create_df_from_query(
         conn,
@@ -493,6 +495,7 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         True,
         True,
     )
+
 
 def draw_awardPrice_onBehalf(conn):
     df_contract_S = create_df_from_query(
@@ -1578,7 +1581,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'S'",
-        "Lots"
+        "Lots",
     )
     draw_scatter_plots(
         df_contraW[colonne_2],
@@ -1586,7 +1589,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat 'W'",
-        "Lots"
+        "Lots",
     )
     draw_scatter_plots(
         df_contratU[colonne_2],
@@ -1594,7 +1597,7 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         f"{colonne_2}",
         f"{colonne_1}",
         f"Nuage de points des {colonne_2} et {colonne_1} de type de contrat  'U'",
-        "Lots"
+        "Lots",
     )
 
 
