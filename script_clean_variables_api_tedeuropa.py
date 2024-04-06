@@ -29,14 +29,15 @@ def correctedData(conn):
             update_lotsNumber_from_xml(conn, cur, tedCanId, lots_numbers_xml)
             for lot_number in lots_numbers_xml:
                 cur = conn.cursor()
-                cur.execute(f"SELECT * FROM Lots WHERE tedCanId = {tedCanId} AND lotsNumber = {lot_number}")
+                cur.execute(f"SELECT * FROM Lots WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                 row = cur.fetchone()
                 en_tetes = ['tedCanId', 'lot_number', 'columnName', 'oldValue', 'newValue']
                 filename = 'historique_modifications.csv'
-                # fichier_vide = not os.path.exists(filename) or os.stat(filename).st_size == 0
+                fichier_vide = not os.path.exists(filename) or os.stat(filename).st_size == 0
                 with open('historique_modifications.csv', mode='a', newline='') as file:
                     writer = csv.writer(file)
-                    writer.writerow(en_tetes)
+                    if fichier_vide:
+                        writer.writerow(en_tetes)
                     """awardDate"""
                     if get_awardDate(fileXML):
                         if i < len(get_awardDate(fileXML)) and type(get_awardDate(fileXML)) == list:
@@ -44,8 +45,7 @@ def correctedData(conn):
                             if row and row[4] != new_value_awardDate and new_value_awardDate is not None:
                                 writer.writerow([tedCanId, lot_number, 'awardDate', row[4], new_value_awardDate])
                                 cur = conn.cursor()
-                                cur.execute("UPDATE Lots SET awardDate = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                            (new_value_awardDate, tedCanId, lot_number))
+                                cur.execute(f"UPDATE Lots SET awardDate='{new_value_awardDate}' WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                                 conn.commit()
 
                     """awardEstimatedPrice"""
@@ -58,8 +58,7 @@ def correctedData(conn):
                                      new_value_awardEstimatedPrice])
                                 cur = conn.cursor()
                                 cur.execute(
-                                    "UPDATE Lots SET awardEstimatedPrice = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                    (new_value_awardEstimatedPrice, tedCanId, lot_number))
+                                    f"UPDATE Lots SET awardEstimatedPrice={new_value_awardEstimatedPrice} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                                 conn.commit()
 
                     """awardPrice"""
@@ -69,8 +68,7 @@ def correctedData(conn):
                             if row and row[6] != new_value_awardPrice and new_value_awardPrice is not None:
                                 writer.writerow([tedCanId, lot_number, 'awardPrice', row[6], new_value_awardPrice])
                                 cur = conn.cursor()
-                                cur.execute("UPDATE Lots SET awardPrice = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                            (new_value_awardPrice, tedCanId, lot_number))
+                                cur.execute(f"UPDATE Lots SET awardPrice={new_value_awardPrice} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                                 conn.commit()
 
                     """CPV"""
@@ -79,8 +77,7 @@ def correctedData(conn):
                         if row[7] != new_value_cpv:
                             writer.writerow([tedCanId, lot_number, 'cpv', row[7], new_value_cpv])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET cpv = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_cpv, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET cpv={new_value_cpv} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """NumberTenders"""
@@ -93,8 +90,7 @@ def correctedData(conn):
                                         [tedCanId, lot_number, 'numberTenders', row[8], new_value_numberTenders])
                                     cur = conn.cursor()
                                     cur.execute(
-                                        "UPDATE Lots SET numberTenders = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_numberTenders, tedCanId, lot_number))
+                                        f"UPDATE Lots SET numberTenders={new_value_numberTenders} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                                     conn.commit()
 
                     """fraAgreement"""
@@ -103,8 +99,7 @@ def correctedData(conn):
                         if row[11] != new_value_fraAgreement:
                             writer.writerow([tedCanId, lot_number, 'fraAgreement', row[11], new_value_fraAgreement])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET fraAgreement = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_fraAgreement, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET fraAgreement={new_value_fraAgreement} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """accelerated"""
@@ -113,8 +108,7 @@ def correctedData(conn):
                         if row[14] != new_value_accelerated:
                             writer.writerow([tedCanId, lot_number, 'accelerated', row[14], new_value_accelerated])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET accelerated = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_accelerated, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET accelerated={new_value_accelerated} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """NumberTendersSme"""
@@ -124,8 +118,7 @@ def correctedData(conn):
                             writer.writerow(
                                 [tedCanId, lot_number, 'numberTendersSme', row[17], new_value_numberTendersSme])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET numberTendersSme = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_numberTendersSme, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET numberTendersSme={new_value_numberTendersSme} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """GPA"""
@@ -134,8 +127,7 @@ def correctedData(conn):
                         if row[19] != new_value_gpa:
                             writer.writerow([tedCanId, lot_number, 'gpa', row[19], new_value_gpa])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET gpa = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_gpa, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET gpa={new_value_gpa} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """typeOfContract"""
@@ -144,8 +136,7 @@ def correctedData(conn):
                         if row[21] != new_value_typeOfContract:
                             writer.writerow([tedCanId, lot_number, 'typeOfContract', row[21], new_value_typeOfContract])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET typeOfContract = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_typeOfContract, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET typeOfContract='{new_value_typeOfContract}' WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """renewal"""
@@ -154,8 +145,7 @@ def correctedData(conn):
                         if row[23] != new_value_renewal:
                             writer.writerow([tedCanId, lot_number, 'renewal', row[23], new_value_renewal])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET renewal = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_renewal, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET renewal={new_value_renewal} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """contractDuration"""
@@ -165,8 +155,7 @@ def correctedData(conn):
                             writer.writerow(
                                 [tedCanId, lot_number, 'contractDuration', row[24], new_value_contractDuration])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET contractDuration = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_contractDuration, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET contractDuration={new_value_contractDuration} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}")
                             conn.commit()
 
                     """publicityDuration"""
@@ -176,8 +165,7 @@ def correctedData(conn):
                             writer.writerow(
                                 [tedCanId, lot_number, 'publicityDuration', row[25], new_value_publicityDuration])
                             cur = conn.cursor()
-                            cur.execute("UPDATE Lots SET publicityDuration = ? WHERE tedCanId = ? AND lotsNumber = ?",
-                                        (new_value_publicityDuration, tedCanId, lot_number))
+                            cur.execute(f"UPDATE Lots SET publicityDuration={new_value_publicityDuration} WHERE tedCanId={tedCanId} AND lotsNumber={lot_number}"  )
                             conn.commit()
                     i += 1
 
@@ -217,14 +205,14 @@ def display_information(tedCanId, fileXML):
 
 def check_lotsNumber_empty(conn, cur, tedCanId):
     cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM Lots WHERE tedCanId = ? AND lotsNumber IS NULL", (tedCanId,))
+    cur.execute(f"SELECT COUNT(*) FROM Lots WHERE tedCanId={tedCanId} AND lotsNumber IS NULL")
     count = cur.fetchone()[0]
     return count == 0
 
 
 def get_lot_ids(conn, cur, tedCanId):
     cur = conn.cursor()
-    cur.execute(f"SELECT lotId FROM Lots WHERE tedCanId = {tedCanId}")
+    cur.execute(f"SELECT lotId FROM Lots WHERE tedCanId={tedCanId}")
     return [row[0] for row in cur.fetchall()]
 
 
@@ -236,7 +224,7 @@ def update_lotsNumber_from_xml(conn, cur, tedCanId, lots_numbers_xml):
                 writer = csv.writer(file)
                 cur = conn.cursor()
                 cur.execute(
-                    f"UPDATE Lots SET lotsNumber = {lots_numbers_xml[i]} WHERE tedCanId = {tedCanId} AND lotId = {lot_ids[i]}")
+                    f"UPDATE Lots SET lotsNumber={lots_numbers_xml[i]} WHERE tedCanId={tedCanId} AND lotId={lot_ids[i]}")
                 writer.writerow([tedCanId, '', 'lotsNumber', 'empty', lots_numbers_xml[i]])
             conn.commit()
 
