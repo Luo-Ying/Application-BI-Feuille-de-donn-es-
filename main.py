@@ -2,6 +2,7 @@ from scriptReadSql import *
 from scriptGraphics.drawHist import *
 from scriptGraphics.drawBoxPlot import *
 from script_clean_variables_api_tedeuropa import *
+from script_cpv_par_domaine import *
 from script_single import *
 from script_calcule_correlation_paires import *
 from script_single import script_single
@@ -14,7 +15,7 @@ def main():
     # database = "Input\\Foppa.db"
     database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa copy.db"
     # database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
-    #     database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
+    # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
     conn = create_connection(database)
     with conn:
@@ -38,6 +39,7 @@ def main():
         # calcule_correlation_Lots(conn)
 
         # top50(conn)
+        script_cpv(conn)
 
     close_db(conn)
 
