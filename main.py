@@ -1,9 +1,5 @@
-from scriptReadSql import *
-from scriptGraphics.drawHist import *
-from scriptGraphics.drawBoxPlot import *
 from script_clean_variables_api_tedeuropa import *
 from script_cpv_par_domaine import *
-from script_single import *
 from script_calcule_correlation_paires import *
 from script_single import script_single
 from script_pair import script_pair
@@ -19,9 +15,7 @@ def main():
 
     conn = create_connection(database)
     with conn:
-        """Test"""
-        # correctedData(conn)
-        # draw_numberTenders_numberTenderSme(conn)
+        calcule_correlation_Lots(conn)
 
         ##################################################
         ############# Attribut Individuel ################
@@ -31,14 +25,30 @@ def main():
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
-        # script_pair(conn,False)
-        # script_clean_variables_manually(conn)
-        # script_single(conn, True)
-        # script_pair(conn, True)
-        # create_csv_from_database()
-        # calcule_correlation_Lots(conn)
+        script_pair(conn, False)
 
-        # top50(conn)
+        ##################################################
+        ########### Correction des données ###############
+        ##################################################
+        correctedData(conn)
+        script_clean_variables_manually(conn)
+
+        ##################################################
+        ############# Attribut Individuel ################
+        ##################################################
+        script_single(conn, True)
+
+        ##################################################
+        ############# Attribut En Paire #################
+        ##################################################
+        script_pair(conn, True)
+
+        calcule_correlation_Lots(conn)
+
+        ##################################################
+        ############## Questionnements ##################
+        ##################################################
+        top50(conn)
         script_cpv(conn)
 
     close_db(conn)
