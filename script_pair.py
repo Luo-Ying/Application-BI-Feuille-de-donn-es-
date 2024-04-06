@@ -65,10 +65,6 @@ def script_pair(connexion, cleaned):
     # draw_accelerated_topType(connexion)
     # """accelerateed & publicityDuration"""
     # draw_accelerated_publicityDuration(connexion)
-    # """awardPrice & publicityDuration"""
-    # draw_awardPrice_publicityDuration(connexion)
-    # """awardPrice & contractDuration"""
-    # draw_awardPrice_contractDuration(connexion)
     # """awardPrice & topType"""
     # draw_awardPrice_topType(connexion)
     # """awardPrice & multipleCae"""
@@ -91,16 +87,24 @@ def script_pair(connexion, cleaned):
     draw_awardPrice_numberTendersSme(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
-    # if(cleaned):
-    #     """awardEstimatedPrice & totalLots"""
-    #     draw_awardEstimatedPrice_totalLots(connexion)
-    #     """awardPrice & totalLots"""
-    #     draw_awardPrice_totalLots(connexion)
-    # else:
-    #     """awardEstimatedPrice & lotsNumber"""
-    #     draw_awardEstimatedPrice_lotsNumber(connexion)
-    #     """awardPrice & lotsNumber"""
-    #     draw_awardPrice_lotsNumber(connexion)
+    if(cleaned):
+        # """awardEstimatedPrice & totalLots"""
+        # draw_awardEstimatedPrice_totalLots(connexion)
+        # """awardPrice & totalLots"""
+        # draw_awardPrice_totalLots(connexion)
+        # """awardPrice & contractDuration"""
+        # draw_awardPrice_contractDuration(connexion, False)
+        """awardPrice & publicityDuration"""
+        draw_awardPrice_publicityDuration(connexion, False)
+    else:
+        # """awardEstimatedPrice & lotsNumber"""
+        # draw_awardEstimatedPrice_lotsNumber(connexion)
+        # """awardPrice & lotsNumber"""
+        # draw_awardPrice_lotsNumber(connexion)
+        # """awardPrice & contractDuration"""
+        # draw_awardPrice_contractDuration(connexion, True)
+        """awardPrice & publicityDuration"""
+        draw_awardPrice_publicityDuration(connexion, True)
 
 
 def draw_awardPrice_jointProcurement(conn):
@@ -721,7 +725,7 @@ def draw_awardPrice_topType(conn):
     )
 
 
-def draw_awardPrice_contractDuration(conn):
+def draw_awardPrice_contractDuration(conn, log):
     df_contratS = create_df_from_query(
         conn,
         "SELECT contractDuration, awardPrice FROM Lots WHERE typeOfContract = 'S' AND contractDuration IS NOT null AND awardPrice IS NOT null",
@@ -743,7 +747,7 @@ def draw_awardPrice_contractDuration(conn):
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'S'",
         "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contraW["contractDuration"],
@@ -753,7 +757,7 @@ def draw_awardPrice_contractDuration(conn):
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'W'",
         "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contratU["contractDuration"],
@@ -763,11 +767,11 @@ def draw_awardPrice_contractDuration(conn):
         "Scatter Plot of contractDuration vs awardPrice en type de contrat 'U'",
         "Lots",
         False,
-        True,
+        log,
     )
 
 
-def draw_awardPrice_publicityDuration(conn):
+def draw_awardPrice_publicityDuration(conn, log):
     df_contractS = create_df_from_query(
         conn,
         "SELECT publicityDuration, awardPrice FROM Lots WHERE typeOfContract = 'S' AND publicityDuration IS NOT null AND awardPrice IS NOT null",
@@ -789,7 +793,7 @@ def draw_awardPrice_publicityDuration(conn):
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'S'",
         "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contractW["publicityDuration"],
@@ -799,7 +803,7 @@ def draw_awardPrice_publicityDuration(conn):
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'W'",
         "Lots",
         False,
-        True,
+        log,
     )
     draw_scatter_plots(
         df_contractU["publicityDuration"],
@@ -809,7 +813,7 @@ def draw_awardPrice_publicityDuration(conn):
         "Scatter Plot of publicityDuration vs awardPrice en type de contrast 'U'",
         "Lots",
         False,
-        True,
+        log,
     )
 
 

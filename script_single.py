@@ -19,7 +19,7 @@ def script_single(connexion, cleaned):
     # draw_awardDate(connexion, 15)
     # draw_awardDate(connexion, 20)
     # """cpv"""
-    draw_cpv_lots(connexion)
+    # draw_cpv_lots(connexion)
     # """numberTenders"""
     # draw_numberTenders(connexion)
     # """fraEstimated"""
@@ -49,19 +49,19 @@ def script_single(connexion, cleaned):
     # """type"""
     # draw_type(connexion)
     # if(cleaned):
-    #     # """totalLots"""
+    #     """totalLots"""
     #     draw_totalLots(connexion, "totalLots")
     #     """awardEstimatedPrice"""
     #     draw_award_estimated_price(connexion, False)
     #     """awardPrice"""
     #     draw_award_price(connexion, False)
     # else:
-    # """lotsNumber"""
-    # draw_lotsNumber(connexion)
-    # """awardEstimatedPrice"""
-    # draw_award_estimated_price(connexion, True)
-    # """awardPrice"""
-    # draw_award_price(connexion, True)
+    #     """lotsNumber"""
+    #     draw_lotsNumber(connexion)
+    #     """awardEstimatedPrice"""
+    #     draw_award_estimated_price(connexion, True)
+    #     """awardPrice"""
+    #     draw_award_price(connexion, True)
 
 
 def draw_departement(conn):
@@ -108,6 +108,15 @@ def draw_siret(conn):
     # print(data_group)
     draw_box_plot_special(
         new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
+    )
+    top_50_df = new_df.sort_values(by=['count'], ascending=False).head(50)
+    draw_hist(
+        top_50_df,
+        "siret_prefix",
+        "count",
+        "Top 50 des entreprises avec le bâtiment",
+        "Agents",
+        True,
     )
 
 
@@ -260,7 +269,7 @@ def draw_lotsNumber(conn):
         conn,
         "SELECT lotsNumber, count(lotsNumber) AS 'NbLotsNumber' FROM Lots GROUP BY lotsNumber UNION ALL SELECT 'NaN' AS lotsNumber, COUNT(*) AS 'NbLotsNumber' FROM Lots WHERE lotsNumber IS NULL ORDER BY NbLotsNumber DESC",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
+    print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_hist_with_errors(
         df, "lotsNumber", "NbLotsNumber", "Distribution des lotsNumber", "Lots"
     )
@@ -273,6 +282,24 @@ def draw_lotsNumber(conn):
         0,
         250000,
         25000,
+    )
+    df2 = create_df_from_query(
+        conn,
+        f"""SELECT lotsNumber, typeOfContract FROM Lots WHERE lotsNumber
+        IS NOT NULL AND lotsNumber NOT GLOB '*[a-zA-Z]*' AND lotsNumber
+        NOT LIKE '%-%' AND lotsNumber NOT LIKE '%*%' AND lotsNumber NOT LIKE '%;%' 
+        AND lotsNumber NOT LIKE '% %' AND lotsNumber NOT LIKE '%.%' 
+        AND lotsNumber NOT LIKE '%/%' AND lotsNumber NOT LIKE '%+%'
+        AND lotsNumber NOT LIKE '%&%' AND lotsNumber NOT LIKE '%''%'""",
+    )
+
+    draw_box_plot_multiple_dense(
+        df2,
+        "typeOfContract",
+        "lotsNumber",
+        "Boxplot des lotsNumber en fonction du type de contrat",
+        "Lots",
+        True,
     )
 
 
@@ -424,7 +451,7 @@ def draw_numberTenders(conn):
         df3,
         colonne_1,
         "numberTendersSme",
-        "Occurences des {colonne_1} par rapport au TendersSme par tranche de 10",
+        f"Occurences des {colonne_1} par rapport au TendersSme par tranche de 10",
         "Lots",
         0,
         130,
