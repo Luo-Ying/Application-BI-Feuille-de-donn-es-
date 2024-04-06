@@ -25,7 +25,7 @@ def main():
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        # script_single(conn, False)
+        script_single(conn, False)
 
         ##################################################
         ############# Attribut En Paire #################
@@ -37,7 +37,7 @@ def main():
         # create_csv_from_database()
         # calcule_correlation_Lots(conn)
 
-        top50(conn)
+        # top50(conn)
 
     close_db(conn)
 

@@ -14,6 +14,7 @@ def script_single(connexion, cleaned):
     # """cancelled"""
     # draw_cancelled(connexion)
     # """awardDate"""
+    draw_awardDate(connexion, 3)
     # draw_awardDate(connexion, 5)
     # draw_awardDate(connexion, 10)
     # draw_awardDate(connexion, 15)
@@ -109,7 +110,7 @@ def draw_siret(conn):
     draw_box_plot_special(
         new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
     )
-    top_50_df = new_df.sort_values(by=['count'], ascending=False).head(50)
+    top_50_df = new_df.sort_values(by=["count"], ascending=False).head(50)
     draw_hist(
         top_50_df,
         "siret_prefix",
@@ -269,7 +270,7 @@ def draw_lotsNumber(conn):
         conn,
         "SELECT lotsNumber, count(lotsNumber) AS 'NbLotsNumber' FROM Lots GROUP BY lotsNumber UNION ALL SELECT 'NaN' AS lotsNumber, COUNT(*) AS 'NbLotsNumber' FROM Lots WHERE lotsNumber IS NULL ORDER BY NbLotsNumber DESC",
     )
-    print(tabulate(df, headers='keys', tablefmt='psql'))
+    print(tabulate(df, headers="keys", tablefmt="psql"))
     draw_hist_with_errors(
         df, "lotsNumber", "NbLotsNumber", "Distribution des lotsNumber", "Lots"
     )
@@ -372,15 +373,19 @@ def draw_awardDate(conn, range):
             appearances = 0
             year_start = year_end
             year_end = 0
-
+    print(data_date_appearances_by_each_decade)
+    data_date_appearances_by_each_decade = pd.DataFrame(
+        data_date_appearances_by_each_decade.items(), columns=["Period", "Value"]
+    )
     # print(data_date_appearances_by_each_decade)
-    draw_bar(
+    draw_hist(
         data_date_appearances_by_each_decade,
-        f"Chaque {rangeStr} ans",
-        "Nombre d'appaîtion",
+        f"Period",
+        "Value",
         "awardDate",
         "Lots",
-        False,
+        True,
+        45,
     )
 
 
