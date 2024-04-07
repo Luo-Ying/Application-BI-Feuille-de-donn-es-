@@ -57,7 +57,7 @@ trancheEffectifsUniteLegale = {
 }
 
 activitePrincipaleUniteLegale = pd.read_excel("References/int_courts_naf_rev_2.xls")
-print(activitePrincipaleUniteLegale)
+# print(activitePrincipaleUniteLegale)
 activite_dict = dict(
     zip(
         activitePrincipaleUniteLegale["Code"],

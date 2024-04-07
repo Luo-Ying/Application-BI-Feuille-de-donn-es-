@@ -36,7 +36,7 @@ def script_pair(connexion, cleaned):
     # """cancelled & topType"""
     # draw_cancelled_topType(connexion, "cancelled", "topType")
     # """awardEstimatedPrice & awardPrice"""
-    # draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
+    draw_awardPrice_awardEstimatedPrice(connexion, "awardPrice", "awardEstimatedPrice")
     # """numberTenders & numberTendersSme"""
     # draw_numberTenders_numberTendersSme(connexion)
     # """numberTenders & contractorSme (à voir)"""
@@ -84,10 +84,10 @@ def script_pair(connexion, cleaned):
     # """awardPrice & subContracted"""
     # draw_awardPrice_subContracted(connexion)
     # """awardPrice & numberTendersSme"""
-    draw_awardPrice_numberTendersSme(connexion)
+    # draw_awardPrice_numberTendersSme(connexion)
     # """awardPrice & jointProcurement"""
     # draw_awardPrice_jointProcurement(connexion)
-    if(cleaned):
+    if cleaned:
         # """awardEstimatedPrice & totalLots"""
         # draw_awardEstimatedPrice_totalLots(connexion)
         # """awardPrice & totalLots"""

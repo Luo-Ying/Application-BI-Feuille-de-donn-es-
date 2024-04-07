@@ -1,6 +1,7 @@
 from scriptReadSql import *
 from scriptGraphics.drawHist import draw_hist
 from apiSiren import *
+from scriptGraphics.drawFranceMap import load_map_france_departement
 
 
 def top50(conn):
@@ -171,13 +172,16 @@ def top50(conn):
     draw_hist_top_50_Buyers_and_Suppliers_communication_paire(pair_counts.head(50))
     draw_hist_top_50_Buyers_paid(buyer_total.head(50))
     draw_hist_top_50_Sppliers_awrd(supplier_total.head(50))
-    draw_hist_top_50_Buyers_departement(merged_df_buyer_dep.head(50))
-    draw_hist_top_50_Suppliers_departement(merged_df_supplier_dep.head(50))
+    draw_hist_top_50_Buyers_departement(merged_df_buyer_dep)
+    draw_hist_top_50_Suppliers_departement(merged_df_supplier_dep)
 
 
 def draw_hist_top_50_Buyers_departement(data):
+    load_map_france_departement(
+        data, "totalAwardPriceBuyer", "Purples", "Les département qui achètent le plus"
+    )
     draw_hist(
-        data,
+        data.head(50),
         "department",
         "totalAwardPriceBuyer",
         "Top 50 des département avec le plus de flux d'agent sortant",
@@ -187,8 +191,14 @@ def draw_hist_top_50_Buyers_departement(data):
 
 
 def draw_hist_top_50_Suppliers_departement(data):
-    draw_hist(
+    load_map_france_departement(
         data,
+        "totalAwardPriceSupplier",
+        "OrRd",
+        "Les département qui fournissent le plus",
+    )
+    draw_hist(
+        data.head(50),
         "department",
         "totalAwardPriceSupplier",
         "Top 50 des département avec le plus de flux d'agent entrant",
