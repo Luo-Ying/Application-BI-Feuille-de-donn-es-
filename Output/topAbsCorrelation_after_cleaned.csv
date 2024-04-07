@@ -1,0 +1,8 @@
+,,0
+jointProcurement,multipleCae,0.993613962528133
+awardEstimatedPrice,awardPrice,0.9694993889791329
+onBehalf,jointProcurement,0.8952991855676039
+onBehalf,multipleCae,0.8896122664749468
+numberTenders,numberTendersSme,0.8652964644720438
+cpv,typeOfContract_U,0.7125794387276396
+topType_NIC,topType_OPE,0.6630210753996904
