@@ -17,8 +17,6 @@ def script_single(connexion, cleaned):
     draw_awardDate(connexion, 3)
     draw_awardDate(connexion, 5)
     draw_awardDate(connexion, 10)
-    draw_awardDate(connexion, 15)
-    draw_awardDate(connexion, 20)
     """cpv"""
     draw_cpv_lots(connexion)
     """numberTenders"""
