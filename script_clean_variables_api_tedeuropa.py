@@ -18,7 +18,6 @@ def correctedData(conn):
         createXML(ted)
         fileXML = openXML(ted)
         # fileJSON = openJSON(ted)
-        # print("NEW")
         # display_information(tedCanId, fileXML)
         # Récupération des ids des Lots
         lots_numbers_xml = get_lotsNumber(fileXML)
@@ -380,11 +379,14 @@ def get_numberTenders(fileXML):
         tag = get_content_tag(fileXML, "NB_TENDERS_RECEIVED")
         return int(tag[0].get_text()) if tag[0] and type(tag[0]) == int else None
     except Exception as e:
-        tags = get_content_tag(fileXML, "OFFERS_RECEIVED_NUMBER")
-        results = [int(content.get_text()) for content in tags]
-        if not results:
+        try:
+            tags = get_content_tag(fileXML, "OFFERS_RECEIVED_NUMBER")
+            results = [int(content.get_text()) for content in tags]
+            if not results:
+                return None
+            return results
+        except Exception as e:
             return None
-        return results
 
 
 def get_numberTendersSme(fileXML):
