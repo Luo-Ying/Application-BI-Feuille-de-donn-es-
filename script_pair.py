@@ -10,17 +10,6 @@ from tabulate import tabulate
 
 
 def script_pair(connexion, cleaned):
-    # ##############################################
-    # ################ Criteria a###################
-    # ##############################################
-
-    # ##############################################
-    # ################# Agents a####################
-    # ##############################################
-
-    # ##############################################
-    # ################# weight a####################
-    # ##############################################
     """cancelled & numberTenders"""
     draw_cancelled_numberTenders(connexion)
     """cancelled & numberTendersSme"""
@@ -79,8 +68,6 @@ def script_pair(connexion, cleaned):
     draw_numberTenders_typeOfContract(connexion)
     """onBehalf & typeOfContract"""
     draw_onBehalf_typeOfContract(connexion)
-    """awardPrice & typeOfContract"""
-    # draw_awardPrice_typeOfContract(connexion)
     """awardPrice & subContracted"""
     draw_awardPrice_subContracted(connexion)
     """awardPrice & numberTendersSme"""

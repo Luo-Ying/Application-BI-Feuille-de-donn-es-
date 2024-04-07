@@ -49,7 +49,7 @@ def script_single(connexion, cleaned):
     draw_weight(connexion)
     """type"""
     draw_type(connexion)
-    if(cleaned):
+    if cleaned:
         """totalLots"""
         draw_totalLots(connexion, "totalLots")
         """awardEstimatedPrice"""
@@ -106,8 +106,6 @@ def draw_siret(conn):
     new_df = pd.DataFrame(
         {"siret_prefix": group_sizes.index, "count": group_sizes.values}
     )
-    # print(new_df["count"])
-    # print(data_group)
     draw_box_plot_special(
         new_df, "count", "count", "Nombre de famile pour les même sirens", "Agents"
     )

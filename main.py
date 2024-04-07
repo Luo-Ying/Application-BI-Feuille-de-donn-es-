@@ -14,41 +14,41 @@ def main(argv, arc):
     conn = create_connection(database)
     with conn:
         """Code main"""
-        # calcule_correlation_Lots(conn, "before_clean")
+        calcule_correlation_Lots(conn, "before_clean")
 
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        # script_single(conn, False)
+        script_single(conn, False)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
-        # script_pair(conn, False)
+        script_pair(conn, False)
 
         ##################################################
         ########### Correction des données ###############
         ##################################################
-        # correctedData(conn)
-        # script_clean_variables_manually(conn)
+        correctedData(conn)
+        script_clean_variables_manually(conn)
 
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        # script_single(conn, True)
+        script_single(conn, True)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
-        # script_pair(conn, True)
+        script_pair(conn, True)
 
-        # calcule_correlation_Lots(conn, "after_cleaned")
+        calcule_correlation_Lots(conn, "after_cleaned")
 
         ##################################################
         ############## Questionnements ##################
         ##################################################
         top50(conn)
-        # script_cpv(conn)
+        script_cpv(conn)
     close_db(conn)
 
 

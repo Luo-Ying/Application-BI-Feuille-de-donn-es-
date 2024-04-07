@@ -5,10 +5,6 @@ import csv
 
 def calcule_correlation(data, suffix):
     df = pd.DataFrame(data=data)
-    # print("Data Frame")
-    # print(df)
-    # print()
-    # df.to_csv("DataFrame.csv", index=False)
 
     print("Correlation Matrix")
     data_correlation = df.corr()
