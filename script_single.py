@@ -102,7 +102,6 @@ def draw_siret(conn):
     for name, size in group_sizes.items():
         data_group[name] = size
 
-    # print(df)
     new_df = pd.DataFrame(
         {"siret_prefix": group_sizes.index, "count": group_sizes.values}
     )
@@ -125,7 +124,6 @@ def draw_type(conn):
         conn,
         "SELECT type, count(type) AS 'NbType' FROM Criteria GROUP BY type ORDER BY NbType DESC",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_hist(
         df,
         "type",
@@ -138,7 +136,6 @@ def draw_type(conn):
 
 def draw_weight(conn):
     df = create_df_from_query(conn, "SELECT weight, type FROM Criteria")
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_box_plot_multiple_dense(
         df,
         "type",
@@ -202,7 +199,6 @@ def draw_topType(conn):
         conn,
         "SELECT topType, count(toptype) AS 'NbToptype' FROM Lots GROUP BY topType ORDER BY NbTopType DESC",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_hist(df, "topType", "NbToptype", "Distribution des topType", "Lots")
 
 
@@ -227,7 +223,6 @@ def draw_numberTendersSme(conn):
         conn,
         "SELECT numberTendersSme, count(numberTendersSme) AS 'NbNumberTendersSme' FROM Lots GROUP BY numberTendersSme",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_box_plot(
         df,
         "numberTendersSme",
@@ -269,7 +264,6 @@ def draw_lotsNumber(conn):
         conn,
         "SELECT lotsNumber, count(lotsNumber) AS 'NbLotsNumber' FROM Lots GROUP BY lotsNumber UNION ALL SELECT 'NaN' AS lotsNumber, COUNT(*) AS 'NbLotsNumber' FROM Lots WHERE lotsNumber IS NULL ORDER BY NbLotsNumber DESC",
     )
-    print(tabulate(df, headers="keys", tablefmt="psql"))
     draw_hist_with_errors(
         df, "lotsNumber", "NbLotsNumber", "Distribution des lotsNumber", "Lots"
     )
@@ -352,8 +346,6 @@ def draw_awardDate(conn, yearRange):
             else data_date_appearances_by_each_year[row[0]] + row[2]
         )
 
-    # print(data_date_appearances_by_each_year)
-
     year_start = 0
     year_end = 0
     appearances = 0
@@ -389,7 +381,6 @@ def draw_awardDate(conn, yearRange):
         if value != 0
     }
 
-    print(filtered_data_date_appearances_by_each_decade)
     filtered_data_date_appearances_by_each_decade = pd.DataFrame(
         filtered_data_date_appearances_by_each_decade.items(),
         columns=[f"Chaque {yearRange} ans", "Value"],
@@ -414,7 +405,6 @@ def draw_cpv_lots(connexion):
         connexion,
         "SELECT SUBSTR(cpv,1,3) AS cpv, COUNT(*) AS count FROM Lots GROUP BY SUBSTR(cpv,1,3) ORDER BY count DESC LIMIT 45",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
     draw_hist(
         df, "cpv", "count", "Distribution des cpv par 2 premiers chiffres", "Lots"
     )
@@ -485,16 +475,6 @@ def draw_award_estimated_price(connexion, log):
         connexion,
         f"SELECT awardEstimatedPrice, COUNT(awardEstimatedPrice) AS 'NbawardEstimatedPrice' FROM Lots GROUP BY awardEstimatedPrice UNION ALL SELECT 'NaN' AS awardEstimatedPrice, COUNT(*) AS 'NbawardEstimatedPrice' FROM Lots WHERE awardEstimatedPrice IS NULL ORDER BY NbawardEstimatedPrice DESC",
     )
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot_special(
-    #     df,
-    #     "awardEstimatedPrice",
-    #     "awardEstimatedPrice",
-    #     f"Boxplot des awardEstimatedPrice avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    #     True,
-    # )
     draw_awardEstimatedPrice_2(connexion, log)
     df2 = create_df_from_query(
         connexion,
@@ -531,17 +511,6 @@ def draw_awardEstimatedPrice_2(conn, log):
     df_cleaned["awardEstimatedPrice"] = pd.to_numeric(
         df_cleaned["awardEstimatedPrice"], errors="coerce"
     )
-    # print(df_cleaned["awardEstimatedPrice"].max())
-    # print(df_cleaned["awardEstimatedPrice"].min())
-    # print(tabulate(df, headers='keys', tablefmt='psql'))
-    # draw_box_plot(
-    #     df,
-    #     f"{colonne_1}",
-    #     f"{colonne_1}",
-    #     f"Boxplot des {colonne_1} avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    # )
     draw_custom_hist(
         df,
         f"{colonne_1}",
@@ -561,7 +530,6 @@ def draw_award_price(connexion, log):
         connexion,
         f"SELECT awardPrice From Lots WHERE awardPrice IS NOT null",
     )
-    # print(df)
     df2 = create_df_from_query(
         connexion,
         f"SELECT typeOfContract, awardPrice From Lots WHERE awardPrice IS NOT null and typeOfContract IS NOT null",
@@ -590,15 +558,6 @@ def draw_awardPrice_2(conn, log):
         conn,
         "SELECT awardPrice, COUNT(awardPrice) AS 'NbAwardPrice' FROM Lots GROUP BY awardPrice UNION ALL SELECT 'NaN' AS awardPrice, COUNT(*) AS 'NbAwardPrice' FROM Lots WHERE awardPrice IS NULL ORDER BY NbAwardPrice DESC",
     )
-    # print(tabulate(df, headers="keys", tablefmt="psql"))
-    # draw_box_plot(
-    #     df,
-    #     "awardPrice",
-    #     "awardPrice",
-    #     "Boxplot des awardPrice avec échelle logarithmique",
-    #     "Lots",
-    #     True,
-    # )
     draw_custom_hist(
         df,
         "awardPrice",
@@ -625,7 +584,6 @@ def draw_contract_duration(connexion):
         connexion,
         f"SELECT contractDuration, COUNT(contractDuration) AS 'NbcontractDuration' FROM Lots GROUP BY contractDuration UNION ALL SELECT 'NaN' AS contractDuration, COUNT(*) AS 'NbcontractDuration' FROM Lots WHERE contractDuration IS NULL ORDER BY NbcontractDuration DESC",
     )
-    # print(tabulate(df, headers="keys", tablefmt="psql"))
     draw_hist_with_errors(
         df,
         "contractDuration",

@@ -57,7 +57,6 @@ trancheEffectifsUniteLegale = {
 }
 
 activitePrincipaleUniteLegale = pd.read_excel("References/int_courts_naf_rev_2.xls")
-# print(activitePrincipaleUniteLegale)
 activite_dict = dict(
     zip(
         activitePrincipaleUniteLegale["Code"],
@@ -73,7 +72,6 @@ economieSocialeSolidaireUniteLegale = {
 
 
 def get_info_detail_Agents(df, filename):
-    # print(activitePrincipaleUniteLegale)
     data = []
     for index, row in df.iterrows():
         for column_name in df.columns:
@@ -83,7 +81,6 @@ def get_info_detail_Agents(df, filename):
                         endpoint + str(row[column_name]), auth=BearerAuth(BEARER_TOKEN)
                     )
                     res = res.json()
-                    # print(res)
                     values = {}
                     for key in keys:
                         value = None
@@ -99,7 +96,6 @@ def get_info_detail_Agents(df, filename):
                         # break
                     values = clean_data(values)
                     values = replace_details_infos(values)
-                    # print(values)
                     data.append(values)
                 except Exception as e:
                     print(f"Error processing row {index} and column {column_name}: {e}")

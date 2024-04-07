@@ -373,7 +373,6 @@ def draw_box_plot_special(data, xlabel, ylabel, title, file, log=False, dropNaN=
     if dropNaN:
         data = data.dropna(subset=[xlabel, ylabel])
 
-    # print(data.head())
     fig, ax = plt.subplots(figsize=(20, 10))
 
     boxplot_elements = plt.boxplot(data[ylabel], patch_artist=True)
@@ -769,8 +768,10 @@ def draw_box_plot_multiple_simple_stats(
     # plt.show()
 
 
-def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(df, file, title):
-    df = df.dropna(subset=['awardPrice'])
+def draw_boxplot_special_replace_abnormal_value_awardDate_and_awardEstimatedDate(
+    df, file, title
+):
+    df = df.dropna(subset=["awardPrice"])
     # Visualiser les moyennes en utilisant l'index comme label sur l'axe des x
     plt.figure(figsize=(14, 7))  # Ajustez la taille selon vos besoins
     sns.boxplot(x="group_id", y="awardPrice", data=df)

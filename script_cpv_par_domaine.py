@@ -8,8 +8,8 @@ from scriptReadSql import *
 def script_cpv(conn):
     script_cpv_flux(conn, 2, 10)
     script_cpv_flux(conn, 3, 50)
-    script_cpv_maxAwardPrice_Suppliers(conn, 2, 10)
-    script_cpv_maxAwardPrice_Suppliers(conn, 3, 50)
+    script_cpv_maxAwardPrice_Buyers(conn, 2, 10)
+    script_cpv_maxAwardPrice_Buyers(conn, 3, 50)
     script_cpv_maxAwardPrice_Suppliers(conn, 2, 10)
     script_cpv_maxAwardPrice_Suppliers(conn, 3, 50)
     script_cpv_par_domain(conn)

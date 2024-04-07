@@ -8,8 +8,6 @@ def calcule_correlation(data, suffix):
 
     print("Correlation Matrix")
     data_correlation = df.corr()
-    print(data_correlation)
-    print()
     data_correlation.to_csv(f"./output/DataCorrelation_{suffix}.csv", index=False)
 
     def get_redundant_pairs(df):
@@ -27,11 +25,8 @@ def calcule_correlation(data, suffix):
         au_corr = au_corr.drop(labels=labels_to_drop).sort_values(ascending=False)
         return au_corr[au_corr > threshold]
 
-    # print("Top Absolute Correlations")
     topAbsCorrelation = get_top_abs_correlations(df, 0.5)
-    print(topAbsCorrelation)
     topAbsCorrelation.to_csv(f"./output/topAbsCorrelation_{suffix}.csv", index=True)
-    # writ_in_csv(topAbsCorrelation, "topAbsCorrelation.csv")
 
 
 def calcule_correlation_Lots(conn, sufix):

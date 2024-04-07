@@ -108,8 +108,6 @@ def top50(conn):
         columns={"idBuyer": "siren_Buyer", "idSupplier": "siren_Supplier"}
     )
 
-    # print(merged_df_supplier_buyer)
-
     merged_df_Lot_comm = pd.merge(
         merged_df_supplier_buyer, df_Lots[["lotId", "awardPrice"]], on="lotId"
     )
@@ -160,12 +158,6 @@ def top50(conn):
     supplier_total = supplier_total.sort_values(
         by="totalAwardPriceSupplier", ascending=False
     ).reset_index(drop=True)
-
-    # print("Buyer Total Paid Price:")
-    # print(buyer_total)
-
-    # print("\nSupplier Total Award Price:")
-    # print(supplier_total)
 
     draw_hist_top_50_Buyers_communication(buyer_counts.head(50))
     draw_hist_top_50_Suppliers_communication(supplier_counts.head(50))

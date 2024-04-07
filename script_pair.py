@@ -302,7 +302,6 @@ def draw_awardPrice_subContracted(conn):
         conn,
         "SELECT awardPrice, subContracted From Lots WHERE typeOfContract = 'U' AND awardPrice IS NOT null and subContracted IS NOT null ORDER BY awardPrice ASC",
     )
-    # print(df)
     draw_box_plot_multiple(
         df_contractS,
         f"subContracted",
@@ -373,7 +372,6 @@ def draw_onBehalf_typeOfContract(conn):
         conn,
         "SELECT onBehalf, typeOfContract, count(onBehalf) AS 'NbonBehalf' FROM Lots GROUP BY onBehalf, typeOfContract",
     )
-    # print(df)
     hist_pivot(
         df,
         "typeOfContract",
@@ -397,7 +395,6 @@ def draw_awardEstimatedPrice_totalLots(conn):
         conn,
         "SELECT totalLots, awardEstimatedPrice From Lots WHERE typeOfContract = 'U' AND awardEstimatedPrice IS NOT null ORDER BY totalLots ASC",
     )
-    # print(df)
     df_contractS["totalLots"] = pd.to_numeric(
         df_contractS["totalLots"], errors="coerce"
     )
@@ -449,7 +446,6 @@ def draw_awardEstimatedPrice_lotsNumber(conn):
         conn,
         "SELECT lotsNumber, awardEstimatedPrice From Lots WHERE typeOfContract = 'U' AND awardEstimatedPrice IS NOT null AND LotsNumber IS NOT null AND lotsNumber NOT GLOB '*[a-zA-Z]*' AND lotsNumber NOT LIKE '%-%' AND lotsNumber NOT LIKE '%*%' AND lotsNumber NOT LIKE '%;%' ORDER BY lotsNumber ASC",
     )
-    # print(df)
     df_contractS["lotsNumber"] = pd.to_numeric(
         df_contractS["lotsNumber"], errors="coerce"
     )
@@ -672,7 +668,6 @@ def draw_awardPrice_multipleCae(conn):
     df_contractU = create_df_from_query(
         conn, "SELECT multipleCae, awardPrice FROM Lots WHERE typeOfContract = 'U'"
     )
-    # print(df)
     draw_box_plot_multiple(
         df_contractS,
         "multipleCae",
@@ -701,7 +696,6 @@ def draw_awardPrice_multipleCae(conn):
 
 def draw_awardPrice_topType(conn):
     df = create_df_from_query(conn, "SELECT topType, awardPrice FROM Lots")
-    # print(df)
     draw_box_plot_multiple_dense_show_moy_med_up_and_down(
         df,
         "topType",
@@ -725,7 +719,6 @@ def draw_awardPrice_contractDuration(conn, log):
         conn,
         "SELECT contractDuration, awardPrice FROM Lots WHERE typeOfContract = 'U' AND contractDuration IS NOT null AND awardPrice IS NOT null",
     )
-    # print(df)
     draw_scatter_plots(
         df_contratS["contractDuration"],
         df_contratS["awardPrice"],
@@ -771,7 +764,6 @@ def draw_awardPrice_publicityDuration(conn, log):
         conn,
         "SELECT publicityDuration, awardPrice FROM Lots WHERE typeOfContract = 'U' AND publicityDuration IS NOT null AND awardPrice IS NOT null",
     )
-    # print(df)
     draw_scatter_plots(
         df_contractS["publicityDuration"],
         df_contractS["awardPrice"],
@@ -992,7 +984,6 @@ def draw_numberTenders_awardPrice(conn):
         conn,
         "SELECT numberTenders, awardPrice FROM Lots WHERE typeOfContract = 'U' AND numberTenders IS NOT null AND awardPrice IS NOT null",
     )
-    # print(df)
     draw_scatter_plots(
         df_contractS["numberTenders"],
         df_contractS["awardPrice"],
@@ -1038,7 +1029,6 @@ def draw_numberTendersSme_awardEstimatedPrice(conn):
         conn,
         "SELECT numberTendersSme, awardEstimatedPrice FROM Lots WHERE typeOfContract = 'U' AND numberTendersSme IS NOT null AND awardEstimatedPrice IS NOT null",
     )
-    # print(df)
     draw_scatter_plots(
         df_contractS["numberTendersSme"],
         df_contractS["awardEstimatedPrice"],
@@ -1085,7 +1075,6 @@ def draw_numberTenders_awardEstimatedPrice(conn):
         "SELECT numberTenders, awardEstimatedPrice FROM Lots WHERE typeOfContract = 'U' AND numberTenders IS NOT null AND awardEstimatedPrice IS NOT null",
     )
 
-    # print(df)
     draw_scatter_plots(
         df_contratS["numberTenders"],
         df_contratS["awardEstimatedPrice"],
@@ -1195,7 +1184,6 @@ def draw_numberTenders_typeOfContract(conn):
         conn,
         "SELECT typeOfContract, numberTenders From Lots WHERE numberTenders IS NOT null and typeOfContract IS NOT null ORDER BY numberTenders ASC",
     )
-    # print(df)
     draw_box_plot_multiple(
         df,
         "typeOfContract",
@@ -1248,7 +1236,6 @@ def draw_numberTenders_numberTendersSme(conn):
         "SELECT numberTenders, numberTendersSme From Lots WHERE numberTenders IS NOT null and numberTendersSme IS NOT null ORDER BY numberTenders ASC",
     )
 
-    # print(df)
     draw_scatter_plots2(
         df,
         "numberTenders",
@@ -1300,7 +1287,6 @@ def draw_numberTenders_numberTendersSme(conn):
         True,
     )
 
-    # print(df)
     draw_box_plot_multiple_numberTenders_NumberTendersSme(
         df_contratS,
         "numberTenders",
@@ -1366,7 +1352,6 @@ def draw_cancelled_awardPrice(conn):
 
 def draw_cancelled_awardEstimatedPrice(conn):
     df = create_df_from_query(conn, "SELECT cancelled, awardEstimatedPrice FROM Lots")
-    # print(df)
     draw_box_plot_multiple(
         df,
         "cancelled",
@@ -1477,7 +1462,6 @@ def draw_cancelled_fraEstimated(connexion, colonne_1, colonne_2):
         connexion,
         f"SELECT {colonne_1}, {colonne_2}, COUNT(*) AS Nb{colonne_1} FROM Lots GROUP BY {colonne_2}, {colonne_1} ORDER BY {colonne_1} DESC",
     )
-    # print(df)
     hist_pivot(
         df,
         f"{colonne_2}",
@@ -1565,7 +1549,6 @@ def draw_awardPrice_awardEstimatedPrice(connexion, colonne_1, colonne_2):
         connexion,
         f"SELECT  {colonne_1}, {colonne_2} FROM Lots WHERE typeOfContract = 'U' AND {colonne_1} IS NOT null AND {colonne_2} IS NOT null",
     )
-    # print(df)
     draw_scatter_plots(
         df_contratS[colonne_2],
         df_contratS[colonne_1],
