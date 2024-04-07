@@ -42,12 +42,12 @@ def main(argv, arc):
         ##################################################
         # script_pair(conn, True)
 
-        calcule_correlation_Lots(conn, "after_cleaned")
+        # calcule_correlation_Lots(conn, "after_cleaned")
 
         ##################################################
         ############## Questionnements ##################
         ##################################################
-        # top50(conn)
+        top50(conn)
         # script_cpv(conn)
     close_db(conn)
 
