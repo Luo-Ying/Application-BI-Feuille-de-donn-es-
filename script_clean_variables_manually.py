@@ -9,25 +9,25 @@ def script_clean_variables_manually(connexion):
     ################ Lot ###################
     ##############################################
     """awardDate"""
-    # convert_abnormal_awardDate(connexion)
-    # """accelerated"""
-    # convert_null_accelerated(connexion)
-    # """contractorSme"""
-    # # convert_string_contractorSme(connexion)
-    # """contractDuration"""
-    # replace_abnormal_contractDuration(connexion)
-    # """lotsNumber"""
-    # replace_total_lotsNumber(connexion)
-    # """publicityDuration"""
-    # replace_values_publicityDuration(connexion)
-    # """awardPrice""" 
-    # replace_values_awardPrice(connexion)
-    # """awardEstimatedPrice""" 
-    # replace_values_awardEstimatedPrice(connexion)
-    # """Difference_awardPrice_awardEstimatedPrice""" 
-    # replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
-    # """numberTendersSme"""
-    # replace_abnormal_numberTendersSme(connexion)
+    convert_abnormal_awardDate(connexion)
+    """accelerated"""
+    convert_null_accelerated(connexion)
+    """contractorSme"""
+    # convert_string_contractorSme(connexion)
+    """contractDuration"""
+    replace_abnormal_contractDuration(connexion)
+    """lotsNumber"""
+    replace_total_lotsNumber(connexion)
+    """publicityDuration"""
+    replace_values_publicityDuration(connexion)
+    """awardPrice""" 
+    replace_values_awardPrice(connexion)
+    """awardEstimatedPrice""" 
+    replace_values_awardEstimatedPrice(connexion)
+    """Difference_awardPrice_awardEstimatedPrice""" 
+    replace_difference_values_awardPrice_awardEstimatedPrice(connexion)
+    """numberTendersSme"""
+    replace_abnormal_numberTendersSme(connexion)
 
 
 def convert_abnormal_awardDate(conn):

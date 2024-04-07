@@ -5,56 +5,52 @@ from script_single import script_single
 from script_pair import script_pair
 from script_clean_variables_manually import *
 from script_varsAssociation import *
+import sys
 
 
-def main():
-    # database = "Input\\Foppa.db"
-    database = r"D:\Yingqi\etude\m2-yingqi\Application BI\Foppa copy.db"
-    # database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
-    # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
-
-    #     database = input()
+def main(argv, arc):
+    database = argv[1]
 
     conn = create_connection(database)
     with conn:
-        calcule_correlation_Lots(conn)
+        """Code main"""
+        # calcule_correlation_Lots(conn)
 
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        script_single(conn, False)
+        # script_single(conn, False)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
-        script_pair(conn, False)
+        # script_pair(conn, False)
 
         ##################################################
         ########### Correction des données ###############
         ##################################################
-        correctedData(conn)
-        script_clean_variables_manually(conn)
+        # correctedData(conn)
+        # script_clean_variables_manually(conn)
 
         ##################################################
         ############# Attribut Individuel ################
         ##################################################
-        script_single(conn, True)
+        # script_single(conn, True)
 
         ##################################################
         ############# Attribut En Paire #################
         ##################################################
-        script_pair(conn, True)
+        # script_pair(conn, True)
 
-        calcule_correlation_Lots(conn)
+        # calcule_correlation_Lots(conn)
 
         ##################################################
         ############## Questionnements ##################
         ##################################################
-        top50(conn)
-        script_cpv(conn)
-
+        # top50(conn)
+        # script_cpv(conn)
     close_db(conn)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv, len(sys.argv))

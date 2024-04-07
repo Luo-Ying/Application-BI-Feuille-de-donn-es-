@@ -10,59 +10,59 @@ def script_single(connexion, cleaned):
     ##################### Lots ######################
     #################################################
     """correctionsNb"""
-    # draw_correctionsNb(connexion)
-    # """cancelled"""
-    # draw_cancelled(connexion)
-    # """awardDate"""
+    draw_correctionsNb(connexion)
+    """cancelled"""
+    draw_cancelled(connexion)
+    """awardDate"""
     draw_awardDate(connexion, 3)
-    # draw_awardDate(connexion, 5)
-    # draw_awardDate(connexion, 10)
-    # draw_awardDate(connexion, 15)
-    # draw_awardDate(connexion, 20)
-    # """cpv"""
-    # draw_cpv_lots(connexion)
-    # """numberTenders"""
-    # draw_numberTenders(connexion)
-    # """fraEstimated"""
-    # draw_fraEstimated(connexion)
-    # """numberTendersSme"""
-    # draw_numberTendersSme(connexion)
-    # """typeOfContract"""
-    # draw_typeOfContract(connexion)
-    # """topType"""
-    # draw_topType(connexion)
-    # """contractDuration"""
-    # draw_contract_duration(connexion)
-    # """publicityDuration"""
-    # draw_publicityDuration(connexion)
-    # #################################################
-    # #################### Agents #####################
-    # #################################################
-    # """siret"""
-    # draw_siret(connexion)
-    # """department"""
-    # draw_departement(connexion)
-    # #################################################
-    # ################### Criteria ####################
-    # #################################################
-    # """weight"""
-    # draw_weight(connexion)
-    # """type"""
-    # draw_type(connexion)
-    # if(cleaned):
-    #     """totalLots"""
-    #     draw_totalLots(connexion, "totalLots")
-    #     """awardEstimatedPrice"""
-    #     draw_award_estimated_price(connexion, False)
-    #     """awardPrice"""
-    #     draw_award_price(connexion, False)
-    # else:
-    #     """lotsNumber"""
-    #     draw_lotsNumber(connexion)
-    #     """awardEstimatedPrice"""
-    #     draw_award_estimated_price(connexion, True)
-    #     """awardPrice"""
-    #     draw_award_price(connexion, True)
+    draw_awardDate(connexion, 5)
+    draw_awardDate(connexion, 10)
+    draw_awardDate(connexion, 15)
+    draw_awardDate(connexion, 20)
+    """cpv"""
+    draw_cpv_lots(connexion)
+    """numberTenders"""
+    draw_numberTenders(connexion)
+    """fraEstimated"""
+    draw_fraEstimated(connexion)
+    """numberTendersSme"""
+    draw_numberTendersSme(connexion)
+    """typeOfContract"""
+    draw_typeOfContract(connexion)
+    """topType"""
+    draw_topType(connexion)
+    """contractDuration"""
+    draw_contract_duration(connexion)
+    """publicityDuration"""
+    draw_publicityDuration(connexion)
+    #################################################
+    #################### Agents #####################
+    #################################################
+    """siret"""
+    draw_siret(connexion)
+    """department"""
+    draw_departement(connexion)
+    #################################################
+    ################### Criteria ####################
+    #################################################
+    """weight"""
+    draw_weight(connexion)
+    """type"""
+    draw_type(connexion)
+    if(cleaned):
+        """totalLots"""
+        draw_totalLots(connexion, "totalLots")
+        """awardEstimatedPrice"""
+        draw_award_estimated_price(connexion, False)
+        """awardPrice"""
+        draw_award_price(connexion, False)
+    else:
+        """lotsNumber"""
+        draw_lotsNumber(connexion)
+        """awardEstimatedPrice"""
+        draw_award_estimated_price(connexion, True)
+        """awardPrice"""
+        draw_award_price(connexion, True)
 
 
 def draw_departement(conn):
