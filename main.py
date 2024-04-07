@@ -14,7 +14,7 @@ def main(argv, arc):
     conn = create_connection(database)
     with conn:
         """Code main"""
-        # calcule_correlation_Lots(conn)
+        # calcule_correlation_Lots(conn, "before_clean")
 
         ##################################################
         ############# Attribut Individuel ################
@@ -42,7 +42,7 @@ def main(argv, arc):
         ##################################################
         # script_pair(conn, True)
 
-        # calcule_correlation_Lots(conn)
+        calcule_correlation_Lots(conn, "after_cleaned")
 
         ##################################################
         ############## Questionnements ##################

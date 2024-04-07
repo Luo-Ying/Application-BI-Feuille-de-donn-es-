@@ -1,7 +1,7 @@
 # Chemin du sqlite => "D:\Program Files\sqlite-tools-win-x64-3450100\sqlite3.exe"
 
 """"
-.open "Foppa copy.db"
+.open "Foppa_cloned - Copie.db"
 .headers on
 .mode table
 .tables
