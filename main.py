@@ -13,6 +13,8 @@ def main():
     # database = r"E:\Yingqi\etudes\m2\Application BI\Foppa - copy.db"
     # database = r"C:\Users\devef\Documents\Application BI\FOPPA\sqlite-tools-win-x64-3450100\Foppa.db"
 
+    #     database = input()
+
     conn = create_connection(database)
     with conn:
         calcule_correlation_Lots(conn)
