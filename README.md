@@ -1,4 +1,5 @@
 # Application BI - Fouille de données
+[Lien Github](https://github.com/Luo-Ying/Application-BI-Feuille-de-donn-es-)
 
 C'est une application d'analyse des données dans le domaine commercial, permettant d'analyser les flux de communication tant sur le plan commercial que financier. Les données proviennent des marchés publics de la France et sont les données collectées des années 2010 à 2020.
 
@@ -55,8 +56,13 @@ Pour lancer le programme:
 
 1. Excécuter `python -m pip install -r requirements.txt` pour installer tous les packages necessaire du programme.
 2. S'inscrire sur le site de l'[INSEE](https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/sign-up.jag) pour pouvoir utiliser l'API SIREN avec le Bearer Token personnel, dans l'étape de compléter les fichiers CSV avec les informations des entreprises.
-3. Créer une fichier `varsEnv.py` et y ajouter une variable BEARER_TOKEN, en lui donnant la valeur du Bearer Token personnel obtenu à l'étape précédente.
+3. Créer une fichier `varsEnv.py` dans le racine du projet et y ajouter une variable BEARER_TOKEN, en lui donnant la valeur du Bearer Token personnel obtenu à l'étape précédente.
 
+## Run
+
+Pour lancer le programme:
+
+`python main.py [chemin de la base de donnée]`
 
 ## Dépendences
 
