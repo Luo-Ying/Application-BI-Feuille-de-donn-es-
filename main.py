@@ -29,7 +29,7 @@ def main(argv, arc):
         ##################################################
         ########### Correction des données ###############
         ##################################################
-        correctedData(conn)
+        # correctedData(conn)
         script_clean_variables_manually(conn)
 
         ##################################################
