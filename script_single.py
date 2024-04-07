@@ -56,6 +56,7 @@ def script_single(connexion, cleaned):
         draw_award_estimated_price(connexion, False)
         """awardPrice"""
         draw_award_price(connexion, False)
+        draw_awardDate(connexion, 1)
     else:
         """lotsNumber"""
         draw_lotsNumber(connexion)
@@ -399,7 +400,7 @@ def draw_awardDate(conn, yearRange):
         filtered_data_date_appearances_by_each_decade,
         f"Chaque {yearRange} ans",
         "Value",
-        "awardDate",
+        f"awardDate_chaque_{yearRange}_ans",
         "Lots",
         True,
         45,
