@@ -56,7 +56,7 @@ Pour lancer le programme:
 
 1. Excécuter `python -m pip install -r requirements.txt` pour installer tous les packages necessaire du programme.
 2. S'inscrire sur le site de l'[INSEE](https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/sign-up.jag) pour pouvoir utiliser l'API SIREN avec le Bearer Token personnel, dans l'étape de compléter les fichiers CSV avec les informations des entreprises.
-3. Créer une fichier `varsEnv.py` et y ajouter une variable BEARER_TOKEN, en lui donnant la valeur du Bearer Token personnel obtenu à l'étape précédente.
+3. Créer une fichier `varsEnv.py` dans le racine du projet et y ajouter une variable BEARER_TOKEN, en lui donnant la valeur du Bearer Token personnel obtenu à l'étape précédente.
 
 
 ## Dépendences
