@@ -12,6 +12,8 @@ Il y a des questionnements qui sont posés dans le but d'y répondre tout au lon
 
 Le but du script est de lancer une fois le programme. Il va d'abord lire les données, puis dessiner les graphiques basés sur les données brutes dans le but de visualiser les données pour qu'on puisse voir s'il y a des problème des données. Ensuite, la partie du script de nettoyage sera directement appliquée pour nettoyer les données en utilisant les algorithmes qui ont déjà été discutés en interne par l'équipe du projet. Une fois le nettoyage appliqué, les script des générations des graphiques serons relancé pour sortir les graphiques propre basés sur les données nettoyés. En suite, la dernière partie est de générer les sortie (des graphiques et des fichiers) pour répondre aux question posé le début du projet.
 
+Le rapport réalisé : [Rapport](./rapport.pdf)
+
 # Organisation
 
 Les éléments nécessaire:
